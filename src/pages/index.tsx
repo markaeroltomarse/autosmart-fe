@@ -21,7 +21,7 @@ export default function Home() {
         
       </Head>
       <main>
-        <h1 className='text-2xl'>Products {productsState?.data.data.length}</h1>
+        <h1 className='text-2xl'>Products {productsState.isSuccess && productsState?.data.data.length}</h1>
         {/* <div className='flex'>
           
           {productsState.isSuccess && productsState?.data.data.map((product: any) => 
