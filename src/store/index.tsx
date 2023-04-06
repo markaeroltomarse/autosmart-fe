@@ -10,13 +10,16 @@ import {
 } from 'redux-persist';
 import { productsApi } from './api/productsApi';
 import productReducer from './reducers/productsReducers';
-
+import { customersApi } from './api/customerApi';
+import { adminApi } from './api/adminApi';
 
 const store: any = () =>
   configureStore({
     reducer: {
-    [productsApi.reducerPath]: productsApi.reducer,
-    productReducer,
+      [productsApi.reducerPath]: productsApi.reducer,
+      [customersApi.reducerPath]: customersApi.reducer,
+      [adminApi.reducerPath]: adminApi.reducer,
+      productReducer,
     },
     middleware: (getDefault) =>
       getDefault({
@@ -25,7 +28,8 @@ const store: any = () =>
         },
       }).concat(
         productsApi.middleware,
-        // distributorApi.middleware,
+        customersApi.middleware,
+        adminApi.middleware
         // productsApi.middleware
       ),
   });
