@@ -151,7 +151,10 @@ export default function Dashboard({ products }: { products: IProductType[] }) {
                                   }}
                                 >
                                   {COLORS.map((color) => (
-                                    <option value={color.hexCode}>
+                                    <option
+                                      key={color.hexCode}
+                                      value={color.hexCode}
+                                    >
                                       {color.name}
                                     </option>
                                   ))}

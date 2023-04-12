@@ -24,8 +24,10 @@ export default function Cart() {
   const [checkOut, checkOutState] = useCheckOutMutation();
   useEffect(() => {
     getCart(undefined).then(({ data, isError }: any) => {
-      const cart: ICartType = data.data;
-      setCart(cart);
+      if (!isError) {
+        const cart: ICartType = data.data;
+        setCart(cart);
+      }
     });
   }, []);
 
@@ -44,8 +46,10 @@ export default function Cart() {
       }).then((response: any) => {
         if (response.data.message === 'success') {
           getCart(undefined).then(({ data, isError }: any) => {
-            const cart: ICartType = data.data;
-            setCart(cart);
+            if (!isError) {
+              const cart: ICartType = data.data;
+              setCart(cart);
+            }
           });
         }
       });
@@ -81,7 +85,10 @@ export default function Cart() {
             <div className="flex flex-col gap-6 p-5 bg-white ">
               <div className="ITEMS h-[80vh] overflow-y-scroll flex flex-col gap-6">
                 {cart?.products.map((product) => (
-                  <div className="flex bg-white w-full items-center  border-b pb-5">
+                  <div
+                    key={product.product.id}
+                    className="flex bg-white w-full items-center  border-b pb-5"
+                  >
                     <div className="flex-auto">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
