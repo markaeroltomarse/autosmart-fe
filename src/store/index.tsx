@@ -12,6 +12,7 @@ import { productsApi } from './api/productsApi';
 import productReducer from './reducers/productsReducers';
 import { customersApi } from './api/customerApi';
 import { adminApi } from './api/adminApi';
+import { cartsApi } from './api/cartApi';
 
 const store: any = () =>
   configureStore({
@@ -19,6 +20,7 @@ const store: any = () =>
       [productsApi.reducerPath]: productsApi.reducer,
       [customersApi.reducerPath]: customersApi.reducer,
       [adminApi.reducerPath]: adminApi.reducer,
+      [cartsApi.reducerPath]: cartsApi.reducer,
       productReducer,
     },
     middleware: (getDefault) =>
@@ -29,7 +31,8 @@ const store: any = () =>
       }).concat(
         productsApi.middleware,
         customersApi.middleware,
-        adminApi.middleware
+        adminApi.middleware,
+        cartsApi.middleware
         // productsApi.middleware
       ),
   });
