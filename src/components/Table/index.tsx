@@ -41,7 +41,7 @@ export default function Table({
         <tr>
           {headers.map((header) => (
             <th
-              key={header.key}
+              key={Math.floor(Math.random() * 100000)}
               scope="col"
               className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${header.columnClassName}`}
             >
@@ -56,10 +56,11 @@ export default function Table({
             if (header.key === 'action') {
               return (
                 <td
+                  key={Math.floor(Math.random() * 100000)}
                   className="py-4 whitespace-nowrap flex justify-center"
-                  key={item.id}
                 >
                   <MdMoreVert
+                    key={Math.floor(Math.random() * 100000)}
                     size={25}
                     onClick={() =>
                       actionSelected?.id !== item.id
@@ -81,6 +82,7 @@ export default function Table({
             const config = rowClassName?.find((row) => row.key === header.key);
             return (
               <td
+                key={Math.floor(Math.random() * 100000)}
                 className={`px-6 py-4 whitespace-nowrap ${config?.className}`}
               >
                 {config?.customElement
@@ -89,7 +91,7 @@ export default function Table({
               </td>
             );
           });
-          return <tr>{keys}</tr>;
+          return <tr key={Math.floor(Math.random() * 100000)}>{keys}</tr>;
         })}
 
         <tr>
