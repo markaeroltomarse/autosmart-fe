@@ -10,6 +10,8 @@ export interface IProductType {
   imgURL?: string;
   color: string;
   contactOptions: string;
+  description: string;
+  application: string;
   createdAt: string;
   updatedAt?: string;
 }

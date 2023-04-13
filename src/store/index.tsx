@@ -7,12 +7,20 @@ import {
   PURGE,
   REGISTER,
   REHYDRATE,
+  persistReducer,
 } from 'redux-persist';
 import { productsApi } from './api/productsApi';
 import productReducer from './reducers/productsReducers';
 import { customersApi } from './api/customerApi';
 import { adminApi } from './api/adminApi';
 import { cartsApi } from './api/cartApi';
+import cartSlice from './reducers/cartsReducers';
+import storageSession from 'redux-persist/lib/storage/session';
+
+const persistedCartReducer = persistReducer(
+  { key: 'cart', storage: storageSession },
+  cartSlice.reducer
+);
 
 const store: any = () =>
   configureStore({
@@ -21,6 +29,8 @@ const store: any = () =>
       [customersApi.reducerPath]: customersApi.reducer,
       [adminApi.reducerPath]: adminApi.reducer,
       [cartsApi.reducerPath]: cartsApi.reducer,
+      // Persists,
+      [cartSlice.name]: persistedCartReducer,
       productReducer,
     },
     middleware: (getDefault) =>

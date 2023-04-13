@@ -23,7 +23,7 @@ export default function Select({
     <div className={`px-3 border ${className}`}>
       <select
         name={name}
-        className={` rounded outline-none py-2 w-full bg-transparent`}
+        className={` rounded outline-none  w-full bg-transparent`}
         onChange={onChange}
         required={required}
       >

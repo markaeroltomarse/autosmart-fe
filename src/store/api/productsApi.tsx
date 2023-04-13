@@ -53,6 +53,15 @@ export const productsApi = createApi({
       },
       providesTags: ['GetProducts'],
     }),
+    getProduct: build.query({
+      query: (productId: string) => {
+        return {
+          url: `/${productId}`,
+          method: 'GET',
+        };
+      },
+      providesTags: ['GetProducts'],
+    }),
     createProduct: build.mutation({
       query: (newProduct: INewProduct, token?: string) => {
         return {
@@ -84,9 +93,10 @@ export const productsApi = createApi({
 
 export const {
   useLazyGetProductsQuery,
+  useLazyGetProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = productsApi;
-export const { getProducts, createProduct, updateProduct } =
+export const { getProducts, getProduct, createProduct, updateProduct } =
   productsApi.endpoints;
