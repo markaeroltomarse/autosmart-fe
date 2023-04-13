@@ -2,7 +2,8 @@ import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
-import Navbar from '@/components/Navbar';
+import Navbar from '@/components/Navbar/navbar';
+
 import {
   useCheckOutMutation,
   useLazyGetCartQuery,

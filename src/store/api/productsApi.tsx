@@ -42,7 +42,7 @@ export const productsApi = createApi({
     }
   },
   reducerPath: 'productsApi',
-  tagTypes: ['GetProducts'],
+  tagTypes: ['GetProducts', 'GetProduct'],
   endpoints: (build) => ({
     getProducts: build.query({
       query: () => {
@@ -60,7 +60,7 @@ export const productsApi = createApi({
           method: 'GET',
         };
       },
-      providesTags: ['GetProducts'],
+      providesTags: ['GetProduct'],
     }),
     createProduct: build.mutation({
       query: (newProduct: INewProduct, token?: string) => {

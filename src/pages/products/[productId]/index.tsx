@@ -11,18 +11,19 @@ import { IProductType } from '@/types/product.type';
 import BasicLoader from '@/components/Loader/basic-loader';
 import { wrapper } from '@/store';
 import { GetServerSideProps } from 'next';
-import Navbar from '@/components/Navbar';
+
 import { useAddToCartMutation } from '@/store/api/cartApi';
 import Alert from '@/components/Alert';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { tempAddToCart, tempSetCart } from '@/store/reducers/cartsReducers';
+import Navbar from '@/components/Navbar/navbar';
 
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps((store) => async (ctx) => {
     const product = await store.dispatch(
       getProduct.initiate(ctx.query.productId as string)
     );
-
+      console.log(product.error)
     return {
       props: {
         product: product?.data?.data || null,
