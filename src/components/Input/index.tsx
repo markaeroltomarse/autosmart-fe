@@ -1,4 +1,4 @@
-import { ChangeEventHandler } from 'react';
+import { ChangeEventHandler, FocusEventHandler } from 'react';
 
 interface IInputProps {
   type: string;
@@ -7,6 +7,8 @@ interface IInputProps {
   isIconLeft?: boolean;
   icon?: JSX.Element;
   onChange?: ChangeEventHandler<HTMLInputElement> | undefined;
+  onBlur?: FocusEventHandler<HTMLInputElement> | undefined;
+  onFocus?: FocusEventHandler<HTMLInputElement> | undefined;
   value?: number | string;
   width?: number;
   pattern?: string;
@@ -28,6 +30,8 @@ export default function Input({
   title,
   required,
   name,
+  onBlur,
+  onFocus,
 }: IInputProps) {
   return (
     <div
@@ -50,6 +54,8 @@ export default function Input({
           title={title}
           required={required}
           name={name}
+          onBlur={onBlur}
+          onFocus={onFocus}
         />
       </div>
     </div>

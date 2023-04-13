@@ -9,6 +9,11 @@ interface ICheckOutInput {
   }[];
 }
 
+interface IAddToCartInput {
+  productId: string;
+  quantity: number;
+}
+
 const getAccessToken = () => {
   if (typeof window !== 'undefined') {
     return read_cookie('token');
@@ -42,6 +47,19 @@ export const cartsApi = createApi({
       providesTags: ['GetCart'],
     }),
 
+    addToCart: build.mutation({
+      query: (checkOutInput: IAddToCartInput, token?: string) => {
+        return {
+          url: ``,
+          method: 'POST',
+          body: checkOutInput,
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+    }),
+
     checkOut: build.mutation({
       query: (checkOutInput: ICheckOutInput, token?: string) => {
         return {
@@ -54,38 +72,27 @@ export const cartsApi = createApi({
         };
       },
     }),
-    // createProduct: build.mutation({
-    //   query: (newProduct: INewProduct, token?: string) => {
-    //     return {
-    //       url: ``,
-    //       method: 'POST',
-    //       body: newProduct,
-    //       headers: {
-    //         authorization: `Bearer ${token || getAccessToken()}`,
-    //       },
-    //     };
-    //   },
-    // }),
-
-    // updateProduct: build.mutation({
-    //   query: (updateProduct: IUpdateProduct, token?: string) => {
-    //     const id = updateProduct.id;
-    //     return {
-    //       url: `/${id}`,
-    //       method: 'PUT',
-    //       body: updateProduct,
-    //       headers: {
-    //         authorization: `Bearer ${token || getAccessToken()}`,
-    //       },
-    //     };
-    //   },
-    // }),
+    updateCartItemQuantity: build.mutation({
+      query: (updateCartItem: IAddToCartInput, token?: string) => {
+        return {
+          url: `/`,
+          method: 'PUT',
+          body: updateCartItem,
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
 export const {
   useLazyGetCartQuery,
   useCheckOutMutation,
+  useAddToCartMutation,
+  useUpdateCartItemQuantityMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = cartsApi;
-export const { getCart, checkOut } = cartsApi.endpoints;
+export const { getCart, checkOut, addToCart, updateCartItemQuantity } =
+  cartsApi.endpoints;

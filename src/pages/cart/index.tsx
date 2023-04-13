@@ -1,10 +1,18 @@
+import Alert from '@/components/Alert';
 import Button from '@/components/Button';
+import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
-import { useCheckOutMutation, useLazyGetCartQuery } from '@/store/api/cartApi';
+import Navbar from '@/components/Navbar';
+import {
+  useCheckOutMutation,
+  useLazyGetCartQuery,
+  useUpdateCartItemQuantityMutation,
+} from '@/store/api/cartApi';
 import { IProductType } from '@/types/product.type';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { BsCheckLg } from 'react-icons/bs';
+import { MdProductionQuantityLimits } from 'react-icons/md';
 
 interface ICartType {
   id: string;
@@ -20,18 +28,63 @@ interface ICartType {
 export default function Cart() {
   const [getCart, getCartState] = useLazyGetCartQuery();
   const [cart, setCart] = useState<ICartType | null>(null);
+  const [PRODUCTS, SETPRODUCTS] = useState<
+    {
+      productId: string;
+      quantity: number;
+    }[]
+  >([]);
   const [selectedProducts, setSelecteProducts] = useState<string[]>([]);
   const [checkOut, checkOutState] = useCheckOutMutation();
-  useEffect(() => {
+  const [updateCartItem, updateCartItemState] =
+    useUpdateCartItemQuantityMutation();
+
+  const [focusedOn, setFocusedOn] = useState<string>('');
+
+  const handleGetProducts = () => {
     getCart(undefined).then(({ data, isError }: any) => {
       if (!isError) {
         const cart: ICartType = data.data;
         setCart(cart);
+        SETPRODUCTS(
+          cart.products.map((prod) => ({
+            productId: prod.product.id,
+            quantity: prod.quantity,
+          }))
+        );
       }
     });
+  };
+  useEffect(() => {
+    handleGetProducts();
   }, []);
 
+  const handleAddToCartResponseAlert = () => {
+    if (checkOutState.isSuccess)
+      return (
+        <Alert
+          type={'success'}
+          title={'Success'}
+          message={'Your order is now pending, Thank you.'}
+        />
+      );
+
+    if (checkOutState.isError)
+      return (
+        <Alert
+          type={'error'}
+          title={'Failed'}
+          message={'Something wrong in your check out, Please try again.'}
+        />
+      );
+
+    if (checkOutState.fulfilledTimeStamp) {
+      setTimeout(() => checkOutState.reset(), 5000); // 5 Seconds
+    }
+  };
+
   const handleCheckOut = () => {
+    if (updateCartItemState.isLoading) return;
     if (selectedProducts.length === 0) {
       alert('Please select the products.');
     } else {
@@ -59,13 +112,16 @@ export default function Cart() {
   return (
     <>
       <main className="">
-        {(checkOutState.isLoading || getCartState.isLoading) && (
+        {(checkOutState.isLoading ||
+          getCartState.isLoading ||
+          updateCartItemState.isLoading) && (
           <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
             <BasicLoader />
           </div>
         )}
+        <Navbar />
+        {handleAddToCartResponseAlert()}
         <div className="p-5 md:px-[10%] md:py-5">
-          <h1 className="text-2xl">Cart</h1>
           <div className="flex gap-2 flex-wrap  flex-col">
             <div className="flex bg-white w-full items-center p-3">
               <div className="flex-auto text-center">
@@ -125,8 +181,64 @@ export default function Cart() {
                         ₱{product.product.price}
                       </h4>
                     </div>
-                    <div className="w-[15%] text-center">
-                      <h4 className="font-bold text-4xl">{product.quantity}</h4>
+                    <div className="w-[15%] text-center flex items-center">
+                      <Input
+                        name={product.product.id}
+                        value={product.quantity}
+                        type={'number'}
+                        className="text-center w-[100px]"
+                        onFocus={(e) =>
+                          e.target.name === product.product.id &&
+                          setFocusedOn(product.product.id)
+                        }
+                        onBlur={(e) => {
+                          const CONSTPRODUCT = PRODUCTS.find(
+                            (prod) => prod.productId === product.product.id
+                          );
+
+                          if (
+                            CONSTPRODUCT &&
+                            +e.target.value !== CONSTPRODUCT.quantity
+                          ) {
+                            updateCartItem({
+                              productId: product.product.id,
+                              quantity: +e.target.value,
+                            }).then(() => {
+                              handleGetProducts();
+                            });
+                          }
+
+                          setFocusedOn('');
+                        }}
+                        onChange={(e) => {
+                          setCart((prev: any) => {
+                            if (prev) {
+                              let tempCartProducts = JSON.parse(
+                                JSON.stringify(prev.products)
+                              );
+                              tempCartProducts.forEach((prod: any) => {
+                                if (
+                                  prod.product.id === product.product.id &&
+                                  +e.target.value <= prod.product.quantity
+                                ) {
+                                  prod.quantity = Number(e.target.value);
+                                }
+                              });
+                              return {
+                                ...prev,
+                                products: tempCartProducts,
+                              };
+                            }
+                          });
+                        }}
+                      />
+
+                      {focusedOn === product.product.id && (
+                        <div className="flex gap-2 items-center text-red-500">
+                          <MdProductionQuantityLimits color="red" /> (
+                          {product.product.quantity})
+                        </div>
+                      )}
                     </div>
                     <div className="w-[15%] text-center text-red-500">
                       <h4 className="font-bold text-4xl">
