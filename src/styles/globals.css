@@ -11,3 +11,10 @@
 body {
   background-color: #f2f2f2;
 }
+
+
+.bg-image {
+  background-image: url('C:\Users\Yuki\Desktop\AutoSmart\elements\baseall.jpg');
+  background-size: cover;
+  background-position: center;
+}

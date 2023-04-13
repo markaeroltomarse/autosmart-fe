@@ -7,7 +7,8 @@ interface ILogoProps {
 export default function Logo({ className }: ILogoProps) {
   return (
     <div className={`w-[200px] relative border ${className}`}>
-      <Image fill src={'/logo.png'} alt="autosmart" />
+      <Image className='rounded-md' fill src={'/logo.png'} alt="autosmart" />
+      <div className=" rounded-md bg-white p-5"></div>
     </div>
   );
 }
