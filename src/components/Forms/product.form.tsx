@@ -43,6 +43,7 @@ export default function ProductForm({
     discount: product?.discount || 0,
     color: product?.color || '',
     contactOptions: product?.contactOptions || '',
+    images: product?.images || ['', '', ''],
   });
 
   return (
@@ -115,7 +116,6 @@ export default function ProductForm({
               })
             }
           />
-
           <Select
             placeholder="Select Category"
             options={['Category 1', 'Category 2']}
@@ -130,58 +130,70 @@ export default function ProductForm({
               })
             }
           />
-
           <hr />
-
-          <Input
-            type="number"
-            placeholder="Enter price.."
-            className="bg-slate-100"
-            required
-            value={formData.price}
-            name="price"
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                [e.currentTarget.name]: Number(e.currentTarget.value),
-              })
-            }
-          />
-
-          <Input
-            type="number"
-            placeholder="Enter quantity.."
-            className="bg-slate-100"
-            required
-            value={formData.quantity}
-            name="quantity"
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                [e.currentTarget.name]: Number(e.currentTarget.value),
-              })
-            }
-          />
-
-          <Input
-            type="number"
-            placeholder="Enter discount.."
-            className="bg-slate-100"
-            pattern="[0-9]*"
-            title="Please enter an integer value"
-            required
-            value={formData.discount}
-            name="discount"
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                [e.currentTarget.name]: Number(e.currentTarget.value),
-              })
-            }
-          />
-
+          <div>
+            <small className="flex gap-2">
+              <span className="text-red-500">*</span>
+              Price
+            </small>
+            <Input
+              type="number"
+              placeholder="Enter price.."
+              className="bg-slate-100"
+              required
+              value={formData.price}
+              name="price"
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  [e.currentTarget.name]: Number(e.currentTarget.value),
+                })
+              }
+            />
+          </div>
+          <div>
+            <small className="flex gap-2">
+              <span className="text-red-500">*</span>
+              Quantity
+            </small>
+            <Input
+              type="number"
+              placeholder="Enter quantity.."
+              className="bg-slate-100"
+              required
+              value={formData.quantity}
+              name="quantity"
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  [e.currentTarget.name]: Number(e.currentTarget.value),
+                })
+              }
+            />
+          </div>
+          <div>
+            <small className="flex gap-2">
+              <span className="text-red-500">*</span>
+              Discount
+            </small>
+            <Input
+              type="number"
+              placeholder="Enter discount.."
+              className="bg-slate-100"
+              pattern="[0-9]*"
+              title="Please enter an integer value"
+              required
+              value={formData.discount}
+              name="discount"
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  [e.currentTarget.name]: Number(e.currentTarget.value),
+                })
+              }
+            />
+          </div>
           <hr />
-
           <Select
             placeholder="Select Status"
             options={['Status 1', 'Status 2']}
@@ -196,7 +208,6 @@ export default function ProductForm({
               })
             }
           />
-
           <Select
             placeholder="Select Color"
             options={COLORS.map((color) => color.name)}
@@ -211,6 +222,45 @@ export default function ProductForm({
               })
             }
           />
+          <div className="border bottom-0"></div>
+          <div className="flex flex-col gap-2">
+            <Input
+              type="text"
+              placeholder="Enter Image 1"
+              className="bg-slate-100"
+              required
+              value={formData.images[0]}
+              onChange={(e) => {
+                const images = JSON.parse(JSON.stringify(formData.images));
+                images[0] = e.target.value;
+                setFormData({ ...formData, images: images });
+              }}
+            />
+
+            <Input
+              type="text"
+              placeholder="Enter Image 2"
+              className="bg-slate-100"
+              value={formData.images[1]}
+              onChange={(e) => {
+                const images = JSON.parse(JSON.stringify(formData.images));
+                images[1] = e.target.value;
+                setFormData({ ...formData, images: images });
+              }}
+            />
+
+            <Input
+              type="text"
+              placeholder="Enter Image 3"
+              className="bg-slate-100"
+              value={formData.images[2]}
+              onChange={(e) => {
+                const images = JSON.parse(JSON.stringify(formData.images));
+                images[2] = e.target.value;
+                setFormData({ ...formData, images: images });
+              }}
+            />
+          </div>
         </div>
 
         <div className="flex justify-end">

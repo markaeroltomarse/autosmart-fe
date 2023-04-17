@@ -14,4 +14,5 @@ export interface IProductType {
   application: string;
   createdAt: string;
   updatedAt?: string;
+  images: string[];
 }

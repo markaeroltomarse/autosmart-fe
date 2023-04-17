@@ -12,6 +12,8 @@ interface ICheckOutInput {
 interface IAddToCartInput {
   productId: string;
   quantity: number;
+  color?: string;
+  application?: string;
 }
 
 const getAccessToken = () => {

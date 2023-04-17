@@ -17,13 +17,14 @@ import Alert from '@/components/Alert';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { tempAddToCart, tempSetCart } from '@/store/reducers/cartsReducers';
 import Navbar from '@/components/Navbar/navbar';
+import { useLazyGetCustomerProfileQuery } from '@/store/api/customerApi';
+import { read_cookie } from 'sfcookies';
 
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps((store) => async (ctx) => {
     const product = await store.dispatch(
       getProduct.initiate(ctx.query.productId as string)
     );
-      console.log(product.error)
     return {
       props: {
         product: product?.data?.data || null,
@@ -43,6 +44,9 @@ export default function ProductPage({ product }: { product: IProductType }) {
   const [selectedColor, setSelectedColor] = useState(COLORS[0].name);
 
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const [selectedImage, setSelectedImage] = useState(product.images[0]);
 
   useEffect(() => {
     const container = document.getElementById('container');
@@ -64,6 +68,7 @@ export default function ProductPage({ product }: { product: IProductType }) {
 
   useEffect(() => {
     setSelectApplication(APPLICATIONS[0]);
+    setSelectedColor(COLORS[0].name);
   }, [APPLICATIONS]);
 
   const handleAddToCart = () => {
@@ -71,6 +76,8 @@ export default function ProductPage({ product }: { product: IProductType }) {
       addToCart({
         productId: product.id,
         quantity: 1,
+        application: String(selectedApplication),
+        color: selectedColor,
       });
     }
   };
@@ -78,13 +85,20 @@ export default function ProductPage({ product }: { product: IProductType }) {
   const handleAddToCartResponseAlert = () => {
     const error: any = addToCartState.error;
     if (error?.status === 401) {
-      dispatch(
-        tempAddToCart({
-          productId: product.id,
-          quantity: 1,
-        })
+      setTimeout(() => addToCartState.reset(), 5000); // 5 Seconds
+      return (
+        <Alert
+          onClick={() => {
+            router.replace({
+              pathname: '/account/authentication',
+            });
+          }}
+          type={'error'}
+          title={'Failed'}
+          message={'Login required (Click here), Please try again.'}
+          className="cursor-pointer"
+        />
       );
-      return;
     }
 
     if (addToCartState.isSuccess) {
@@ -154,22 +168,28 @@ export default function ProductPage({ product }: { product: IProductType }) {
           <h1 className="text-2xl font-bold">Featured Product</h1>
           <div className="p-5 bg-white flex gap-2">
             <div className="w-[130px] flex flex-col gap-2">
-              <Image
-                src={
-                  'https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080'
-                }
-                alt="product"
-                width={100}
-                height={100}
-                className="border-2 border-slate-500"
-              />
+              {product.images.map(
+                (src) =>
+                  src && (
+                    <Image
+                      src={src}
+                      alt="product"
+                      width={100}
+                      height={100}
+                      className={`border-2 cursor-pointer ${
+                        selectedImage === src
+                          ? 'border-red-500'
+                          : 'border-slate-500'
+                      }`}
+                      onClick={() => setSelectedImage(src)}
+                    />
+                  )
+              )}
             </div>
             <div className="flex w-full">
               <div id="container">
                 <img
-                  src={
-                    'https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080'
-                  }
+                  src={selectedImage}
                   alt="Image Alt"
                   className="IMG"
                   id="test-img"

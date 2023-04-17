@@ -88,6 +88,18 @@ export const productsApi = createApi({
         };
       },
     }),
+
+    deleteProduct: build.mutation({
+      query: (productId: string, token?: string) => {
+        return {
+          url: `/${productId}`,
+          method: 'DELETE',
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -96,7 +108,13 @@ export const {
   useLazyGetProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
+  useDeleteProductMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = productsApi;
-export const { getProducts, getProduct, createProduct, updateProduct } =
-  productsApi.endpoints;
+export const {
+  getProducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} = productsApi.endpoints;

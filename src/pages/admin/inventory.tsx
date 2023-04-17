@@ -1,13 +1,20 @@
 import AdminMenu from '@/components/AdminMenu';
 import AdminNav from '@/components/AdminNav';
+import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import ProductForm from '@/components/Forms/product.form';
 import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
+import Select from '@/components/Select';
 import Table from '@/components/Table';
 import { COLORS } from '@/constants/colors.contant';
 import { wrapper } from '@/store';
-import { getProducts, useUpdateProductMutation } from '@/store/api/productsApi';
+import {
+  getProducts,
+  useDeleteProductMutation,
+  useLazyGetProductsQuery,
+  useUpdateProductMutation,
+} from '@/store/api/productsApi';
 import { IProductType } from '@/types/product.type';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
@@ -15,7 +22,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AiFillCheckSquare, AiOutlineSearch } from 'react-icons/ai';
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps((store) => async (ctx) => {
-    const products = await store.dispatch(
+    const products: any = await store.dispatch(
       getProducts.initiate(ctx.req.cookies?.token)
     );
 
@@ -30,6 +37,7 @@ export default function Dashboard({ products }: { products: IProductType[] }) {
   const router = useRouter();
 
   const [updateProduct, updateProductState] = useUpdateProductMutation();
+  const [deleteProduct, deleteProductState] = useDeleteProductMutation();
   const [searchTxt, setSearchTxt] = useState('');
   const [changeQuantities, setChangeQuantity] = useState<string[]>([]);
   const [currentQuantityTxt, setCurrentQuantityTxt] = useState<{
@@ -55,11 +63,20 @@ export default function Dashboard({ products }: { products: IProductType[] }) {
     if (router.query?.action === 'edit' && !selectedProduct) {
       router.replace('/admin/inventory');
     }
+
+    if (router.query?.action === 'delete' && !selectedProduct) {
+      router.replace('/admin/inventory');
+    }
   }, [router.query, selectedProduct]);
 
   return (
     <>
       <main className="">
+        {deleteProductState.isLoading && (
+          <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
+            <BasicLoader />
+          </div>
+        )}
         <AdminNav />
         <div className="px-5 md:px-[10%] w-full">
           <h1 className="font-bold text-2xl text-slate-500 my-5">Inventory</h1>
@@ -68,6 +85,22 @@ export default function Dashboard({ products }: { products: IProductType[] }) {
               <AdminMenu defaultValue="Inventory" />
             </div>
             <div className="flex-1">
+              {router.query.action === 'delete' && (
+                <Alert
+                  type={'confirm'}
+                  title={'Are you sure want to delete this product?'}
+                  message={''}
+                  onOk={() => {
+                    deleteProduct(selectedProduct?.id!).then(() => {
+                      setSelectedProduct(null);
+                      router.reload();
+                    });
+                  }}
+                  onCancel={() => {
+                    setSelectedProduct(null);
+                  }}
+                />
+              )}
               {router.query?.action === 'create' ||
               router.query?.action === 'edit' ? (
                 <ProductForm
@@ -136,36 +169,6 @@ export default function Dashboard({ products }: { products: IProductType[] }) {
                       data={productsTemp}
                       rowClassName={[
                         {
-                          key: 'color',
-                          customElement: (data, id) => {
-                            return (
-                              <div className="flex gap-1">
-                                <select
-                                  name=""
-                                  id=""
-                                  onChange={(e) => {
-                                    // const originalQuantity =
-                                    //     products.find(
-                                    //       (product) => product.id === id
-                                    //     )?.color || 'black';
-                                  }}
-                                >
-                                  {COLORS.map((color) => (
-                                    <option
-                                      key={color.hexCode}
-                                      value={color.hexCode}
-                                    >
-                                      {color.name}
-                                    </option>
-                                  ))}
-                                </select>
-
-                                <div className={`p-3 bg-[${data}]`}></div>
-                              </div>
-                            );
-                          },
-                        },
-                        {
                           key: 'quantity',
                           customElement: (data, id) => {
                             return updateProductState.isLoading &&
@@ -232,13 +235,10 @@ export default function Dashboard({ products }: { products: IProductType[] }) {
                         const selectedProduct = products.find(
                           (product) => product.id === e.id
                         );
-
                         setSelectedProduct(selectedProduct!);
-
-                        if (e.type === 'edit') {
-                          router.push('/admin/inventory?action=edit');
-                        }
+                        router.push(`/admin/inventory?action=${e.type}`);
                       }}
+                      selectedItem={selectedProduct}
                     />
                   </div>
                 </div>

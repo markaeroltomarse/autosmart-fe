@@ -14,10 +14,10 @@ export default function SelectChips(props: ISelecteChipsProps) {
         <Button
           key={value}
           title={String(value)}
-          buttonClass={`max-w-[500px] border-2 px-2 rounded border-slate-400 focus:border-red-500 ${
-            !props.multiple &&
-            value === props.defaultValueOne &&
-            'border-red-500'
+          buttonClass={`max-w-[500px] border-2 px-2 rounded  focus:border-red-500 ${
+            String(value).toLowerCase() === props.defaultValueOne.toLowerCase()
+              ? 'border-red-500'
+              : 'border-slate-400'
           }`}
           onClick={() => {
             if (!props.multiple) {
