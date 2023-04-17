@@ -7,26 +7,30 @@ import BasicLoader from '@/components/Loader/basic-loader';
 import Table from '@/components/Table';
 import { COLORS } from '@/constants/colors.contant';
 import { wrapper } from '@/store';
-import { getProducts, useUpdateProductMutation } from '@/store/api/productsApi';
+import {
+  getProducts,
+  useLazyGetProductsQuery,
+  useUpdateProductMutation,
+} from '@/store/api/productsApi';
 import { IProductType } from '@/types/product.type';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { AiFillCheckSquare, AiOutlineSearch } from 'react-icons/ai';
-export const getServerSideProps: GetServerSideProps =
-  wrapper.getServerSideProps((store) => async (ctx) => {
-    const products = await store.dispatch(
-      getProducts.initiate(ctx.req.cookies?.token)
-    );
+// export const getServerSideProps: GetServerSideProps =
+//   wrapper.getServerSideProps((store) => async (ctx) => {
+//     const products = await store.dispatch(
+//       getProducts.initiate(ctx.req.cookies?.token)
+//     );
 
-    return {
-      props: {
-        products: products?.data?.data || [],
-      },
-    };
-  });
-
-export default function Dashboard({ products }: { products: IProductType[] }) {
+//     return {
+//       props: {
+//         products: products?.data?.data || [],
+//       },
+//     };
+//   });
+// { products }: { products: IProductType[] }
+export default function Dashboard() {
   const router = useRouter();
 
   const [updateProduct, updateProductState] = useUpdateProductMutation();
@@ -36,6 +40,14 @@ export default function Dashboard({ products }: { products: IProductType[] }) {
     id: string;
     quantity: number;
   } | null>(null);
+
+  const [getProducts, getProductsState] = useLazyGetProductsQuery();
+  const [products, setProducts] = useState<IProductType[]>([]);
+  useEffect(() => {
+    getProducts(undefined).then(({ data }) => {
+      setProducts(data?.data);
+    });
+  }, []);
 
   const [selectedProduct, setSelectedProduct] = useState<IProductType | null>(
     null
@@ -49,13 +61,15 @@ export default function Dashboard({ products }: { products: IProductType[] }) {
       }
     });
     return temp.filter((product) => product.name.includes(searchTxt));
-  }, [searchTxt, currentQuantityTxt]);
+  }, [searchTxt, currentQuantityTxt, products]);
 
   useEffect(() => {
     if (router.query?.action === 'edit' && !selectedProduct) {
       router.replace('/admin/inventory');
     }
   }, [router.query, selectedProduct]);
+
+  useEffect(() => {}, []);
 
   return (
     <>

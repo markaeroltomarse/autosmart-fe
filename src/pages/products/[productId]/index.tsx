@@ -18,19 +18,20 @@ import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { tempAddToCart, tempSetCart } from '@/store/reducers/cartsReducers';
 import Navbar from '@/components/Navbar/navbar';
 
-export const getServerSideProps: GetServerSideProps =
-  wrapper.getServerSideProps((store) => async (ctx) => {
-    const product = await store.dispatch(
-      getProduct.initiate(ctx.query.productId as string)
-    );
-      console.log(product.error)
-    return {
-      props: {
-        product: product?.data?.data || null,
-      },
-    };
-  });
-export default function ProductPage({ product }: { product: IProductType }) {
+// export const getServerSideProps: GetServerSideProps =
+//   wrapper.getServerSideProps((store) => async (ctx) => {
+//     const product = await store.dispatch(
+//       getProduct.initiate(ctx.query.productId as string)
+//     );
+//     console.log(ctx.query.productId);
+//     return {
+//       props: {
+//         product: product?.data?.data || null,
+//       },
+//     };
+//   });
+//{ product }: { product: IProductType }
+export default function ProductPage() {
   const [addToCart, addToCartState] = useAddToCartMutation();
   const [APPLICATIONS, SETAPPLICATIONS] = useState<string[] | number[]>([
     'Applocation 1',
@@ -62,6 +63,17 @@ export default function ProductPage({ product }: { product: IProductType }) {
     }
   }, []);
 
+  const router = useRouter();
+  const [product, setProduct] = useState<IProductType | null>(null);
+  const [getProduct, getProductState] = useLazyGetProductQuery();
+  useEffect(() => {
+    if (router.query?.productId) {
+      getProduct(router.query?.productId as string).then(({ data }) => {
+        setProduct(data?.data);
+      });
+    }
+  }, [router]);
+
   useEffect(() => {
     setSelectApplication(APPLICATIONS[0]);
   }, [APPLICATIONS]);
@@ -69,7 +81,7 @@ export default function ProductPage({ product }: { product: IProductType }) {
   const handleAddToCart = () => {
     if (selectedColor && selectedApplication) {
       addToCart({
-        productId: product.id,
+        productId: product!.id,
         quantity: 1,
       });
     }
@@ -80,7 +92,7 @@ export default function ProductPage({ product }: { product: IProductType }) {
     if (error?.status === 401) {
       dispatch(
         tempAddToCart({
-          productId: product.id,
+          productId: product!.id,
           quantity: 1,
         })
       );

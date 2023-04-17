@@ -1,27 +1,41 @@
 import ButtonGroup from '@/components/ButtonGroup';
 import { wrapper } from '@/store';
-import { getCustomerProfile } from '@/store/api/customerApi';
+import {
+  getCustomerProfile,
+  useLazyGetCustomerProfileQuery,
+} from '@/store/api/customerApi';
 import { ICustomerType } from '@/types/customer.type';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { read_cookie } from 'sfcookies';
 
-export const getServerSideProps: GetServerSideProps =
-  wrapper.getServerSideProps((store) => async (ctx) => {
-    const customer = await store.dispatch(
-      getCustomerProfile.initiate(ctx.req.cookies?.token)
-    );
+// export const getServerSideProps: GetServerSideProps =
+//   wrapper.getServerSideProps((store) => async (ctx) => {
+//     const customer = await store.dispatch(
+//       getCustomerProfile.initiate(ctx.req.cookies?.token)
+//     );
 
-    return {
-      props: {
-        customer: customer?.data?.data || null,
-      },
-    };
-  });
-
-export default function Customer({ customer }: { customer: ICustomerType }) {
+//     return {
+//       props: {
+//         customer: customer?.data?.data || null,
+//       },
+//     };
+//   });
+//{ customer }: { customer: ICustomerType }
+export default function Customer() {
   const [selectedTab, setSelectedTab] = useState('Completed');
+  const [customer, setCustomer] = useState<ICustomerType | null>(null);
+
+  const [getCustomer, getCustomerState] = useLazyGetCustomerProfileQuery();
+  useEffect(() => {
+    if (read_cookie('token')) {
+      getCustomer(read_cookie('token') as string).then(({ data }) => {
+        setCustomer(data?.data);
+      });
+    }
+  }, []);
   return (
     <>
       <main className="px-5 md:px-[10%]">
@@ -32,7 +46,7 @@ export default function Customer({ customer }: { customer: ICustomerType }) {
           <div className="flex flex-row gap-5 items-center">
             <div>
               <h3 className="text-1xl">
-                {customer.fname + ', ' + customer.lname}
+                {customer?.fname + ', ' + customer?.lname}
               </h3>
               <Link href={'/api/auth/logout'}>
                 <small className="text-sm text-slate-500">Logout</small>
@@ -41,8 +55,11 @@ export default function Customer({ customer }: { customer: ICustomerType }) {
             <Image
               width={50}
               height={50}
-              alt={customer.fname}
-              src={customer.profileImage}
+              alt={customer?.fname || 'loading'}
+              src={
+                customer?.profileImage ||
+                'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png'
+              }
               className="rounded-full"
             />
           </div>
