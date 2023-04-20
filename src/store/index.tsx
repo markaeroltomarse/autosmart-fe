@@ -16,6 +16,7 @@ import { adminApi } from './api/adminApi';
 import { cartsApi } from './api/cartApi';
 import cartSlice from './reducers/cartsReducers';
 import storageSession from 'redux-persist/lib/storage/session';
+import { ordersApi } from './api/ordersApi';
 
 const persistedCartReducer = persistReducer(
   { key: 'cart', storage: storageSession },
@@ -29,6 +30,7 @@ const store: any = () =>
       [customersApi.reducerPath]: customersApi.reducer,
       [adminApi.reducerPath]: adminApi.reducer,
       [cartsApi.reducerPath]: cartsApi.reducer,
+      [ordersApi.reducerPath]: ordersApi.reducer,
       // Persists,
       [cartSlice.name]: persistedCartReducer,
       productReducer,
@@ -42,7 +44,8 @@ const store: any = () =>
         productsApi.middleware,
         customersApi.middleware,
         adminApi.middleware,
-        cartsApi.middleware
+        cartsApi.middleware,
+        ordersApi.middleware
         // productsApi.middleware
       ),
   });

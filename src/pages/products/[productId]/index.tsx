@@ -17,6 +17,8 @@ import Alert from '@/components/Alert';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { tempAddToCart, tempSetCart } from '@/store/reducers/cartsReducers';
 import Navbar from '@/components/Navbar/navbar';
+import { useLazyGetCustomerProfileQuery } from '@/store/api/customerApi';
+import { read_cookie } from 'sfcookies';
 
 // export const getServerSideProps: GetServerSideProps =
 //   wrapper.getServerSideProps((store) => async (ctx) => {
@@ -44,6 +46,7 @@ export default function ProductPage() {
   const [selectedColor, setSelectedColor] = useState(COLORS[0].name);
 
   const dispatch = useAppDispatch();
+  
 
   useEffect(() => {
     const container = document.getElementById('container');
@@ -64,18 +67,23 @@ export default function ProductPage() {
   }, []);
 
   const router = useRouter();
+  const [selectedImage, setSelectedImage] = useState("");
   const [product, setProduct] = useState<IProductType | null>(null);
   const [getProduct, getProductState] = useLazyGetProductQuery();
   useEffect(() => {
     if (router.query?.productId) {
       getProduct(router.query?.productId as string).then(({ data }) => {
         setProduct(data?.data);
+        setSelectedImage(data?.data.images[0])
       });
     }
   }, [router]);
 
+  
+
   useEffect(() => {
     setSelectApplication(APPLICATIONS[0]);
+    setSelectedColor(COLORS[0].name);
   }, [APPLICATIONS]);
 
   const handleAddToCart = () => {
@@ -83,6 +91,8 @@ export default function ProductPage() {
       addToCart({
         productId: product!.id,
         quantity: 1,
+        application: String(selectedApplication),
+        color: selectedColor,
       });
     }
   };
@@ -90,13 +100,20 @@ export default function ProductPage() {
   const handleAddToCartResponseAlert = () => {
     const error: any = addToCartState.error;
     if (error?.status === 401) {
-      dispatch(
-        tempAddToCart({
-          productId: product!.id,
-          quantity: 1,
-        })
+      setTimeout(() => addToCartState.reset(), 5000); // 5 Seconds
+      return (
+        <Alert
+          onClick={() => {
+            router.replace({
+              pathname: '/account/authentication',
+            });
+          }}
+          type={'error'}
+          title={'Failed'}
+          message={'Login required (Click here), Please try again.'}
+          className="cursor-pointer"
+        />
       );
-      return;
     }
 
     if (addToCartState.isSuccess) {
@@ -166,22 +183,28 @@ export default function ProductPage() {
           <h1 className="text-2xl font-bold">Featured Product</h1>
           <div className="p-5 bg-white flex gap-2">
             <div className="w-[130px] flex flex-col gap-2">
-              <Image
-                src={
-                  'https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080'
-                }
-                alt="product"
-                width={100}
-                height={100}
-                className="border-2 border-slate-500"
-              />
+              {product.images.map(
+                (src) =>
+                  src && (
+                    <Image
+                      src={src}
+                      alt="product"
+                      width={100}
+                      height={100}
+                      className={`border-2 cursor-pointer ${
+                        selectedImage === src
+                          ? 'border-red-500'
+                          : 'border-slate-500'
+                      }`}
+                      onClick={() => setSelectedImage(src)}
+                    />
+                  )
+              )}
             </div>
             <div className="flex w-full">
               <div id="container">
                 <img
-                  src={
-                    'https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080'
-                  }
+                  src={selectedImage}
                   alt="Image Alt"
                   className="IMG"
                   id="test-img"

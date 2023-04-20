@@ -16,6 +16,7 @@ interface ITableProps {
   }[];
   title: string;
   onSelectAction?: (data: { id: string; type: 'edit' | 'delete' | '' }) => void;
+  selectedItem?: any;
 }
 
 export default function Table({
@@ -24,6 +25,7 @@ export default function Table({
   rowClassName,
   title,
   onSelectAction,
+  selectedItem,
 }: ITableProps) {
   const [actionSelected, setActionSelected] = useState<{
     id: string;
@@ -69,7 +71,7 @@ export default function Table({
                     }
                     className="cursor-pointer"
                   />
-                  {actionSelected?.id === item.id && (
+                  {actionSelected?.id === item.id && selectedItem && (
                     <TableOptions
                       id={item.id}
                       setActionSelected={setActionSelected}

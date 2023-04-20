@@ -19,6 +19,8 @@ interface ICartType {
   id: string;
   customerId: string;
   products: {
+    color: string;
+    application: string;
     product: IProductType;
     quantity: number;
   }[];
@@ -46,6 +48,7 @@ export default function Cart() {
     getCart(undefined).then(({ data, isError }: any) => {
       if (!isError) {
         const cart: ICartType = data.data;
+        console.log(cart);
         setCart(cart);
         SETPRODUCTS(
           cart.products.map((prod) => ({
@@ -98,6 +101,9 @@ export default function Cart() {
       checkOut({
         products: toBeCheckOut,
       }).then((response: any) => {
+        if (response.error) {
+        return alert('Please select an address for your order, Please try again')
+        }
         if (response.data.message === 'success') {
           getCart(undefined).then(({ data, isError }: any) => {
             if (!isError) {
@@ -148,10 +154,13 @@ export default function Cart() {
                   >
                     <div className="flex-auto">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center">
+                        <div className="flex items-center gap-3">
                           <div>
                             <Image
-                              src="https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080"
+                              src={
+                                product.product.images[0] ||
+                                'https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080'
+                              }
                               width={120}
                               height={120}
                               alt="product"
@@ -169,10 +178,10 @@ export default function Cart() {
 
                         <div className="text-center">
                           <h2 className="font-bold text-1xl">
-                            {product.product.color}
+                            {product.color}
                           </h2>
                           <h2 className="font-bold text-1xl">
-                            {product.product.category}
+                            {product.application}
                           </h2>
                         </div>
                       </div>
@@ -282,14 +291,14 @@ export default function Cart() {
                 <div>
                   <Button
                     title="Order Now"
-                    buttonClass="bg-blue-950 text-white rounded-sm w-[250px]"
+                    buttonClass="bg-blue-950 text-white rounded-sm w-[250px] p-3"
                     onClick={handleCheckOut}
                   />
                 </div>
                 <div>
                   <Button
                     title="Remove"
-                    buttonClass="bg-red-600 text-white rounded-sm"
+                    buttonClass="bg-red-600 text-white rounded-sm p-3"
                     disabled={selectedProducts.length === 0}
                   />
                 </div>

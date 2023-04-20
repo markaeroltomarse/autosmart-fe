@@ -25,7 +25,6 @@ interface IUpdateProduct {
 
 const getAccessToken = () => {
   if (typeof window !== 'undefined') {
-    return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNsZnVvODE1bDAwMDB0dnlvM2M2MGd0OTAiLCJpYXQiOjE2ODA1MjUwODN9.FMpKpoH8HSlKwm0jieNBUlpA01qtHDRTrIGvPPguqC0';
     return read_cookie('token');
   } else {
     return null;
@@ -88,6 +87,18 @@ export const productsApi = createApi({
         };
       },
     }),
+
+    deleteProduct: build.mutation({
+      query: (productId: string, token?: string) => {
+        return {
+          url: `/${productId}`,
+          method: 'DELETE',
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -96,7 +107,13 @@ export const {
   useLazyGetProductQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
+  useDeleteProductMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = productsApi;
-export const { getProducts, getProduct, createProduct, updateProduct } =
-  productsApi.endpoints;
+export const {
+  getProducts,
+  getProduct,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+} = productsApi.endpoints;
