@@ -18,7 +18,7 @@ function Navbar() {
       />
 
       <div className="flex justify-between md:px-[10%] items-center ">
-        <Logo className="z-[1] w-[100px] h-[50px] border-2 border-blue-900 rounded-md" />
+        <Logo className="z-[1] w-[100px] h-[70px] border-2 border-blue-900 rounded-md" />
 
         <Searchbar />
 

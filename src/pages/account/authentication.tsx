@@ -1,5 +1,6 @@
 import Button from '@/components/Button';
 import LoadingScreen from '@/components/Loader/LoadingScreen';
+import Logo from '@/components/Logo';
 import {
   useCreateCustomerMutation,
   useLoginCustomerMutation,
@@ -8,8 +9,9 @@ import { ICustomerType } from '@/types/customer.type';
 import { Auth0Client } from '@/utils/auth0.util';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AiFillGoogleCircle, AiFillGooglePlusCircle } from 'react-icons/ai';
 import { bake_cookie } from 'sfcookies';
-
+import Image from 'next/image';
 export default function Authentication() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -118,6 +120,15 @@ export default function Authentication() {
   return (
     <>
       <main className="flex justify-center items-center min-h-[100vh]">
+        <div className="absolute w-full h-[50vh] top-0 left-0 z-0">
+          <Image
+            src={
+              'https://media.discordapp.net/attachments/1093520927960092772/1095372282492362912/base_img_white_bg_red_bar.png?width=900&height=211'
+            }
+            fill
+            alt="autosmart"
+          />
+        </div>
         {isLoading ? (
           <LoadingScreen
             message=""
@@ -125,18 +136,22 @@ export default function Authentication() {
             transparent
           />
         ) : (
-          <div className="flex flex-col border bg-white rounded min-w-[400px] p-5 gap-2">
-            <div>LOGO</div>
+          <div className="flex flex-col border bg-white rounded min-w-[400px] p-5 gap-2 z-[1] shadow-lg">
+            <div>
+              <Logo className="w-full h-[100px]" />
+            </div>
             <div className="flex gap-2 flex-col">
               <Button
+                icon={<AiFillGoogleCircle size={30} />}
                 onClick={signInWithGoogle}
                 title="SIGN IN WITH GOOGLE"
-                buttonClass="border bg-green-500 text-green-100"
+                buttonClass="border bg-green-700 text-green-100 py-3 "
               />
               <Button
+                icon={<AiFillGooglePlusCircle size={30} />}
                 onClick={signUpWithGoogle}
                 title="SIGN UP WITH GOOGLE"
-                buttonClass="border bg-green-500 text-green-100"
+                buttonClass="border bg-green-700 text-green-100 py-3"
               />
             </div>
           </div>

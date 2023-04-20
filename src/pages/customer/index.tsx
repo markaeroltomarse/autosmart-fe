@@ -1,12 +1,14 @@
 import ButtonGroup from '@/components/ButtonGroup';
+import BasicLoader from '@/components/Loader/basic-loader';
+import Logo from '@/components/Logo';
 import { wrapper } from '@/store';
 import { getCustomerProfile } from '@/store/api/customerApi';
+import { useLazyGetCustomerOrdersQuery } from '@/store/api/ordersApi';
 import { ICustomerType } from '@/types/customer.type';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
-
+import { useEffect, useMemo, useState } from 'react';
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps((store) => async (ctx) => {
     const customer = await store.dispatch(
@@ -21,13 +23,57 @@ export const getServerSideProps: GetServerSideProps =
   });
 
 export default function Customer({ customer }: { customer: ICustomerType }) {
-  const [selectedTab, setSelectedTab] = useState('Completed');
+  const [selectedTab, setSelectedTab] = useState<
+    'Completed' | 'Cancelled' | 'Shipped' | 'Pending'
+  >('Completed');
+  const [orders, setOrders] = useState({
+    shipped: [],
+    pending: [],
+    completed: [],
+    cancelled: [],
+  });
+  const [getOrders, getOrdersState] = useLazyGetCustomerOrdersQuery();
+  useEffect(() => {
+    getOrders(undefined).then(({ data }) => {
+      console.log(data?.data);
+      setOrders(data?.data);
+    });
+  }, []);
+
+  const tempOrders = useMemo(() => {
+    const ords =
+      orders &&
+      orders[
+        selectedTab.toLowerCase() as
+          | 'pending'
+          | 'completed'
+          | 'shipped'
+          | 'cancelled'
+      ].map((order: any) => ({ ...order, total: 0 }));
+
+    ords.forEach((order: any) => {
+      let total = 0;
+      for (const orderProduct of order.products) {
+        total += orderProduct.quantity * orderProduct.product.price;
+      }
+
+      order['total'] = total;
+    });
+
+    return ords;
+  }, [orders, selectedTab]);
+
   return (
     <>
       <main className="px-5 md:px-[10%]">
-        <div className=" flex flex-row justify-between items-center py-3">
+        {getOrdersState.isLoading && (
+          <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
+            <BasicLoader />
+          </div>
+        )}
+        <div className=" flex flex-row justify-between items-center py-3 border-b">
           <div>
-            <h1>LOGO</h1>
+            <Logo className="h-[100]" />
           </div>
           <div className="flex flex-row gap-5 items-center">
             <div>
@@ -53,16 +99,49 @@ export default function Customer({ customer }: { customer: ICustomerType }) {
 
           <div className=" rounded-md bg-white p-5">
             <ButtonGroup
-              values={['Completed', 'Cancelled', 'Shipped']}
+              values={['Pending', 'Completed', 'Cancelled', 'Shipped']}
               onClick={(data) => {
                 setSelectedTab(data.selected);
               }}
             />
 
-            <div className="my-5 flex-col">
-              <div className="p-3">
-                <h3 className="text-1xl">Item 1</h3>
-              </div>
+            <div className="my-5 flex flex-col gap-3">
+              {tempOrders.map((order: any) => (
+                <div className="p-3 border rounded  flex flex-col gap-2 bg-slate-100">
+                  <div className="flex justify-between">
+                    <h3 className="font-bold">#{order.serialNumber}</h3>
+                    <h3 className="font-bold">
+                      PHP {order.total.toLocaleString()}
+                    </h3>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {/* ITEM */}
+                    {order.products.map((product: any) => (
+                      <div className="flex border-b gap-3 w-[300px] border rounded p-3 bg-white">
+                        <Image
+                          src={
+                            product.product.images.length > 0
+                              ? product.product.images[0]
+                              : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAgVBMVEX///8AAADExMS7u7vr6+v7+/vT09P29va+vr64uLgwMDAVFRXv7+/09PRZWVleXl7h4eFpaWl7e3vIyMiioqJHR0dBQUGoqKigoKAqKire3t6ysrI5OTltbW2MjIwaGhqEhISWlpYjIyNaWloLCwtNTU18fHyJiYlra2vPz888PDzwRoN+AAAFuElEQVR4nO3b2WKiMBQG4FYhrCqgiCKguLX4/g84BhjLkrAjXvzf3QglOQROEpL5+gIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAz7FwycwJLN9cPZm+FWzmEXH1qas1DGG9Mbfnb5ajav/uZkSauoo9iLOTyowt56r6BzJ1VTtRVvXR/bF30dQVbodYbcJLrRxh6no3Jdsd4ottQ2Pqyjcw27Jrr6n28rIyV1ryT/X2YGYge/PhLSlcGLEt7w4xhDRrmsmP5EvUDXcWWjeteL7/ye+kU6zt1d8Uer5TcsB9/aAbjrUvNKTy7oo3pBfy5zkgYumk9CbIuR9Fwcn/7d55V6XbkAsPG7ubWydHw9IBUVnm/n43dn3bEv1c/cIF5zw3jZ91bLHJPa6HEavbXpRLGAF/MGYkZ1w4h9fZp/XxOaMd8Scbn1nVqy2SZvK498DNPgxB+UWeBHlkKqXVJMJ0PFDR7RmZGLefMAYQw2wDLut67DSfVNacZJLO5FlVcnLZIaj9g3TMuq4+a35tfs9GFRXG2A266l1yZl1nIJl/V50qqUrz0hSipmFiabd5qj3xkMld7084YhQyRtiNkjtJK11/pvs3Nt+/9UmVSLgsR/fkuYZhCDH9zyImJUTxf4SPBiXpt9e1Nbf+9GEsZP/IDK/C9appx+N5v1dVz3tNmqxw5xzkNUluy/NOSIxHMfOgBMY7HlU9YH9W6k87q559W8Yf407BM3hlFhGS62i/tys/UMioz+uhNJebwNVb/siEN+zt5z51cBnHh6UMPmrdTR1V2TZs0j81JUwdDsflMNRX5d+pQ+EzB2lJfeowKqmH/l1JOHUQNR6927HBGsTE7v2a8bMf0sStV8pZT139JpZ9IjzUX/8D9JlI/nCvqpqhc9hZ2yv3jMGkRdn8wWOPCE32FS/yayAsRffWs442lsqrKDE6cWYAs+4R3ljX8wuTtsV4AzuzUJS0YTbkb/cIGTN6j7FGJHDauqc9o7PTfdaZ3SP0Stf6TXOzRGTHUaL/j9BmhABX6fKVSGbZoljZr/ungFKHf0p+X6/Sl+9qp4lsPniAVnLh6PV1YesknTujC5NLNe8aYbKy4uYe3vRrtzJwgMk3KyOfCRxOiOU1rY4R2vGPYfH6S/bPvajxNUtrr8kApvROMNe0Gims0savAmPOr8blMhNvV3FRjO44+cBY/Op3GyjCDf0pYNVnS98Qd6jovtNlgpB1xKPfaorz8iYfKRtEqNIwOBklTgtd9tNw0KI4g2KfcZ/VzhHmxhD0NZd4VVoz7mx3NHNIvJkbTZyFSU/nCMVshFf6BoS8OsVvAmdTTXu0qFKW+c+jReXHGMNEGK9Q8ytFqirVUny7+JNvOgzN9/udI5SyEdKFsRm/Vvev4XINzTOEf5i+9Pk3whukDel4lJlIE7ZY2cSt0DctrDj+VXxL7a4R5nIpHftV7c6jo8iBPuvQtXDmCDtFO4zcXqNV5wgzEWn07a+aCtLj7PW31oSam0mKd+DeOcLM8OhI26hqRk9v/ECzKKHmcYiKEXbfESf+NdqRFlu1CkWPt9oiXH2pqp6n1IY91t4yGY220aNYVotqtSDUPA564WZ2TzRPxmsSTB+NipW2eLtT/+BitMMLK44/D0vZJNhza6rrBOHuiebSinluPDI9KC/zhJw3a4S2YcWnWjp1FJ8XS4sYdtc/v9ghl/Qokf/Oj7rTljt98AbfUBDyijqOuneBO30YfgOTzmvEkbe8cT6q9Vo74OAsKXSfzzfEzOLaKP9ji/1KjL4xU2R9jhmpVNYA4h0biEtj4vNo23lKrai9Z2ttYQvRacSi5HxR1ohF5Uib10jnfBr3rorOa6R4tt62j49ylR/fvzvv+L+S7pwWtYnG2fIFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGz/AJbJUaBqXPKAAAAAAElFTkSuQmCC'
+                          }
+                          width={50}
+                          height={50}
+                          alt="item 1"
+                        />
+
+                        <div>
+                          <p className="font-bold text-sm text-blue-900">
+                            {product.product.name} ({product.quantity})
+                          </p>
+                          <small>
+                            P {product.product.price.toLocaleString()}
+                          </small>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
