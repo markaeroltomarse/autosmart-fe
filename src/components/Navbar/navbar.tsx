@@ -1,10 +1,10 @@
 import React from 'react';
 import Logo from '../Logo';
-import Searchbar from '../Searchbar/Searchbar';
 import { BsFillCartCheckFill } from 'react-icons/bs';
 import Link from 'next/link';
 import Image from 'next/image';
 import { delete_cookie, read_cookie } from 'sfcookies';
+import Searchbar from '../Searchbar/Searchbar';
 function Navbar() {
   return (
     <div className="py-3 bg-blue-950 relative">
