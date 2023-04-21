@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps =
 export default function Customer({ customer }: { customer: ICustomerType }) {
   const [selectedTab, setSelectedTab] = useState<
     'Completed' | 'Cancelled' | 'Shipped' | 'Pending'
-  >('Completed');
+  >('Pending');
   const [orders, setOrders] = useState({
     shipped: [],
     pending: [],

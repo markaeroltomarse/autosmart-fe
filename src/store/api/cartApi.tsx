@@ -3,6 +3,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 import { read_cookie } from 'sfcookies';
 
 interface ICheckOutInput {
+  serialNumber: string;
   products: {
     productId: string;
     quantity: number;
@@ -14,6 +15,12 @@ interface IAddToCartInput {
   quantity: number;
   color?: string;
   application?: string;
+}
+
+interface IGCashPayment {
+  externalId: string;
+  amount: number;
+  phoneNumber: string;
 }
 
 const getAccessToken = () => {
@@ -62,6 +69,19 @@ export const cartsApi = createApi({
       },
     }),
 
+    gcashPayment: build.mutation({
+      query: (gCashPaymentInput: IGCashPayment, token?: string) => {
+        return {
+          url: `/payment`,
+          method: 'POST',
+          body: gCashPaymentInput,
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+    }),
+
     checkOut: build.mutation({
       query: (checkOutInput: ICheckOutInput, token?: string) => {
         return {
@@ -94,7 +114,13 @@ export const {
   useCheckOutMutation,
   useAddToCartMutation,
   useUpdateCartItemQuantityMutation,
+  useGcashPaymentMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = cartsApi;
-export const { getCart, checkOut, addToCart, updateCartItemQuantity } =
-  cartsApi.endpoints;
+export const {
+  getCart,
+  checkOut,
+  addToCart,
+  updateCartItemQuantity,
+  gcashPayment,
+} = cartsApi.endpoints;
