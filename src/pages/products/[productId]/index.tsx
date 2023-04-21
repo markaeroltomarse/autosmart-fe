@@ -172,6 +172,7 @@ export default function ProductPage({ product }: { product: IProductType }) {
                 (src) =>
                   src && (
                     <Image
+                      key={src}
                       src={src}
                       alt="product"
                       width={100}
