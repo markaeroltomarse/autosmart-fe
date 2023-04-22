@@ -11,7 +11,7 @@ function Navbar() {
       <Image
         className="z-[0]"
         src={
-          ''
+          'https://media.discordapp.net/attachments/1093520927960092772/1095372185360666695/top_bar.png?width=1440&height=146'
         }
         fill
         alt="asmartheader2"
