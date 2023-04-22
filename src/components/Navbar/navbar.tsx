@@ -4,7 +4,7 @@ import { BsFillCartCheckFill } from 'react-icons/bs';
 import Link from 'next/link';
 import Image from 'next/image';
 import { delete_cookie, read_cookie } from 'sfcookies';
-import Searchbar from '../Searchbar/Searchbar';
+import Searchbar from '../Searchbar/searchbar';
 function Navbar() {
   return (
     <div className="py-3 bg-blue-950 relative">
@@ -31,18 +31,19 @@ function Navbar() {
                 <br />
               </div>
             ) : (
-              <div>
-                <Link
-                  href={'/api/auth/logout'}
-                  onClick={() => delete_cookie('token')}
-                >
-                  Logout
-                </Link>
-                <br />
-              </div>
+              <>
+                <div>
+                  <Link
+                    href={'/api/auth/logout'}
+                    onClick={() => delete_cookie('token')}
+                  >
+                    Logout
+                  </Link>
+                  <br />
+                </div>
+                <Link href={'/customer'}>My Account</Link>
+              </>
             )}
-
-            <Link href={'/customer'}>My Account</Link>
           </div>
           <Link href="/cart">
             <BsFillCartCheckFill size={30} color="black" />

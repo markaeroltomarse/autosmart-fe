@@ -1,4 +1,5 @@
 import ButtonGroup from '@/components/ButtonGroup';
+import CustomerNavbar from '@/components/CustomerNavbar';
 import BasicLoader from '@/components/Loader/basic-loader';
 import Logo from '@/components/Logo';
 import { wrapper } from '@/store';
@@ -15,6 +16,14 @@ export const getServerSideProps: GetServerSideProps =
       getCustomerProfile.initiate(ctx.req.cookies?.token)
     );
 
+    if (customer.error) {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      };
+    }
     return {
       props: {
         customer: customer?.data?.data || null,
@@ -71,28 +80,7 @@ export default function Customer({ customer }: { customer: ICustomerType }) {
             <BasicLoader />
           </div>
         )}
-        <div className=" flex flex-row justify-between items-center py-3 border-b">
-          <div>
-            <Logo className="h-[100]" />
-          </div>
-          <div className="flex flex-row gap-5 items-center">
-            <div>
-              <h3 className="text-1xl">
-                {customer.fname + ', ' + customer.lname}
-              </h3>
-              <Link href={'/api/auth/logout'}>
-                <small className="text-sm text-slate-500">Logout</small>
-              </Link>
-            </div>
-            <Image
-              width={50}
-              height={50}
-              alt={customer.fname}
-              src={customer.profileImage}
-              className="rounded-full"
-            />
-          </div>
-        </div>
+        <CustomerNavbar customer={customer} />
 
         <div className="flex flex-col gap-5">
           <h1 className="text-2xl font-bold text-slate-600">Dashboard</h1>
