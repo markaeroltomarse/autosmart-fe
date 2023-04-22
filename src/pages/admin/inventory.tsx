@@ -26,16 +26,23 @@ import { AiFillCheckSquare, AiOutlineSearch } from 'react-icons/ai';
 //       getProducts.initiate(ctx.req.cookies?.token)
 //     );
 
-//     return {
-//       props: {
-//         products: products?.data?.data || [],
-//       },
-//     };
-//   });
-// { products }: { products: IProductType[] }
-export default function Dashboard() {
+    return {
+      props: {
+        products: products?.data?.data || [],
+      },
+    };
+  });
+
+export default function Dashboard({
+  products: prods,
+}: {
+  products: IProductType[];
+}) {
   const router = useRouter();
 
+  const [products, setProducts] = useState<IProductType[]>(prods);
+
+  const [getProducts, getProductsState] = useLazyGetProductsQuery();
   const [updateProduct, updateProductState] = useUpdateProductMutation();
   const [deleteProduct, deleteProductState] = useDeleteProductMutation();
   const [searchTxt, setSearchTxt] = useState('');
@@ -56,6 +63,13 @@ export default function Dashboard() {
   const [selectedProduct, setSelectedProduct] = useState<IProductType | null>(
     null
   );
+
+  const getProductsHanlders = () => {
+    getProducts(undefined).then(({ data }) => {
+      console.log(data?.data);
+      setProducts(data?.data);
+    });
+  };
 
   const productsTemp = useMemo(() => {
     const temp: IProductType[] = JSON.parse(JSON.stringify(products));
@@ -116,6 +130,14 @@ export default function Dashboard() {
                 <ProductForm
                   type={router.query?.action}
                   product={selectedProduct!}
+                  onCreated={() => {
+                    getProductsHanlders();
+                    router.replace('/admin/inventory');
+                  }}
+                  onEdited={() => {
+                    getProductsHanlders();
+                    router.replace('/admin/inventory');
+                  }}
                 />
               ) : (
                 <div className="overflow-x-scroll ">
@@ -233,6 +255,11 @@ export default function Dashboard() {
                                         id: currentQuantityTxt?.id,
                                         quantity: currentQuantityTxt?.quantity,
                                       });
+                                      setChangeQuantity(
+                                        changeQuantities.filter(
+                                          (selected) => selected !== id
+                                        )
+                                      );
                                     }}
                                   />
                                 )}

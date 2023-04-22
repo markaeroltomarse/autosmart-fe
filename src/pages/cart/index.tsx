@@ -6,11 +6,13 @@ import Navbar from '@/components/Navbar/navbar';
 
 import {
   useCheckOutMutation,
+  useGcashPaymentMutation,
   useLazyGetCartQuery,
   useUpdateCartItemQuantityMutation,
 } from '@/store/api/cartApi';
 import { IProductType } from '@/types/product.type';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { BsCheckLg } from 'react-icons/bs';
 import { MdProductionQuantityLimits } from 'react-icons/md';
@@ -29,6 +31,7 @@ interface ICartType {
 }
 
 export default function Cart() {
+  const router = useRouter();
   const [getCart, getCartState] = useLazyGetCartQuery();
   const [cart, setCart] = useState<ICartType | null>(null);
   const [PRODUCTS, SETPRODUCTS] = useState<
@@ -38,6 +41,8 @@ export default function Cart() {
     }[]
   >([]);
   const [selectedProducts, setSelecteProducts] = useState<string[]>([]);
+  const [requestGcashPayment, requestGcashPaymentState] =
+    useGcashPaymentMutation();
   const [checkOut, checkOutState] = useCheckOutMutation();
   const [updateCartItem, updateCartItemState] =
     useUpdateCartItemQuantityMutation();
@@ -87,7 +92,7 @@ export default function Cart() {
     }
   };
 
-  const handleCheckOut = () => {
+  const handleCheckOut = async () => {
     if (updateCartItemState.isLoading) return;
     if (selectedProducts.length === 0) {
       alert('Please select the products.');
@@ -98,8 +103,54 @@ export default function Cart() {
           ?.quantity,
       }));
 
+      const serialNumber = `${Math.floor(Math.random() * 100000)}`;
+      sessionStorage.setItem(
+        'toBeCheckOut',
+        JSON.stringify({
+          serialNumber,
+          toBeCheckOut,
+        })
+      );
+      let amount = 0;
+      for (const item of toBeCheckOut) {
+        const cartItem = cart?.products.find(
+          (product) => product.product.id === item.productId
+        );
+
+        if (cartItem) {
+          amount += cartItem.quantity * cartItem.product.price;
+        }
+      }
+      const { data, error }: any = await requestGcashPayment({
+        externalId: serialNumber,
+        amount,
+        phoneNumber: '+639097801235',
+      }).catch(() => {
+        sessionStorage.setItem('toBeCheckOut', '');
+      });
+
+      if (error) {
+        sessionStorage.setItem('toBeCheckOut', '');
+      }
+
+      if (data) {
+        window.location.href = data.desktop_web_checkout_url;
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!sessionStorage.getItem('toBeCheckOut')) return;
+    const prevCheckOut = JSON.parse(sessionStorage.getItem('toBeCheckOut')!);
+
+    if (
+      router.query.payment === 'success' &&
+      prevCheckOut &&
+      prevCheckOut?.toBeCheckOut.length > 0
+    ) {
       checkOut({
-        products: toBeCheckOut,
+        serialNumber: prevCheckOut.serialNumber,
+        products: prevCheckOut.toBeCheckOut,
       }).then((response: any) => {
         if (response.error) {
         return alert('Please select an address for your order, Please try again')
@@ -110,16 +161,20 @@ export default function Cart() {
               const cart: ICartType = data.data;
               setCart(cart);
             }
+
+            sessionStorage.setItem('toBeCheckOut', '');
+            router.replace('/cart');
           });
         }
       });
     }
-  };
+  }, [router]);
 
   return (
     <>
       <main className="">
-        {(checkOutState.isLoading ||
+        {(requestGcashPaymentState.isLoading ||
+          checkOutState.isLoading ||
           getCartState.isLoading ||
           updateCartItemState.isLoading) && (
           <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">

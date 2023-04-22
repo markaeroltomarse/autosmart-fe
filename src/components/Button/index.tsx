@@ -4,6 +4,7 @@ interface ButtonProps {
   title?: string;
   onClick?: () => void;
   disabled?: boolean;
+  icon?: JSX.Element;
 }
 
 export default function Button({
@@ -12,17 +13,21 @@ export default function Button({
   title = '',
   onClick,
   disabled,
+  icon,
 }: ButtonProps): JSX.Element {
   return (
     <button
       type={buttonType}
-      className={`btn bg-gradient-to-r   w-full  font-bold text-base leading-6 rounded-lg transition duration-150 ease-in-out ${
+      className={`btn bg-gradient-to-r font-bold text-base leading-6 rounded-lg transition duration-150 ease-in-out px-3 ${
         disabled && 'opacity-50'
-      } ${buttonClass || 'h-12 px-6 py-2.5'}`}
+      } ${buttonClass || 'h-12 px-6 py-2.5'} ${
+        icon && 'flex items-center gap-2'
+      } `}
       onClick={onClick}
       disabled={disabled}
     >
-      {title}
+      {icon && <div>{icon}</div>}
+      <div>{title}</div>
     </button>
   );
 }

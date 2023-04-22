@@ -187,6 +187,7 @@ export default function ProductPage() {
                 (src) =>
                   src && (
                     <Image
+                      key={src}
                       src={src}
                       alt="product"
                       width={100}
@@ -246,25 +247,25 @@ export default function ProductPage() {
                     defaultValueOne={selectedApplication}
                   />
 
-                  <div className="flex flex-row gap-5 justify-center mt-[20%]">
+                  <div className="flex flex-row gap-5 justify-center mt-[20%] ">
                     {product.quantity <= 0 ? (
                       <Button
                         title="Out of Stock"
-                        buttonClass="bg-red-700 rounded text-white flex-initial w-52"
+                        buttonClass="bg-red-700 rounded text-white flex-initial w-102 py-3"
                         onClick={handleAddToCart}
                         disabled={true}
                       />
                     ) : (
                       <Button
                         title="Add to cart"
-                        buttonClass="bg-red-700 rounded text-white flex-initial w-52"
+                        buttonClass="bg-red-700 rounded text-white flex-initial w-full py-3"
                         onClick={handleAddToCart}
                       />
                     )}
 
                     <Button
                       title="Buy now"
-                      buttonClass="bg-blue-950 rounded text-white flex-initial w-52"
+                      buttonClass="bg-blue-950 rounded text-white flex-initial w-full py-3"
                     />
                   </div>
                 </div>

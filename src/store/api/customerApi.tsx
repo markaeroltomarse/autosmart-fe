@@ -9,6 +9,14 @@ interface INewCustomer {
   profileImage?: string;
 }
 
+interface IUpdateCustomer {
+  address?: string[];
+  defaultAddress?: string;
+  fname?: string;
+  lname?: string;
+  gender?: 'male' | 'female';
+}
+
 const getAccessToken = () => {
   if (typeof window !== 'undefined') {
     return read_cookie('token');
@@ -59,6 +67,18 @@ export const customersApi = createApi({
         };
       },
     }),
+    updateCustomer: build.mutation({
+      query: (updateCustomerInput: IUpdateCustomer, token?: string) => {
+        return {
+          url: ``,
+          method: 'PUT',
+          body: updateCustomerInput,
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -66,7 +86,12 @@ export const {
   useCreateCustomerMutation,
   useLoginCustomerMutation,
   useLazyGetCustomerProfileQuery,
+  useUpdateCustomerMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = customersApi;
-export const { getCustomerProfile, createCustomer, loginCustomer } =
-  customersApi.endpoints;
+export const {
+  getCustomerProfile,
+  createCustomer,
+  loginCustomer,
+  updateCustomer,
+} = customersApi.endpoints;

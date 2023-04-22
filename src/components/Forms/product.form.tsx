@@ -46,6 +46,32 @@ export default function ProductForm({
     images: product?.images || ['', '', ''],
   });
 
+  const handleSubmitProductForm = async (e: any) => {
+    setLoading(true);
+    if (type === 'create') {
+      const data: any = await createProduct(formData);
+      if (data?.error) {
+        if (onError) onError('Cannot create product, Please try again.');
+      } else {
+        if (onCreated) {
+          onCreated('success');
+        }
+      }
+    } else {
+      const data: any = await updateProduct(formData);
+
+      if (data?.error) {
+        if (onError) onError('Cannot update product, Please try again.');
+      } else {
+        if (onEdited) {
+          onEdited('success');
+        }
+      }
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="w-[50%] bg-white">
       {isLoading && (
@@ -59,33 +85,13 @@ export default function ProductForm({
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          setLoading(true);
-          if (type === 'create') {
-            const data: any = await createProduct(formData);
-            if (data?.error) {
-              if (onError) onError('Cannot create product, Please try again.');
-            } else {
-              if (onCreated) {
-                onCreated('success');
-              }
-            }
-          } else {
-            const data: any = await updateProduct(formData);
-
-            if (data?.error) {
-              if (onError) onError('Cannot update product, Please try again.');
-            } else {
-              if (onEdited) {
-                onEdited('success');
-              }
-            }
-          }
-
-          setLoading(false);
+          handleSubmitProductForm(e);
         }}
         className="p-5"
       >
-        <h1 className="text-1xl text-slate-800">Create product +</h1>
+        <h1 className="text-1xl mb-2 font-bold text-slate-800">
+          {product ? 'Update' : 'Create'} product +
+        </h1>
         <hr />
         <div className="flex flex-col gap-2 mt-2">
           <Input
@@ -267,7 +273,7 @@ export default function ProductForm({
           <Button
             title="Save"
             buttonType="submit"
-            buttonClass="bg-green-500 text-green-100 my-2"
+            buttonClass="bg-green-500 text-green-100 my-2 py-2 px-5"
           />
         </div>
       </form>

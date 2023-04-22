@@ -2,6 +2,7 @@ import AdminMenu from '@/components/AdminMenu';
 import AdminNav from '@/components/AdminNav';
 import Button from '@/components/Button';
 import ButtonGroup from '@/components/ButtonGroup';
+import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
 import Table from '@/components/Table';
 import {
@@ -9,8 +10,8 @@ import {
   useUpdateOrderStatusMutation,
 } from '@/store/api/ordersApi';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
-
+import { useEffect, useMemo, useState } from 'react';
+import { GiFullMotorcycleHelmet } from 'react-icons/gi';
 interface IOrders {
   shipped: any[];
   pending: any[];
@@ -32,12 +33,54 @@ export default function Orders() {
     'shipped' | 'pending' | 'completed' | 'cancelled'
   >('pending');
 
+  const [toBeShip, setToBeShip] = useState<{
+    id: string;
+    rider: string;
+  } | null>(null);
+
   useEffect(() => {
     getOrders(undefined).then(({ data }) => {
       setOrders(data?.data);
       console.log(data?.data);
     });
   }, []);
+
+  const columns = useMemo(() => {
+    const cols = [
+      {
+        key: 'fullname',
+        value: 'Name',
+      },
+      {
+        key: 'serialNumber',
+        value: 'Serial Number',
+      },
+      {
+        key: 'createdAt',
+        value: 'Date',
+      },
+      {
+        key: 'contactNumber',
+        value: 'Contact',
+      },
+      {
+        key: 'address',
+        value: 'Address',
+      },
+      {
+        key: selectedStatus === 'pending' ? 'toShip' : 'toComplete',
+        value: 'Action',
+      },
+    ];
+
+    if (selectedStatus !== 'pending') {
+      cols.splice(5, 0, {
+        key: 'rider',
+        value: 'Rider',
+      });
+    }
+    return cols;
+  }, [selectedStatus]);
 
   useEffect(() => {
     if (updateOrderStatusState.isSuccess) {
@@ -53,6 +96,54 @@ export default function Orders() {
         {(getOrdersState.isLoading || updateOrderStatusState.isLoading) && (
           <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
             <BasicLoader />
+          </div>
+        )}
+
+        {toBeShip && selectedStatus === 'pending' && (
+          <div className="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-slate-600 bg-opacity-50">
+            <form
+              className="bg-white rounded-md shadow-md p-5 flex flex-col gap-3"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const order: any = orders.pending.find(
+                  (order: any) => order.id === toBeShip.id
+                );
+                if (order) {
+                  await updateOrderStatus({
+                    serialNumber: order.serialNumber,
+                    status: 'shipped',
+                    rider: toBeShip.rider,
+                  });
+                  setToBeShip(null);
+                  setSelectedStatus('shipped');
+                }
+              }}
+            >
+              <h3 className="text-1xl font-bold">Enter a rider fullname.</h3>
+              <Input
+                type="text"
+                required={true}
+                onChange={(e) =>
+                  setToBeShip({
+                    ...toBeShip,
+                    rider: e.target.value,
+                  })
+                }
+                icon={<GiFullMotorcycleHelmet size={20} color="grey" />}
+              />
+              <div className="flex justify-end gap-2">
+                <Button
+                  title="Cancel"
+                  buttonClass="shadow text-sm"
+                  onClick={() => setToBeShip(null)}
+                />
+                <Button
+                  title="Done"
+                  buttonClass="shadow text-sm bg-green-700 text-white"
+                  buttonType="submit"
+                />
+              </div>
+            </form>
           </div>
         )}
         <AdminNav />
@@ -74,33 +165,7 @@ export default function Orders() {
               </div>
               {!getOrdersState.isLoading && orders && (
                 <Table
-                  headers={[
-                    {
-                      key: 'fullname',
-                      value: 'Name',
-                    },
-                    {
-                      key: 'serialNumber',
-                      value: 'Serial Number',
-                    },
-                    {
-                      key: 'createdAt',
-                      value: 'Date',
-                    },
-                    {
-                      key: 'contactNumber',
-                      value: 'Contact',
-                    },
-                    {
-                      key: 'address',
-                      value: 'Address',
-                    },
-                    {
-                      key:
-                        selectedStatus === 'pending' ? 'toShip' : 'toComplete',
-                      value: 'Action',
-                    },
-                  ]}
+                  headers={columns}
                   rowClassName={[
                     {
                       key: 'serialNumber',
@@ -112,29 +177,35 @@ export default function Orders() {
                       key:
                         selectedStatus === 'pending' ? 'toShip' : 'toComplete',
                       customElement: (value, id) => {
-                        return selectedStatus === 'pending' ? (
-                          <Button
-                            title="To Ship"
-                            buttonClass="bg-green-600 text-green-100 px-3 py-1"
-                            onClick={() => {
-                              updateOrderStatus({
-                                serialNumber: value,
-                                status: 'shipped',
-                              });
-                            }}
-                          />
-                        ) : (
-                          <Button
-                            title="Complete"
-                            buttonClass="bg-blue-600 text-blue-100 px-3 py-1"
-                            onClick={() => {
-                              updateOrderStatus({
-                                serialNumber: value,
-                                status: 'completed',
-                              });
-                            }}
-                          />
-                        );
+                        if (selectedStatus === 'pending') {
+                          return (
+                            <Button
+                              title="To Ship"
+                              buttonClass="bg-green-600 text-green-100 px-3 py-1"
+                              onClick={() => {
+                                setToBeShip({
+                                  id: id,
+                                  rider: '',
+                                });
+                              }}
+                            />
+                          );
+                        } else if (selectedStatus === 'shipped') {
+                          return (
+                            <Button
+                              title="To Complete"
+                              buttonClass="bg-green-600 text-green-100 px-3 py-1"
+                              onClick={async () => {
+                                await updateOrderStatus({
+                                  serialNumber: value,
+                                  status: 'completed',
+                                });
+                              }}
+                            />
+                          );
+                        } else {
+                          return <div> </div>;
+                        }
                       },
                     },
                   ]}

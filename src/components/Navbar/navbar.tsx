@@ -1,10 +1,10 @@
 import React from 'react';
 import Logo from '../Logo';
-import Searchbar from '../Searchbar/Searchbar';
 import { BsFillCartCheckFill } from 'react-icons/bs';
 import Link from 'next/link';
 import Image from 'next/image';
 import { delete_cookie, read_cookie } from 'sfcookies';
+import Searchbar from '../Searchbar/searchbar';
 function Navbar() {
   return (
     <div className="py-3 bg-blue-950 relative">
@@ -18,7 +18,7 @@ function Navbar() {
       />
 
       <div className="flex justify-between md:px-[10%] items-center ">
-        <Logo className="z-[1] w-[100px] h-[50px] border-2 border-blue-900 rounded-md" />
+        <Logo className="z-[1] w-[100px] h-[70px] border-2 border-blue-900 rounded-md" />
 
         <Searchbar />
 
@@ -31,18 +31,19 @@ function Navbar() {
                 <br />
               </div>
             ) : (
-              <div>
-                <Link
-                  href={'/api/auth/logout'}
-                  onClick={() => delete_cookie('token')}
-                >
-                  Logout
-                </Link>
-                <br />
-              </div>
+              <>
+                <div>
+                  <Link
+                    href={'/api/auth/logout'}
+                    onClick={() => delete_cookie('token')}
+                  >
+                    Logout
+                  </Link>
+                  <br />
+                </div>
+                <Link href={'/customer'}>My Account</Link>
+              </>
             )}
-
-            <Link href={'/customer'}>My Account</Link>
           </div>
           <Link href="/cart">
             <BsFillCartCheckFill size={30} color="black" />

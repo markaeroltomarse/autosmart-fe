@@ -9,6 +9,8 @@ import { useEffect } from 'react';
 import Navbar from '@/components/Navbar/navbar';
 import { IProductType } from '@/types/product.type';
 import { useRouter } from 'next/router';
+import Button from '@/components/Button';
+import { BsFillCartPlusFill } from 'react-icons/bs';
 export default function Home() {
   const [getProducts, productsState] = useLazyGetProductsQuery();
 
@@ -34,34 +36,46 @@ export default function Home() {
           />
         </div>
 
-        <div className="p-5 md:px-[10%] md:py-5">
-          <h1 className="text-2xl">ORDER NOW!</h1>
-          <div className="flex gap-2 flex-row flex-wrap border">
+        <div className="p-5 md:px-[10%] md:py-5 flex gap-2 flex-col">
+          <h1 className="text-2xl font-bold">ORDER NOW!</h1>
+          <div className="flex gap-2 flex-row flex-wrap ">
             {productsState.isSuccess &&
               productsState?.data.data.map((product: IProductType) => (
                 <div
-                  onClick={() => {
-                    router.replace('/products/' + product.id);
-                  }}
-                  className="border p-5 rounded bg-red-500 flex-wrap w-[24.2%]"
+                  className=" p-5 rounded bg-white flex justify-between flex-col hover:mb-2 hover:-mt-2 transition-all"
                   key={product.id}
                 >
-                  <Image
-                    src={
-                      product.images[0] ||
-                      'https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080'
-                    }
-                    alt="product"
-                    width={150}
-                    height={150}
-                  />
-                  <div className="flex justify-between">
-                    <div>{product.name}</div>
-                    <div>
-                      <span className="text-slate-500 line-through">
-                        ${product.price}
-                      </span>{' '}
-                      ${product.price - product.discount}
+                  <div>
+                    <Image
+                      src={
+                        product.images[0] ||
+                        'https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080'
+                      }
+                      alt="product"
+                      width={150}
+                      height={150}
+                    />
+                  </div>
+
+                  <div className="flex justify-between flex-col relative">
+                    <div className="font-bold truncate w-[150px]">
+                      {product.name} asdasdasdasdasdasdasdasdasdasdasdadadasdasd
+                    </div>
+                    <div className="flex justify-between ">
+                      <div>
+                        <span className="text-slate-500 line-through">
+                          ${product.price}
+                        </span>{' '}
+                        ${product.price - product.discount}
+                      </div>
+
+                      <Button
+                        icon={<BsFillCartPlusFill color="white" />}
+                        buttonClass="border py-2 px-3 text-xs justify-center bg-blue-950"
+                        onClick={() => {
+                          router.replace('/products/' + product.id);
+                        }}
+                      />
                     </div>
                   </div>
                 </div>

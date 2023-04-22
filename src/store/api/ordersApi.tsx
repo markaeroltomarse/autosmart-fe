@@ -32,7 +32,7 @@ export const ordersApi = createApi({
     }
   },
   reducerPath: 'ordersApi',
-  tagTypes: ['GetOrders'],
+  tagTypes: ['GetOrders', 'GetCustomerOrders'],
   endpoints: (build) => ({
     getOrders: build.query({
       query: (token?: string) => {
@@ -47,11 +47,25 @@ export const ordersApi = createApi({
       providesTags: ['GetOrders'],
     }),
 
+    getCustomerOrders: build.query({
+      query: (token?: string) => {
+        return {
+          url: `/customer`,
+          method: 'GET',
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`, // pass the user token(authenticated identifier) to get his cart record
+          },
+        };
+      },
+      providesTags: ['GetCustomerOrders'],
+    }),
+
     updateOrderStatus: build.mutation({
       query: (
         updateOrderInput: {
           serialNumber: string;
           status: 'pending' | 'shipped' | 'completed' | 'cancelled';
+          rider?: string;
         },
         token?: string
       ) => {
@@ -60,6 +74,7 @@ export const ordersApi = createApi({
           method: 'PUT',
           body: {
             status: updateOrderInput.status,
+            rider: updateOrderInput.rider,
           },
           headers: {
             authorization: `Bearer ${token || getAccessToken()}`,
@@ -73,6 +88,8 @@ export const ordersApi = createApi({
 export const {
   useLazyGetOrdersQuery,
   useUpdateOrderStatusMutation,
+  useLazyGetCustomerOrdersQuery,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = ordersApi;
-export const { getOrders, updateOrderStatus } = ordersApi.endpoints;
+export const { getOrders, updateOrderStatus, getCustomerOrders } =
+  ordersApi.endpoints;
