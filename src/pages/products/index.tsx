@@ -32,7 +32,7 @@ export default function Products() {
               >
                 <Image
                   src={
-                    'https://cdn.shopify.com/s/files/1/0580/3245/5858/products/10-pc-chickenjoy-bucket.jpg?v=1635459211&width=1080'
+                    product.images[0]
                   }
                   alt="product"
                   width={150}

@@ -26,23 +26,17 @@ import { AiFillCheckSquare, AiOutlineSearch } from 'react-icons/ai';
 //       getProducts.initiate(ctx.req.cookies?.token)
 //     );
 
-    return {
-      props: {
-        products: products?.data?.data || [],
-      },
-    };
-  });
+//     return {
+//       props: {
+//         products: products?.data?.data || [],
+//       },
+//     };
+//   });
 
-export default function Dashboard({
-  products: prods,
-}: {
-  products: IProductType[];
-}) {
+export default function Dashboard() {
   const router = useRouter();
 
-  const [products, setProducts] = useState<IProductType[]>(prods);
 
-  const [getProducts, getProductsState] = useLazyGetProductsQuery();
   const [updateProduct, updateProductState] = useUpdateProductMutation();
   const [deleteProduct, deleteProductState] = useDeleteProductMutation();
   const [searchTxt, setSearchTxt] = useState('');
