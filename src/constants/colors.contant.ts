@@ -1,4 +1,5 @@
 export const COLORS: { [key: string]: string }[] = [
+  { name: 'Original', hexCode: '#000000' },
   { name: 'Black', hexCode: '#000000' },
   { name: 'White', hexCode: '#FFFFFF' },
   { name: 'Gray', hexCode: '#808080' },
@@ -9,4 +10,5 @@ export const COLORS: { [key: string]: string }[] = [
   { name: 'Purple', hexCode: '#800080' },
   { name: 'Orange', hexCode: '#FFA500' },
   { name: 'Pink', hexCode: '#FFC0CB' },
+
 ];

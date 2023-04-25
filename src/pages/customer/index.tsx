@@ -70,15 +70,18 @@ export default function Customer() {
   }, []);
 
   const tempOrders = useMemo(() => {
-    const ords =
-      orders &&
+    if (!getOrdersState.isSuccess && !orders) return [];
+
+    const data =
       orders[
         selectedTab.toLowerCase() as
           | 'pending'
           | 'completed'
           | 'shipped'
           | 'cancelled'
-      ].map((order: any) => ({ ...order, total: 0 }));
+      ];
+
+    const ords = data.map((order: any) => ({ ...order, total: 0 }));
 
     ords.forEach((order: any) => {
       let total = 0;
@@ -90,7 +93,7 @@ export default function Customer() {
     });
 
     return ords;
-  }, [orders, selectedTab]);
+  }, [orders, selectedTab, getOrdersState]);
 
   if (!customer)
     return (
@@ -114,7 +117,7 @@ export default function Customer() {
 
           <div className=" rounded-md bg-white p-5">
             <ButtonGroup
-              values={['Pending', 'Completed', 'Cancelled', 'Shipped']}
+              values={['Pending', 'Shipped', 'Completed', 'Cancelled']}
               onClick={(data) => {
                 setSelectedTab(data.selected);
               }}

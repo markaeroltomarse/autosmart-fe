@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import Button from '@/components/Button';
 import { BsFillCartPlusFill } from 'react-icons/bs';
 import BannerSlider from '@/components/BannerSlider/BannerSlider';
+import Footer from '@/components/Footer/Footer';
 
 export default function Home() {
   const [getProducts, productsState] = useLazyGetProductsQuery();
@@ -41,6 +42,8 @@ export default function Home() {
             alt={'asbanner1'}
           />
         </div>
+        {/* <BannerSlider/> */}
+
         <div className="p-5 md:px-[10%] md:py-5 flex gap-2 flex-col">
           <h1 className="text-2xl font-bold">ORDER NOW!</h1>
           <div className="flex gap-2 flex-row flex-wrap ">
@@ -61,6 +64,7 @@ export default function Home() {
                       height={200}
                     />
                   </div>
+
                   
                   <div className="flex justify-between flex-col relative">
                     <div className="font-bold truncate w-[150px]">
@@ -69,9 +73,9 @@ export default function Home() {
                     <div className="flex justify-between ">
                       <div>
                         <span className="text-slate-500 line-through">
-                          ${product.price}
+                        ₱{product.price}
                         </span>{' '}
-                        ${product.price - product.discount}
+                        ₱{product.price - product.discount}
                       </div>
 
                       <Button
@@ -85,6 +89,7 @@ export default function Home() {
                       />
                       
                       
+                      
                     </div>
                     
                   </div>
@@ -95,6 +100,8 @@ export default function Home() {
           </div>
           
         </div>
+        <Footer/>
+        
         
       </main>
     </>

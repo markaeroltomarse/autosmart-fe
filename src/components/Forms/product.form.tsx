@@ -124,7 +124,7 @@ export default function ProductForm({
           />
           <Select
             placeholder="Select Category"
-            options={['Category 1', 'Category 2']}
+            options={['Head Light', 'Tail Light', 'Wiper Linkage','Decals','Battery','Stickers']}
             className="bg-slate-100 "
             required
             value={formData.category}
@@ -202,7 +202,7 @@ export default function ProductForm({
           <hr />
           <Select
             placeholder="Select Status"
-            options={['Status 1', 'Status 2']}
+            options={['Brand New', 'Surplus']}
             className="bg-slate-100 "
             required
             value={formData.status}

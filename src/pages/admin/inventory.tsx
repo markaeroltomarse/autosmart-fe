@@ -249,6 +249,8 @@ export default function Dashboard() {
                                         id: currentQuantityTxt?.id,
                                         quantity: currentQuantityTxt?.quantity,
                                       });
+
+                                      getProductsHanlders()
                                       setChangeQuantity(
                                         changeQuantities.filter(
                                           (selected) => selected !== id
