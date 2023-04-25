@@ -36,9 +36,9 @@ import { read_cookie } from 'sfcookies';
 export default function ProductPage() {
   const [addToCart, addToCartState] = useAddToCartMutation();
   const [APPLICATIONS, SETAPPLICATIONS] = useState<string[] | number[]>([
-    'Applocation 1',
-    'Application 2',
-    'Application 3',
+    'Driver Side ',
+    'Passenger Side ',
+    'SET ',
   ]);
   const [selectedApplication, setSelectApplication] = useState<string | number>(
     ''

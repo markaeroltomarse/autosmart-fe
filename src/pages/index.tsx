@@ -11,6 +11,8 @@ import { IProductType } from '@/types/product.type';
 import { useRouter } from 'next/router';
 import Button from '@/components/Button';
 import { BsFillCartPlusFill } from 'react-icons/bs';
+// import Header from '@/Header/Header';
+
 export default function Home() {
   const [getProducts, productsState] = useLazyGetProductsQuery();
 
@@ -22,14 +24,17 @@ export default function Home() {
   }, []);
   return (
     <>
-      <main className="">
+      <main className=" ">
+      <p className="flex items-center  absolute top-0 left-1/2 transform -translate-x-1/2 z-10 p-2 text-white text-bold hover:text-gray-300">Need Help? Contact Us!</p>
+      
         <Navbar />
 
-        <div className="relative w-[100vw] h-[50vh]">
+        <div className=" relative w-[100vw] h-[50vh] ">
           <Image
-            className=""
+            className="bg-black object-contain object-cover w-full h-full"
             src={
-              'https://media.discordapp.net/attachments/1093520927960092772/1095372282492362912/base_img_white_bg_red_bar.png?width=1440&height=338'
+              'https://media.discordapp.net/attachments/1087951220313956486/1100320518256730142/Discount.png?width=1440&height=338'
+              
             }
             fill
             alt={'asbanner1'}
@@ -53,7 +58,7 @@ export default function Home() {
                       }
                       alt="product"
                       width={150}
-                      height={150}
+                      height={200}
                     />
                   </div>
 
