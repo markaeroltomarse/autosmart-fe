@@ -3,35 +3,42 @@ import CustomerNavbar from '@/components/CustomerNavbar';
 import BasicLoader from '@/components/Loader/basic-loader';
 import Logo from '@/components/Logo';
 import { wrapper } from '@/store';
-import { getCustomerProfile } from '@/store/api/customerApi';
+import {
+  getCustomerProfile,
+  useLazyGetCustomerProfileQuery,
+} from '@/store/api/customerApi';
 import { useLazyGetCustomerOrdersQuery } from '@/store/api/ordersApi';
 import { ICustomerType } from '@/types/customer.type';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
-export const getServerSideProps: GetServerSideProps =
-  wrapper.getServerSideProps((store) => async (ctx) => {
-    const customer = await store.dispatch(
-      getCustomerProfile.initiate(ctx.req.cookies?.token)
-    );
+import { read_cookie } from 'sfcookies';
+// export const getServerSideProps: GetServerSideProps =
+//   wrapper.getServerSideProps((store) => async (ctx) => {
+//     const customer = await store.dispatch(
+//       getCustomerProfile.initiate(ctx.req.cookies?.token)
+//     );
 
-    if (customer.error) {
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      };
-    }
-    return {
-      props: {
-        customer: customer?.data?.data || null,
-      },
-    };
-  });
+//     if (customer.error) {
+//       return {
+//         redirect: {
+//           destination: '/',
+//           permanent: false,
+//         },
+//       };
+//     }
+//     return {
+//       props: {
+//         customer: customer?.data?.data || null,
+//       },
+//     };
+//   });
 
-export default function Customer({ customer }: { customer: ICustomerType }) {
+export default function Customer() {
+  const router = useRouter();
+  const [customer, setCustomer] = useState<ICustomerType | null>(null);
   const [selectedTab, setSelectedTab] = useState<
     'Completed' | 'Cancelled' | 'Shipped' | 'Pending'
   >('Pending');
@@ -42,11 +49,24 @@ export default function Customer({ customer }: { customer: ICustomerType }) {
     cancelled: [],
   });
   const [getOrders, getOrdersState] = useLazyGetCustomerOrdersQuery();
+  const [getCustomer, getCustomerLoading] = useLazyGetCustomerProfileQuery();
+
+  const getCustomerProfileHandler = async () => {
+    const token = read_cookie('token');
+    if (!token) router.replace('/');
+    const { data, error } = await getCustomer(undefined);
+
+    if (error) {
+      router.replace('/');
+    }
+    console.log('customer', data.data);
+    setCustomer(data.data);
+
+    const { data: orderResponse } = await getOrders(undefined);
+    setOrders(orderResponse?.data);
+  };
   useEffect(() => {
-    getOrders(undefined).then(({ data }) => {
-      console.log(data?.data);
-      setOrders(data?.data);
-    });
+    getCustomerProfileHandler();
   }, []);
 
   const tempOrders = useMemo(() => {
@@ -71,6 +91,13 @@ export default function Customer({ customer }: { customer: ICustomerType }) {
 
     return ords;
   }, [orders, selectedTab]);
+
+  if (!customer)
+    return (
+      <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
+        <BasicLoader />
+      </div>
+    );
 
   return (
     <>
