@@ -11,7 +11,7 @@ import { IProductType } from '@/types/product.type';
 import { useRouter } from 'next/router';
 import Button from '@/components/Button';
 import { BsFillCartPlusFill } from 'react-icons/bs';
-// import Header from '@/Header/Header';
+import BannerSlider from '@/components/BannerSlider/BannerSlider';
 
 export default function Home() {
   const [getProducts, productsState] = useLazyGetProductsQuery();
@@ -28,7 +28,7 @@ export default function Home() {
       <p className="flex items-center  absolute top-0 left-1/2 transform -translate-x-1/2 z-10 p-2 text-white text-bold hover:text-gray-300">Need Help? Contact Us!</p>
       
         <Navbar />
-
+        
         <div className=" relative w-[100vw] h-[50vh] ">
           <Image
             className="bg-black object-contain object-cover w-full h-full"
@@ -40,7 +40,6 @@ export default function Home() {
             alt={'asbanner1'}
           />
         </div>
-
         <div className="p-5 md:px-[10%] md:py-5 flex gap-2 flex-col">
           <h1 className="text-2xl font-bold">ORDER NOW!</h1>
           <div className="flex gap-2 flex-row flex-wrap ">
@@ -61,7 +60,7 @@ export default function Home() {
                       height={200}
                     />
                   </div>
-
+                  
                   <div className="flex justify-between flex-col relative">
                     <div className="font-bold truncate w-[150px]">
                       {product.name} asdasdasdasdasdasdasdasdasdasdasdadadasdasd
@@ -79,14 +78,23 @@ export default function Home() {
                         buttonClass="border py-2 px-3 text-xs justify-center bg-blue-950"
                         onClick={() => {
                           router.replace('/products/' + product.id);
+
+                          
                         }}
                       />
+                      
+                      
                     </div>
+                    
                   </div>
+                  
                 </div>
+                
               ))}
           </div>
+          
         </div>
+        
       </main>
     </>
   );
