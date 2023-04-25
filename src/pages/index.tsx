@@ -25,16 +25,17 @@ export default function Home() {
   return (
     <>
       <main className=" ">
-      <p className="flex items-center  absolute top-0 left-1/2 transform -translate-x-1/2 z-10 p-2 text-white text-bold hover:text-gray-300">Need Help? Contact Us!</p>
-      
+        <p className="flex items-center  absolute top-0 left-1/2 transform -translate-x-1/2 z-10 p-2 text-white text-bold hover:text-gray-300 cursor-pointer">
+          Need Help? Contact Us!
+        </p>
+
         <Navbar />
         
         <div className=" relative w-[100vw] h-[50vh] ">
           <Image
-            className="bg-black object-contain object-cover w-full h-full"
+            className="bg-black  object-cover w-full h-full"
             src={
               'https://media.discordapp.net/attachments/1087951220313956486/1100320518256730142/Discount.png?width=1440&height=338'
-              
             }
             fill
             alt={'asbanner1'}
