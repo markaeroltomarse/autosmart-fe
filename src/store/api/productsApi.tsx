@@ -23,6 +23,11 @@ interface IUpdateProduct {
   discount?: number;
 }
 
+interface ICreateCategory {
+  name: string;
+  productType: string;
+}
+
 const getAccessToken = () => {
   if (typeof window !== 'undefined') {
     return read_cookie('token');
@@ -41,7 +46,7 @@ export const productsApi = createApi({
     }
   },
   reducerPath: 'productsApi',
-  tagTypes: ['GetProducts', 'GetProduct'],
+  tagTypes: ['GetProducts', 'GetProduct', 'GetCategories'],
   endpoints: (build) => ({
     getProducts: build.query({
       query: () => {
@@ -99,6 +104,36 @@ export const productsApi = createApi({
         };
       },
     }),
+
+    // Category
+    createCategory: build.mutation({
+      query: (newCategory: ICreateCategory, token?: string) => {
+        return {
+          url: `/category`,
+          method: 'POST',
+          body: newCategory,
+        };
+      },
+    }),
+
+    getCategories: build.query({
+      query: (productType: string) => {
+        return {
+          url: `/category/${productType}`,
+          method: 'GET',
+        };
+      },
+      providesTags: ['GetCategories'],
+    }),
+
+    deleteCategory: build.mutation({
+      query: (categoryId: string, token?: string) => {
+        return {
+          url: `/category/${categoryId}`,
+          method: 'DELETE',
+        };
+      },
+    }),
   }),
 });
 
@@ -108,6 +143,11 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+
+  //Category
+  useLazyGetCategoriesQuery,
+  useCreateCategoryMutation,
+  useDeleteCategoryMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = productsApi;
 export const {
@@ -116,4 +156,9 @@ export const {
   createProduct,
   updateProduct,
   deleteProduct,
+
+  //Category
+  getCategories,
+  createCategory,
+  deleteCategory,
 } = productsApi.endpoints;

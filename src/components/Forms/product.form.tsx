@@ -3,13 +3,15 @@ import Input from '../Input';
 import Select from '../Select';
 import Button from '../Button';
 import { IProductType } from '@/types/product.type';
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   useCreateProductMutation,
+  useLazyGetCategoriesQuery,
   useUpdateProductMutation,
 } from '@/store/api/productsApi';
 import { useRouter } from 'next/router';
 import LoadingScreen from '../Loader/LoadingScreen';
+import { TCategory } from '@/pages/admin/category';
 
 interface IProductTypeProps {
   product?: IProductType;
@@ -26,6 +28,7 @@ export default function ProductForm({
   onEdited,
   onError,
 }: IProductTypeProps) {
+  const [getCategories, getCategoriesState] = useLazyGetCategoriesQuery();
   if (product && type !== 'edit') {
     if (onError) onError('Product and Type is required.');
   }
@@ -45,6 +48,21 @@ export default function ProductForm({
     contactOptions: product?.contactOptions || '',
     images: product?.images || ['', '', ''],
   });
+
+  const categories: string[] = useMemo(() => {
+    if (!getCategoriesState.isSuccess) return [];
+    return getCategoriesState.data?.data.map(
+      (category: TCategory) => category.name
+    );
+  }, [getCategoriesState]);
+
+  const getCategoriesHandler = async () => {
+    await getCategories('all');
+  };
+
+  useEffect(() => {
+    getCategoriesHandler();
+  }, []);
 
   const handleSubmitProductForm = async (e: any) => {
     setLoading(true);
@@ -124,7 +142,7 @@ export default function ProductForm({
           />
           <Select
             placeholder="Select Category"
-            options={['Category 1', 'Category 2']}
+            options={categories}
             className="bg-slate-100 "
             required
             value={formData.category}

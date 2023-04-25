@@ -5,7 +5,7 @@ import {
   useCreateProductMutation,
   useLazyGetProductsQuery,
 } from '@/store/api/productsApi';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Navbar from '@/components/Navbar/navbar';
 import { IProductType } from '@/types/product.type';
 import { useRouter } from 'next/router';
@@ -15,13 +15,21 @@ import { BsFillCartPlusFill } from 'react-icons/bs';
 
 export default function Home() {
   const [getProducts, productsState] = useLazyGetProductsQuery();
-
+  const [selectedCategory, setSelectedCategory] = useState('');
   const router = useRouter();
   useEffect(() => {
     getProducts(undefined).then(({ data }) => {
       console.log(data);
     });
   }, []);
+
+  const tempProducts = useMemo(() => {
+    if (!productsState.isSuccess) return [];
+    if (!selectedCategory) return productsState?.data.data;
+    return productsState?.data.data.filter(
+      (product: IProductType) => product.category === selectedCategory
+    );
+  }, [productsState, selectedCategory]);
   return (
     <>
       <main className=" ">
@@ -29,7 +37,11 @@ export default function Home() {
           Need Help? Contact Us!
         </p>
 
-        <Navbar />
+        <Navbar
+          onSelectedCategory={(category: string) =>
+            setSelectedCategory(category)
+          }
+        />
 
         <div className=" relative w-[100vw] h-[50vh] ">
           <Image
@@ -45,8 +57,13 @@ export default function Home() {
         <div className="p-5 md:px-[10%] md:py-5 flex gap-2 flex-col">
           <h1 className="text-2xl font-bold">ORDER NOW!</h1>
           <div className="flex gap-2 flex-row flex-wrap ">
+            {tempProducts.length === 0 && (
+              <div className="flex items-center justify-center h-[30vh] w-full font-bold text-red-500">
+                Products not found for | {selectedCategory}
+              </div>
+            )}
             {productsState.isSuccess &&
-              productsState?.data.data.map((product: IProductType) => (
+              tempProducts.map((product: IProductType) => (
                 <div
                   className=" p-5 rounded bg-white flex justify-between flex-col hover:mb-2 hover:-mt-2 transition-all"
                   key={product.id}
@@ -65,7 +82,7 @@ export default function Home() {
 
                   <div className="flex justify-between flex-col relative">
                     <div className="font-bold truncate w-[150px]">
-                      {product.name} asdasdasdasdasdasdasdasdasdasdasdadadasdasd
+                      {product.name}
                     </div>
                     <div className="flex justify-between ">
                       <div>

@@ -12,6 +12,7 @@ export interface IProductType {
   contactOptions: string;
   description: string;
   application: string;
+  productType: string;
   createdAt: string;
   updatedAt?: string;
   images: string[];

@@ -5,8 +5,12 @@ import { COLORS } from '@/constants/colors.contant';
 import SelectChips from '@/components/SelectChips';
 import Button from '@/components/Button';
 import ProductImageZoom from '@/components/ZoomableImage';
-import { useEffect, useState } from 'react';
-import { getProduct, useLazyGetProductQuery } from '@/store/api/productsApi';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  getProduct,
+  useLazyGetCategoriesQuery,
+  useLazyGetProductQuery,
+} from '@/store/api/productsApi';
 import { IProductType } from '@/types/product.type';
 import BasicLoader from '@/components/Loader/basic-loader';
 import { wrapper } from '@/store';
@@ -19,6 +23,7 @@ import { tempAddToCart, tempSetCart } from '@/store/reducers/cartsReducers';
 import Navbar from '@/components/Navbar/navbar';
 import { useLazyGetCustomerProfileQuery } from '@/store/api/customerApi';
 import { read_cookie } from 'sfcookies';
+import { TCategory } from '@/pages/admin/category';
 
 // export const getServerSideProps: GetServerSideProps =
 //   wrapper.getServerSideProps((store) => async (ctx) => {
@@ -35,6 +40,7 @@ import { read_cookie } from 'sfcookies';
 //{ product }: { product: IProductType }
 export default function ProductPage() {
   const [addToCart, addToCartState] = useAddToCartMutation();
+  const [getCategories, getCategoriesState] = useLazyGetCategoriesQuery();
   const [APPLICATIONS, SETAPPLICATIONS] = useState<string[] | number[]>([
     'Driver Side ',
     'Passenger Side ',
@@ -44,9 +50,6 @@ export default function ProductPage() {
     ''
   );
   const [selectedColor, setSelectedColor] = useState(COLORS[0].name);
-
-  const dispatch = useAppDispatch();
-  
 
   useEffect(() => {
     const container = document.getElementById('container');
@@ -67,19 +70,28 @@ export default function ProductPage() {
   }, []);
 
   const router = useRouter();
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState('');
   const [product, setProduct] = useState<IProductType | null>(null);
   const [getProduct, getProductState] = useLazyGetProductQuery();
+
+  const getProductHandler = async (id: string) => {
+    const { data } = await getProduct(id);
+    setProduct(data?.data);
+    setSelectedImage(data?.data.images[0]);
+    await getCategories(data?.data.productType);
+  };
+
+  const categories: TCategory[] = useMemo(() => {
+    if (getCategoriesState.error) return [];
+
+    return getCategoriesState.data?.data;
+  }, [getCategoriesState]);
+
   useEffect(() => {
     if (router.query?.productId) {
-      getProduct(router.query?.productId as string).then(({ data }) => {
-        setProduct(data?.data);
-        setSelectedImage(data?.data.images[0])
-      });
+      getProductHandler(router.query?.productId as string);
     }
   }, [router]);
-
-  
 
   useEffect(() => {
     setSelectApplication(APPLICATIONS[0]);

@@ -12,6 +12,7 @@ import { wrapper } from '@/store';
 import {
   getProducts,
   useDeleteProductMutation,
+  useLazyGetCategoriesQuery,
   useLazyGetProductsQuery,
   useUpdateProductMutation,
 } from '@/store/api/productsApi';
@@ -36,7 +37,6 @@ import { AiFillCheckSquare, AiOutlineSearch } from 'react-icons/ai';
 export default function Dashboard() {
   const router = useRouter();
 
-
   const [updateProduct, updateProductState] = useUpdateProductMutation();
   const [deleteProduct, deleteProductState] = useDeleteProductMutation();
   const [searchTxt, setSearchTxt] = useState('');
@@ -60,7 +60,6 @@ export default function Dashboard() {
 
   const getProductsHanlders = () => {
     getProducts(undefined).then(({ data }) => {
-      console.log(data?.data);
       setProducts(data?.data);
     });
   };
