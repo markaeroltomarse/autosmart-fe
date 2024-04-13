@@ -1,12 +1,12 @@
+import { useMemo } from 'react';
 import {
   AiOutlineCheckCircle,
   AiOutlineCloseCircle,
   AiOutlineWarning,
 } from 'react-icons/ai';
 import Button from '../Button';
-import { useMemo } from 'react';
 
-interface IAlertProps {
+export interface IAlertProps {
   type: 'success' | 'error' | 'warning' | 'confirm';
   title: string;
   message: string;
@@ -14,6 +14,7 @@ interface IAlertProps {
   className?: string;
   onOk?: () => void;
   onCancel?: () => void;
+  interval?: number
 }
 
 export default function Alert(props: IAlertProps) {
@@ -22,8 +23,8 @@ export default function Alert(props: IAlertProps) {
     return props.type === 'success'
       ? 'green'
       : props.type === 'error'
-      ? 'red'
-      : 'yellow';
+        ? 'red'
+        : 'yellow';
   }, [props]);
 
   const border = useMemo(() => {
@@ -31,8 +32,8 @@ export default function Alert(props: IAlertProps) {
     return props.type === 'success'
       ? 'border-green-500'
       : props.type === 'error'
-      ? 'border-red-500'
-      : 'border-yellow-500';
+        ? 'border-red-500'
+        : 'border-yellow-500';
   }, [props]);
 
   const bgColor = useMemo(() => {
@@ -40,8 +41,8 @@ export default function Alert(props: IAlertProps) {
     return props.type === 'success'
       ? 'bg-green-200'
       : props.type === 'error'
-      ? 'bg-red-200'
-      : 'bg-yellow-200';
+        ? 'bg-red-200'
+        : 'bg-yellow-200';
   }, [props]);
 
   const textColor = useMemo(() => {
@@ -49,8 +50,8 @@ export default function Alert(props: IAlertProps) {
     return props.type === 'success'
       ? 'text-green-700'
       : props.type === 'error'
-      ? 'text-red-700'
-      : 'text-yellow-700';
+        ? 'text-red-700'
+        : 'text-yellow-700';
   }, [props]);
 
   const icon =
@@ -64,7 +65,7 @@ export default function Alert(props: IAlertProps) {
   return (
     <div
       onClick={props.onClick}
-      className={`z-[5] transition duration-500 transform hover:-translate-x-4 w-[300px] p-3 rounded border-2 ${border} ${bgColor} flex fixed top-[100] right-[10%] ${textColor} ${props.className}`}
+      className={`z-[5] transition duration-500 transform hover:-translate-x-4 w-[300px] p-3 rounded border-2 ${border} ${bgColor} flex fixed top-[5%] right-[10%] ${textColor} ${props.className}`}
     >
       <div className="w-[50px]">{icon}</div>
 

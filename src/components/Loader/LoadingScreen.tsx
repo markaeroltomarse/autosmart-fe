@@ -5,13 +5,12 @@ export interface LoadingScreenProps {
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = (props) => {
-  const { message, transparent, className } = props;
+  const { message, transparent, className, } = props;
 
   return (
     <div
-      className={`flex flex-col ${
-        transparent ? 'bg-primary/60' : 'bg-primary'
-      } h-[calc(100vh-88px)] w-screen items-center justify-center gap-4 ${className}`}
+      className={` flex flex-col ${transparent ? 'bg-primary/60' : 'bg-primary'
+        } h-[calc(100vh-88px)] w-screen items-center justify-center gap-4 ${className}`}
     >
       <div role="status">
         <svg

@@ -15,6 +15,8 @@ interface IUpdateCustomer {
   fname?: string;
   lname?: string;
   gender?: 'male' | 'female';
+  isRider?: boolean;
+  email?: string
 }
 
 const getAccessToken = () => {
@@ -35,7 +37,7 @@ export const customersApi = createApi({
     }
   },
   reducerPath: 'customersApi',
-  tagTypes: ['GetCustomer'],
+  tagTypes: ['GetCustomer', 'GetRiders'],
   endpoints: (build) => ({
     getCustomerProfile: build.query({
       query: (token?: string) => {
@@ -49,6 +51,18 @@ export const customersApi = createApi({
       },
       providesTags: ['GetCustomer'],
     }),
+    getRiders: build.query({
+      query: (token?: string) => {
+        return {
+          url: `/riders`,
+          method: 'GET',
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+      providesTags: ['GetRiders'],
+    }),
     createCustomer: build.mutation({
       query: (newCustomer: INewCustomer) => {
         return {
@@ -59,11 +73,11 @@ export const customersApi = createApi({
       },
     }),
     loginCustomer: build.mutation({
-      query: (newCustomer: { email: string }) => {
+      query: (loginCustomer: { email: string, password?: string }) => {
         return {
           url: `/login`,
           method: 'POST',
-          body: newCustomer,
+          body: loginCustomer,
         };
       },
     }),
@@ -87,6 +101,7 @@ export const {
   useLoginCustomerMutation,
   useLazyGetCustomerProfileQuery,
   useUpdateCustomerMutation,
+  useLazyGetRidersQuery,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = customersApi;
 export const {
@@ -94,4 +109,5 @@ export const {
   createCustomer,
   loginCustomer,
   updateCustomer,
+  getRiders
 } = customersApi.endpoints;

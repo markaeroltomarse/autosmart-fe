@@ -1,10 +1,13 @@
 export interface ICustomerType {
   id: string;
-  fname: string;
-  lname: string;
   email: string;
-  profileImage: string;
-  gender: string;
+  password: string;
+  fname: string | null;
+  lname: string | null;
+  gender: string | null;
   address: string[];
-  defaultAddress: string;
+  defaultAddress: string | null;
+  profileImage: string | null;
+  contactNumber: string | null;
+  isRider: boolean;
 }

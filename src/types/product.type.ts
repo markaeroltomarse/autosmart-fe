@@ -1,3 +1,6 @@
+import { ICustomerType } from './customer.type';
+import { IRider } from './rider.type';
+
 export interface IProductType {
   id: string;
   name: string;
@@ -17,3 +20,16 @@ export interface IProductType {
   updatedAt?: string;
   images: string[];
 }
+
+export type ITransactionType = {
+  id: string;
+  status: string | null;
+  serialNumber: string;
+  totalAmount: number;
+  customerId: string;
+  products: IProductType[];
+  rider: IRider | null;
+  customer: ICustomerType | null;
+  riderId: string;
+  createdAt: Date | null;
+};

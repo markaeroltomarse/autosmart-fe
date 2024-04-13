@@ -1,29 +1,21 @@
-import { useRouter } from 'next/router';
-import Image from 'next/image';
-import Select from '@/components/Select';
-import { COLORS } from '@/constants/colors.contant';
-import SelectChips from '@/components/SelectChips';
 import Button from '@/components/Button';
-import ProductImageZoom from '@/components/ZoomableImage';
-import { useEffect, useMemo, useState } from 'react';
+import BasicLoader from '@/components/Loader/basic-loader';
+import Select from '@/components/Select';
+import SelectChips from '@/components/SelectChips';
+import { COLORS } from '@/constants/colors.contant';
 import {
-  getProduct,
   useLazyGetCategoriesQuery,
-  useLazyGetProductQuery,
+  useLazyGetProductQuery
 } from '@/store/api/productsApi';
 import { IProductType } from '@/types/product.type';
-import BasicLoader from '@/components/Loader/basic-loader';
-import { wrapper } from '@/store';
-import { GetServerSideProps } from 'next';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 
-import { useAddToCartMutation } from '@/store/api/cartApi';
 import Alert from '@/components/Alert';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { tempAddToCart, tempSetCart } from '@/store/reducers/cartsReducers';
 import Navbar from '@/components/Navbar/navbar';
-import { useLazyGetCustomerProfileQuery } from '@/store/api/customerApi';
-import { read_cookie } from 'sfcookies';
 import { TCategory } from '@/pages/admin/category';
+import { useAddToCartMutation } from '@/store/api/cartApi';
 
 // export const getServerSideProps: GetServerSideProps =
 //   wrapper.getServerSideProps((store) => async (ctx) => {
@@ -171,7 +163,17 @@ export default function ProductPage() {
       );
   };
 
-  if (!product)
+  if (getProductState.isLoading)
+    return (
+      <>
+        <div className="bg-white h-[50vh] w-full flex items-center justify-center">
+          <h1 className="text-3xl text-red-700">Please wait...</h1>
+        </div>
+      </>
+    );
+
+
+  if (!product && !getProductState.isLoading)
     return (
       <>
         <div className="bg-white h-[50vh] w-full flex items-center justify-center">
@@ -180,112 +182,113 @@ export default function ProductPage() {
       </>
     );
 
-  return (
-    <>
-      <main className="">
-        {addToCartState.isLoading && (
-          <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
-            <BasicLoader />
-          </div>
-        )}
-        <Navbar />
-        {handleAddToCartResponseAlert()}
-        {handleAddToCartValidation()}
-        <div className="p-5 md:px-[10%] md:py-5 flex flex-col gap-2">
-          <h1 className="text-2xl font-bold">Featured Product</h1>
-          <div className="p-5 bg-white flex gap-2">
-            <div className="w-[130px] flex flex-col gap-2">
-              {product.images.map(
-                (src) =>
-                  src && (
-                    <Image
-                      key={src}
-                      src={src}
-                      alt="product"
-                      width={100}
-                      height={100}
-                      className={`border-2 cursor-pointer ${
-                        selectedImage === src
+  if (product) {
+    return (
+      <>
+        <main className="">
+          {addToCartState.isLoading && (
+            <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
+              <BasicLoader />
+            </div>
+          )}
+          <Navbar />
+          {handleAddToCartResponseAlert()}
+          {handleAddToCartValidation()}
+          <div className="p-5 md:px-[10%] md:py-5 flex flex-col gap-2">
+            <h1 className="text-2xl font-bold">Featured Product</h1>
+            <div className="p-5 bg-white flex gap-2">
+              <div className="w-[130px] flex flex-col gap-2">
+                {product.images.map(
+                  (src) =>
+                    src && (
+                      <Image
+                        key={src}
+                        src={src}
+                        alt="product"
+                        width={100}
+                        height={100}
+                        className={`border-2 cursor-pointer ${selectedImage === src
                           ? 'border-red-500'
                           : 'border-slate-500'
-                      }`}
-                      onClick={() => setSelectedImage(src)}
-                    />
-                  )
-              )}
-            </div>
-            <div className="flex w-full">
-              <div id="container">
-                <img
-                  src={selectedImage}
-                  alt="Image Alt"
-                  className="IMG"
-                  id="test-img"
-                />
+                          }`}
+                        onClick={() => setSelectedImage(src)}
+                      />
+                    )
+                )}
               </div>
-
-              <div className="w-1/2 px-5">
-                <h2 className="text-2xl font-bold">{product?.name}</h2>
-                <h2 className="text-2xl font-bold">{product?.brandName}</h2>
-
-                <p className="text-md text-slate-400 font-bold py-3">
-                  {product?.description}
-                </p>
-
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center  gap-2">
-                    <h3 className="font-bold">Variant: </h3>
-                    <Select
-                      options={COLORS.map((color) => color.name)}
-                      className="p-0"
-                      placeholder="Select Variant"
-                      onChange={(e) => setSelectedColor(e.target.value)}
-                      value={selectedColor}
-                    />
-                  </div>
-
-                  <div className="flex items-center  gap-2">
-                    <h3 className="font-bold">Application: </h3>
-                    <h3 className="font-bold text-slate-500">
-                      {selectedApplication}
-                    </h3>
-                  </div>
-
-                  <SelectChips
-                    options={APPLICATIONS}
-                    onSelectOne={(selected) => {
-                      setSelectApplication(selected);
-                    }}
-                    defaultValueOne={selectedApplication}
+              <div className="flex w-full">
+                <div id="container">
+                  <img
+                    src={selectedImage}
+                    alt="Image Alt"
+                    className="IMG"
+                    id="test-img"
                   />
+                </div>
 
-                  <div className="flex flex-row gap-5 justify-center mt-[20%] ">
-                    {product.quantity <= 0 ? (
-                      <Button
-                        title="Out of Stock"
-                        buttonClass="bg-red-700 rounded text-white flex-initial w-102 py-3"
-                        onClick={handleAddToCart}
-                        disabled={true}
-                      />
-                    ) : (
-                      <Button
-                        title="Add to cart"
-                        buttonClass="bg-red-700 rounded text-white flex-initial w-full py-3"
-                        onClick={handleAddToCart}
-                      />
-                    )}
+                <div className="w-1/2 px-5">
+                  <h2 className="text-2xl font-bold">{product?.name}</h2>
+                  <h2 className="text-2xl font-bold">{product?.brandName}</h2>
 
-                    <Button
-                      title="Buy now"
-                      buttonClass="bg-blue-950 rounded text-white flex-initial w-full py-3"
+                  <p className="text-md text-slate-400 font-bold py-3">
+                    {product?.description}
+                  </p>
+
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center  gap-2">
+                      <h3 className="font-bold">Variant: </h3>
+                      <Select
+                        options={COLORS.map((color) => color.name)}
+                        className="p-0"
+                        placeholder="Select Variant"
+                        onChange={(e) => setSelectedColor(e.target.value)}
+                        value={selectedColor}
+                      />
+                    </div>
+
+                    <div className="flex items-center  gap-2">
+                      <h3 className="font-bold">Application: </h3>
+                      <h3 className="font-bold text-slate-500">
+                        {selectedApplication}
+                      </h3>
+                    </div>
+
+                    <SelectChips
+                      options={APPLICATIONS}
+                      onSelectOne={(selected) => {
+                        setSelectApplication(selected);
+                      }}
+                      defaultValueOne={selectedApplication}
                     />
+
+                    <div className="flex flex-row gap-5 justify-center mt-[20%] ">
+                      {product.quantity <= 0 ? (
+                        <Button
+                          title="Out of Stock"
+                          buttonClass="bg-red-700 rounded text-white flex-initial w-102 py-3"
+                          onClick={handleAddToCart}
+                          disabled={true}
+                        />
+                      ) : (
+                        <Button
+                          title="Add to cart"
+                          buttonClass="bg-red-700 rounded text-white flex-initial w-full py-3"
+                          onClick={handleAddToCart}
+                        />
+                      )}
+
+                      <Button
+                        title="Buy now"
+                        buttonClass="bg-blue-950 rounded text-white flex-initial w-full py-3"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
-    </>
-  );
+        </main>
+      </>
+    );
+  }
 }

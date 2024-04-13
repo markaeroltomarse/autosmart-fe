@@ -1,18 +1,17 @@
+import Button from '@/components/Button';
 import CustomerNavbar from '@/components/CustomerNavbar';
 import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
 import {
-  getCustomerProfile,
   useLazyGetCustomerProfileQuery,
-  useUpdateCustomerMutation,
+  useUpdateCustomerMutation
 } from '@/store/api/customerApi';
 import { ICustomerType } from '@/types/customer.type';
-import { useEffect, useState } from 'react';
-import { read_cookie } from 'sfcookies';
-import { MdAddLocationAlt, MdLocationOn } from 'react-icons/md';
-import Button from '@/components/Button';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { MdAddLocationAlt, MdLocationOn } from 'react-icons/md';
+import { read_cookie } from 'sfcookies';
 export default function MyAccount() {
   const router = useRouter();
   const [getProfile, getProfileState] = useLazyGetCustomerProfileQuery();
@@ -155,7 +154,7 @@ export default function MyAccount() {
 
               <div className="flex-2 w-[300px] flex items-center justify-center">
                 <Image
-                  src={customer.profileImage}
+                  src={customer?.profileImage || ''}
                   width={150}
                   height={150}
                   alt={customer.email}

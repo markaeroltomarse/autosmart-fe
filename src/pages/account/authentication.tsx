@@ -1,22 +1,31 @@
+import HeroBg from '@/assets/images/base_img_white_bg_red_bar.png';
 import Button from '@/components/Button';
+import Divider from '@/components/Divider';
+import Input from '@/components/Input';
 import LoadingScreen from '@/components/Loader/LoadingScreen';
 import Logo from '@/components/Logo';
 import {
   useCreateCustomerMutation,
   useLoginCustomerMutation,
 } from '@/store/api/customerApi';
-import { ICustomerType } from '@/types/customer.type';
 import { Auth0Client } from '@/utils/auth0.util';
-import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { AiFillGoogleCircle, AiFillGooglePlusCircle } from 'react-icons/ai';
-import { bake_cookie } from 'sfcookies';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { AiFillGoogleCircle, AiFillGooglePlusCircle } from 'react-icons/ai';
+import { FaUserCircle } from 'react-icons/fa';
+import { bake_cookie } from 'sfcookies';
 export default function Authentication() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [createCustomer, createCustomerState] = useCreateCustomerMutation();
   const [loginCustomer, loginCustomerStatus] = useLoginCustomerMutation();
+
+  const [loginPayload, setLoginPayload] = useState({
+    email: '',
+    password: ''
+  })
+
   const query = useMemo(() => {
     const queryString = router.asPath.split('#')[1] || '';
     let query: any = {};
@@ -84,7 +93,6 @@ export default function Authentication() {
                     bake_cookie('token', data.data.token);
                     router.replace('/customer');
                   } else {
-                    alert(error?.data.message);
                     setIsLoading(false);
                     router.replace('/account/authentication');
                   }
@@ -92,7 +100,6 @@ export default function Authentication() {
               );
             } else {
               setIsLoading(false);
-              alert(error?.data.message);
               router.replace('/account/authentication');
             }
           });
@@ -117,13 +124,37 @@ export default function Authentication() {
     }
   }, [query]);
 
+  // Function to handle input changes
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLoginPayload({ ...loginPayload, [name]: value });
+  };
+
+
+  const handleLoginSubmit = async (e: any) => {
+    e.preventDefault()
+
+    loginCustomer({ email: loginPayload.email, password: loginPayload?.password }).then(
+      ({ data, isSuccess, error }: any) => {
+        if (data?.message === 'success') {
+          bake_cookie('token', data.data.token);
+          router.replace('/customer');
+        } else {
+          setIsLoading(false);
+          alert(error?.data.message);
+          router.replace('/account/authentication');
+        }
+      }
+    );
+  }
+
   return (
     <>
       <main className="flex justify-center items-center min-h-[100vh]">
         <div className="absolute w-full h-[50vh] top-0 left-0 z-0">
           <Image
             src={
-              'https://media.discordapp.net/attachments/1093520927960092772/1095372282492362912/base_img_white_bg_red_bar.png?width=900&height=211'
+              HeroBg
             }
             fill
             alt="autosmart"
@@ -141,16 +172,33 @@ export default function Authentication() {
               <Logo className="w-full h-[100px]" />
             </div>
             <div className="flex gap-2 flex-col">
+              <form className='flex flex-col gap-4' onSubmit={handleLoginSubmit}>
+                <Input onChange={handleInputChange} name="email" type="email" className="font-Jost text-blue-900" label="Email" required />
+                <Input onChange={handleInputChange} name="password" type="password" className="font-Jost text-blue-900" label="Password" required />
+                <Button title="Submit" buttonType="submit" buttonClass="bg-blue-900 text-white p-3 w-[100%]" />
+              </form>
+              <hr />
+
               <Button
                 icon={<AiFillGoogleCircle size={30} />}
                 onClick={signInWithGoogle}
                 title="SIGN IN WITH GOOGLE"
                 buttonClass="border bg-green-700 text-green-100 py-3 "
               />
+              <Divider label='Or' />
               <Button
                 icon={<AiFillGooglePlusCircle size={30} />}
                 onClick={signUpWithGoogle}
                 title="SIGN UP WITH GOOGLE"
+                buttonClass="border bg-green-700 text-green-100 py-3"
+              />
+
+              <Button
+                icon={<FaUserCircle size={30} />}
+                onClick={() => {
+                  router.push('/customer/register')
+                }}
+                title="SIGN UP FORM"
                 buttonClass="border bg-green-700 text-green-100 py-3"
               />
             </div>

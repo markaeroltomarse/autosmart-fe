@@ -16,6 +16,8 @@ interface IInputProps {
   required?: boolean;
   name?: string;
   label?: string;
+  minLength?: number
+  maxLength?: number
 }
 
 export default function Input({
@@ -34,6 +36,7 @@ export default function Input({
   onBlur,
   onFocus,
   label,
+  ...rest
 }: IInputProps) {
   return (
     <div className="flex flex-col">
@@ -42,19 +45,18 @@ export default function Input({
         {label && <small>{label}</small>}
       </div>
       <div
-        className={`flex flex-row items-center relative bg-white border rounded p-2 gap-2 ${
-          isIconLeft ? 'justify-start' : 'flex-row-reverse'
-        } ${className}`}
+        className={`flex flex-row items-center relative bg-white border rounded p-2 gap-2 ${isIconLeft ? 'justify-start' : 'flex-row-reverse'
+          } ${className}`}
       >
         <div className="flex-none">{icon}</div>
         <div className="relative flex-1 flex ">
           <input
+            {...rest}
             onChange={onChange}
             type={type}
             placeholder={placeholder}
-            className={`outline-none bg-transparent  ${
-              width ? `w-[${width}px]` : 'w-full'
-            } `}
+            className={`outline-none bg-transparent  ${width ? `w-[${width}px]` : 'w-full'
+              } `}
             value={value}
             min={0}
             pattern={pattern}

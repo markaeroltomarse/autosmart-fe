@@ -1,17 +1,12 @@
 import ButtonGroup from '@/components/ButtonGroup';
 import CustomerNavbar from '@/components/CustomerNavbar';
 import BasicLoader from '@/components/Loader/basic-loader';
-import Logo from '@/components/Logo';
-import { wrapper } from '@/store';
 import {
-  getCustomerProfile,
-  useLazyGetCustomerProfileQuery,
+  useLazyGetCustomerProfileQuery
 } from '@/store/api/customerApi';
 import { useLazyGetCustomerOrdersQuery } from '@/store/api/ordersApi';
 import { ICustomerType } from '@/types/customer.type';
-import { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { read_cookie } from 'sfcookies';
@@ -65,6 +60,7 @@ export default function Customer() {
     const { data: orderResponse } = await getOrders(undefined);
     setOrders(orderResponse?.data);
   };
+
   useEffect(() => {
     getCustomerProfileHandler();
   }, []);
@@ -74,10 +70,10 @@ export default function Customer() {
       orders &&
       orders[
         selectedTab.toLowerCase() as
-          | 'pending'
-          | 'completed'
-          | 'shipped'
-          | 'cancelled'
+        | 'pending'
+        | 'completed'
+        | 'shipped'
+        | 'cancelled'
       ].map((order: any) => ({ ...order, total: 0 }));
 
     ords.forEach((order: any) => {

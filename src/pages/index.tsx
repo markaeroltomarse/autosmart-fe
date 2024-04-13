@@ -1,15 +1,13 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
-import {
-  useCreateProductMutation,
-  useLazyGetProductsQuery,
-} from '@/store/api/productsApi';
-import { useEffect, useMemo, useState } from 'react';
-import Navbar from '@/components/Navbar/navbar';
-import { IProductType } from '@/types/product.type';
-import { useRouter } from 'next/router';
+import HeroBg from '@/assets/images/base_img_white_bg_red_bar.png';
 import Button from '@/components/Button';
+import Navbar from '@/components/Navbar/navbar';
+import {
+  useLazyGetProductsQuery
+} from '@/store/api/productsApi';
+import { IProductType } from '@/types/product.type';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 import { BsFillCartPlusFill } from 'react-icons/bs';
 // import Header from '@/Header/Header';
 
@@ -47,17 +45,22 @@ export default function Home() {
           <Image
             className="bg-black  object-cover w-full h-full"
             src={
-              'https://media.discordapp.net/attachments/1087951220313956486/1100320518256730142/Discount.png?width=1440&height=338'
+              HeroBg
             }
             fill
-            alt={'asbanner1'}
+            alt={'https://media.discordapp.net/attachments/1087951220313956486/1100320518256730142/Discount.png?width=1440&height=338'}
           />
         </div>
 
         <div className="p-5 md:px-[10%] md:py-5 flex gap-2 flex-col">
           <h1 className="text-2xl font-bold">ORDER NOW!</h1>
           <div className="flex gap-2 flex-row flex-wrap ">
-            {tempProducts.length === 0 && (
+            {productsState.isLoading && (
+              <div className="flex items-center justify-center h-[30vh] w-full font-bold text-red-500">
+                Loading products...
+              </div>
+            )}
+            {!productsState.isLoading && tempProducts.length === 0 && (
               <div className="flex items-center justify-center h-[30vh] w-full font-bold text-red-500">
                 Products not found for | {selectedCategory}
               </div>
@@ -65,7 +68,7 @@ export default function Home() {
             {productsState.isSuccess &&
               tempProducts.map((product: IProductType) => (
                 <div
-                  className=" p-5 rounded bg-white flex justify-between flex-col hover:mb-2 hover:-mt-2 transition-all"
+                  className="p-5 rounded bg-white flex justify-between flex-col hover:mb-2 hover:-mt-2 transition-all"
                   key={product.id}
                 >
                   <div>

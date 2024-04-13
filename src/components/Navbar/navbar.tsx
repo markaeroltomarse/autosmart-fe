@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import Logo from '../Logo';
-import { BsFillCartCheckFill } from 'react-icons/bs';
-import Link from 'next/link';
-import Image from 'next/image';
-import { delete_cookie, read_cookie } from 'sfcookies';
-import Searchbar from '../Searchbar/searchbar';
-import { useLazyGetCategoriesQuery } from '@/store/api/productsApi';
+import TopBarBg from '@/assets/images/top_bar.png';
 import { TCategory } from '@/pages/admin/category';
+import { useLazyGetCategoriesQuery } from '@/store/api/productsApi';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import { BsFillCartCheckFill } from 'react-icons/bs';
 import { MdExpandMore } from 'react-icons/md';
-
+import { delete_cookie, read_cookie } from 'sfcookies';
+import Logo from '../Logo';
+import Searchbar from '../Searchbar/searchbar';
 type Props = {
   onSelectedCategory?: (e: string) => void;
 };
@@ -46,7 +46,7 @@ function Navbar(props: Props) {
       <Image
         className="z-[0]"
         src={
-          'https://media.discordapp.net/attachments/1087951220313956486/1100344085123969035/Top_blue.png?width=1440&height=191'
+          TopBarBg
         }
         fill
         alt="asmartheader2"
@@ -59,7 +59,7 @@ function Navbar(props: Props) {
         <div className="z-[2] flex gap-5 p-3 items-center ">
           <div className="z-[3] text-center font-bold ">
             {read_cookie('token').length === 0 ||
-            read_cookie('token') === undefined ? (
+              read_cookie('token') === undefined ? (
               <div className="hover:text-gray-300">
                 <Link href={'/account/authentication'}>LOGIN / SIGN UP</Link>
                 <br />
@@ -96,7 +96,7 @@ function Navbar(props: Props) {
                     onClick={() => {
                       setSelectedProductType(
                         selectedProductType !== category.productType &&
-                          category.productType
+                        category.productType
                       );
 
                       if (
