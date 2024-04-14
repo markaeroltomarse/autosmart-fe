@@ -1,5 +1,4 @@
 import TopBarBg from '@/assets/images/top_bar.png';
-import Searchbar from '@/components/Searchbar/searchbar';
 import { TCategory } from '@/pages/admin/category';
 import { useLazyGetCategoriesQuery } from '@/store/api/productsApi';
 import Image from 'next/image';
@@ -9,6 +8,7 @@ import { BsFillCartCheckFill } from 'react-icons/bs';
 import { MdExpandMore } from 'react-icons/md';
 import { delete_cookie, read_cookie } from 'sfcookies';
 import Logo from '../Logo';
+import Searchbar from '../Searchbar/searchbar';
 
 type Props = {
   onSelectedCategory?: (e: string) => void;
