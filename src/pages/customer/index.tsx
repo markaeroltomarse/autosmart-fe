@@ -118,7 +118,7 @@ export default function Customer() {
 
             <div className="my-5 flex flex-col gap-3">
               {tempOrders.map((order: any) => (
-                <div className="p-3 border rounded  flex flex-col gap-2 bg-slate-100">
+                <div key={order.serialNumber} className="p-3 border rounded  flex flex-col gap-2 bg-slate-100">
                   <div className="flex justify-between">
                     <h3 className="font-bold">#{order.serialNumber}</h3>
                     <h3 className="font-bold">
@@ -128,7 +128,7 @@ export default function Customer() {
                   <div className="flex gap-2 flex-wrap">
                     {/* ITEM */}
                     {order.products.map((product: any) => (
-                      <div className="flex border-b gap-3 w-[300px] border rounded p-3 bg-white">
+                      <div key={product.product.name} className="flex border-b gap-3 w-[300px] border rounded p-3 bg-white">
                         <Image
                           src={
                             product.product.images.length > 0

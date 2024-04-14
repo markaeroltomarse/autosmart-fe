@@ -89,45 +89,45 @@ function Navbar(props: Props) {
       <div className=" z-[1] flex justify-between md:px-[5%] items-center ">
         <div className="p-2 text-white font-bold flex gap-3">
           {categories &&
-            categories.map((category) => (
-              <>
-                <div>
-                  <div
-                    onClick={() => {
-                      setSelectedProductType(
-                        selectedProductType !== category.productType &&
-                        category.productType
-                      );
+            categories.map((category, i) => (
+              <div key={JSON.stringify(category.children) + '-' + i}>
+                <div
 
-                      if (
-                        props?.onSelectedCategory &&
-                        selectedProductType === category.productType
-                      ) {
-                        props.onSelectedCategory!('');
-                      }
-                    }}
-                    className="flex justify-between items-center"
-                  >
-                    {category.productType} <MdExpandMore size={25} />
-                  </div>
+                  onClick={() => {
+                    setSelectedProductType(
+                      selectedProductType !== category.productType &&
+                      category.productType
+                    );
 
-                  {selectedProductType === category.productType && (
-                    <div className="absolute bg-white text-red-500 p-3 shadow-md rounded flex flex-col gap-3 cursor-pointer ">
-                      {category.children.map((category: TCategory) => (
-                        <div
-                          onClick={() => {
-                            if (props?.onSelectedCategory)
-                              props.onSelectedCategory!(category.name);
-                          }}
-                          className="border-b hover:bg-red-100"
-                        >
-                          {category.name}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                    if (
+                      props?.onSelectedCategory &&
+                      selectedProductType === category.productType
+                    ) {
+                      props.onSelectedCategory!('');
+                    }
+                  }}
+                  className="flex justify-between items-center"
+                >
+                  {category.productType} <MdExpandMore size={25} />
                 </div>
-              </>
+
+                {selectedProductType === category.productType && (
+                  <div className="absolute bg-white text-red-500 p-3 shadow-md rounded flex flex-col gap-3 cursor-pointer ">
+                    {category.children.map((category: TCategory, i: number) => (
+                      <div
+                        key={category.name + '-' + i}
+                        onClick={() => {
+                          if (props?.onSelectedCategory)
+                            props.onSelectedCategory!(category.name);
+                        }}
+                        className="border-b hover:bg-red-100"
+                      >
+                        {category.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
         </div>
       </div>

@@ -18,8 +18,8 @@ const DeliveryItems: React.FC<DeliveryItemsProps> = (props) => {
         <div className="flex flex-col gap-3">
             {loading && <BasicLoader />}
             {
-                deliveries.map(delivery => (
-                    <div key={delivery.id} className="bg-white rounded-md p-5 flex flex-col gap-3">
+                deliveries.map((delivery, i) => (
+                    <div key={delivery.id + '-' + i} className="bg-white rounded-md p-5 flex flex-col gap-3">
                         <div className=" flex gap-3 ">
                             <Image alt={delivery.customer.profileImage} src={delivery.customer.profileImage} height={50} width={50} className="rounded-full border" />
                             <div>
@@ -33,8 +33,8 @@ const DeliveryItems: React.FC<DeliveryItemsProps> = (props) => {
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                             {
-                                delivery.products.map((cart: any) => (
-                                    <div key={cart.productId} className="flex gap-3 border p-3 rounded-md hover:shadow-md transition-all hover:scale-105">
+                                delivery.products.map((cart: any, i: number) => (
+                                    <div key={cart.productId + '-' + i} className="flex gap-3 border p-3 rounded-md hover:shadow-md transition-all hover:scale-105">
                                         <div className="border aspect-square w-[100px] rounded-md relative">
                                             <Image alt={cart.product.name} src={cart.product.images?.[0]} fill />
                                         </div>
