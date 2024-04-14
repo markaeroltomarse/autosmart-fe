@@ -70,22 +70,14 @@ export default function Customer() {
 
     const data =
       orders[
-        selectedTab.toLowerCase() as
-<<<<<<< HEAD
-          | 'pending'
-          | 'completed'
-          | 'shipped'
-          | 'cancelled'
+      selectedTab.toLowerCase() as
+      | 'pending'
+      | 'completed'
+      | 'shipped'
+      | 'cancelled'
       ];
 
     const ords = data.map((order: any) => ({ ...order, total: 0 }));
-=======
-        | 'pending'
-        | 'completed'
-        | 'shipped'
-        | 'cancelled'
-      ].map((order: any) => ({ ...order, total: 0 }));
->>>>>>> bd2283244946d976b25d726075eb877dd1584cfc
 
     ords.forEach((order: any) => {
       let total = 0;

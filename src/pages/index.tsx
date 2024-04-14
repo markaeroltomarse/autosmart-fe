@@ -1,5 +1,6 @@
 import HeroBg from '@/assets/images/base_img_white_bg_red_bar.png';
 import Button from '@/components/Button';
+import Footer from '@/components/Footer/Footer';
 import Navbar from '@/components/Navbar/navbar';
 import {
   useLazyGetProductsQuery
@@ -9,8 +10,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { BsFillCartPlusFill } from 'react-icons/bs';
-import BannerSlider from '@/components/BannerSlider/BannerSlider';
-import Footer from '@/components/Footer/Footer';
 
 export default function Home() {
   const [getProducts, productsState] = useLazyGetProductsQuery();
@@ -85,7 +84,7 @@ export default function Home() {
                     />
                   </div>
 
-                  
+
                   <div className="flex justify-between flex-col relative">
                     <div className="font-bold truncate w-[150px]">
                       {product.name}
@@ -93,7 +92,7 @@ export default function Home() {
                     <div className="flex justify-between ">
                       <div>
                         <span className="text-slate-500 line-through">
-                        ₱{product.price}
+                          ₱{product.price}
                         </span>{' '}
                         ₱{product.price - product.discount}
                       </div>
@@ -104,25 +103,25 @@ export default function Home() {
                         onClick={() => {
                           router.replace('/products/' + product.id);
 
-                          
+
                         }}
                       />
-                      
-                      
-                      
+
+
+
                     </div>
-                    
+
                   </div>
-                  
+
                 </div>
-                
+
               ))}
           </div>
-          
+
         </div>
-        <Footer/>
-        
-        
+        <Footer />
+
+
       </main>
     </>
   );
