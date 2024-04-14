@@ -1,17 +1,12 @@
 import ButtonGroup from '@/components/ButtonGroup';
 import CustomerNavbar from '@/components/CustomerNavbar';
 import BasicLoader from '@/components/Loader/basic-loader';
-import Logo from '@/components/Logo';
-import { wrapper } from '@/store';
 import {
-  getCustomerProfile,
-  useLazyGetCustomerProfileQuery,
+  useLazyGetCustomerProfileQuery
 } from '@/store/api/customerApi';
 import { useLazyGetCustomerOrdersQuery } from '@/store/api/ordersApi';
 import { ICustomerType } from '@/types/customer.type';
-import { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { read_cookie } from 'sfcookies';
@@ -65,6 +60,7 @@ export default function Customer() {
     const { data: orderResponse } = await getOrders(undefined);
     setOrders(orderResponse?.data);
   };
+
   useEffect(() => {
     getCustomerProfileHandler();
   }, []);
@@ -75,6 +71,7 @@ export default function Customer() {
     const data =
       orders[
         selectedTab.toLowerCase() as
+<<<<<<< HEAD
           | 'pending'
           | 'completed'
           | 'shipped'
@@ -82,6 +79,13 @@ export default function Customer() {
       ];
 
     const ords = data.map((order: any) => ({ ...order, total: 0 }));
+=======
+        | 'pending'
+        | 'completed'
+        | 'shipped'
+        | 'cancelled'
+      ].map((order: any) => ({ ...order, total: 0 }));
+>>>>>>> bd2283244946d976b25d726075eb877dd1584cfc
 
     ords.forEach((order: any) => {
       let total = 0;
@@ -125,7 +129,7 @@ export default function Customer() {
 
             <div className="my-5 flex flex-col gap-3">
               {tempOrders.map((order: any) => (
-                <div className="p-3 border rounded  flex flex-col gap-2 bg-slate-100">
+                <div key={order.serialNumber} className="p-3 border rounded  flex flex-col gap-2 bg-slate-100">
                   <div className="flex justify-between">
                     <h3 className="font-bold">#{order.serialNumber}</h3>
                     <h3 className="font-bold">
@@ -135,7 +139,7 @@ export default function Customer() {
                   <div className="flex gap-2 flex-wrap">
                     {/* ITEM */}
                     {order.products.map((product: any) => (
-                      <div className="flex border-b gap-3 w-[300px] border rounded p-3 bg-white">
+                      <div key={product.product.name} className="flex border-b gap-3 w-[300px] border rounded p-3 bg-white">
                         <Image
                           src={
                             product.product.images.length > 0

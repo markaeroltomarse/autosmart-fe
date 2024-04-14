@@ -1,3 +1,4 @@
+import { objectToQueryString } from '@/utils/object';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { HYDRATE } from 'next-redux-wrapper';
 import { read_cookie } from 'sfcookies';
@@ -35,9 +36,9 @@ export const ordersApi = createApi({
   tagTypes: ['GetOrders', 'GetCustomerOrders'],
   endpoints: (build) => ({
     getOrders: build.query({
-      query: (token?: string) => {
+      query: (filter?: any, token?: string) => {
         return {
-          url: ``,
+          url: `?${filter ? objectToQueryString(filter) : ''}`,
           method: 'GET',
           headers: {
             authorization: `Bearer ${token || getAccessToken()}`, // pass the user token(authenticated identifier) to get his cart record
@@ -65,7 +66,7 @@ export const ordersApi = createApi({
         updateOrderInput: {
           serialNumber: string;
           status: 'pending' | 'shipped' | 'completed' | 'cancelled';
-          rider?: string;
+          email?: string;
         },
         token?: string
       ) => {
@@ -74,7 +75,7 @@ export const ordersApi = createApi({
           method: 'PUT',
           body: {
             status: updateOrderInput.status,
-            rider: updateOrderInput.rider,
+            email: updateOrderInput.email,
           },
           headers: {
             authorization: `Bearer ${token || getAccessToken()}`,

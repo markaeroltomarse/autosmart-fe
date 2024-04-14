@@ -10,12 +10,11 @@ export default function AdminMenu({ defaultValue }: IAdminMenuProps) {
     <>
       <div className="flex justify-start items-center mt-[20%] border-r pr-10">
         <ButtonGroup
-          values={['Home', 'Inventory', 'Orders', 'Category']}
+          values={['Home', 'Inventory', 'Orders', 'Category', 'Riders']}
           isCol={true}
           onClick={(data) => {
             router.replace(
-              `/admin/${
-                data.selected === 'Home' ? '/' : data.selected.toLowerCase()
+              `/admin/${data.selected === 'Home' ? '/' : data.selected.toLowerCase()
               }`
             );
           }}

@@ -1,7 +1,7 @@
 import { ICustomerType } from '@/types/customer.type';
-import Logo from '../Logo';
 import Image from 'next/image';
 import Link from 'next/link';
+import Logo from '../Logo';
 export default function CustomerNavbar({
   customer,
 }: {
@@ -23,13 +23,19 @@ export default function CustomerNavbar({
             <Link href={'/customer/account'}>
               <small className="text-sm text-slate-500">My Profile</small>
             </Link>
+
+            {
+              customer?.isRider && <Link href={'/delivery'}>
+                <small className="text-sm text-blue-500">Switch as Rider</small>
+              </Link>
+            }
           </div>
         </div>
         <Image
           width={50}
           height={50}
-          alt={customer.fname}
-          src={customer.profileImage}
+          alt={customer.fname!}
+          src={customer.profileImage! || '/logo.png'}
           className="rounded-full"
         />
       </div>

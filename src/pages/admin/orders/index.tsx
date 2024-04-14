@@ -1,5 +1,6 @@
 import AdminMenu from '@/components/AdminMenu';
 import AdminNav from '@/components/AdminNav';
+import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import ButtonGroup from '@/components/ButtonGroup';
 import Input from '@/components/Input';
@@ -23,6 +24,7 @@ export default function Orders() {
   const [getOrders, getOrdersState] = useLazyGetOrdersQuery();
   const [updateOrderStatus, updateOrderStatusState] =
     useUpdateOrderStatusMutation();
+
   const [orders, setOrders] = useState({
     shipped: [],
     pending: [],
@@ -35,7 +37,7 @@ export default function Orders() {
 
   const [toBeShip, setToBeShip] = useState<{
     id: string;
-    rider: string;
+    email: string;
   } | null>(null);
 
   useEffect(() => {
@@ -84,7 +86,7 @@ export default function Orders() {
 
   useEffect(() => {
     if (updateOrderStatusState.isSuccess) {
-      getOrders(undefined).then(({ data }) => {
+      getOrders(undefined, undefined).then(({ data }) => {
         setOrders(data?.data);
       });
     }
@@ -98,7 +100,20 @@ export default function Orders() {
             <BasicLoader />
           </div>
         )}
-
+        {
+          updateOrderStatusState.isError && <Alert
+            type={"error"}
+            title={"Email not found"}
+            message={"This email is not register as customer."}
+          />
+        }
+        {
+          updateOrderStatusState.isSuccess && <Alert
+            type={"success"}
+            title={"Delivery staff assigned."}
+            message={""}
+          />
+        }
         {toBeShip && selectedStatus === 'pending' && (
           <div className="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-slate-600 bg-opacity-50">
             <form
@@ -109,24 +124,27 @@ export default function Orders() {
                   (order: any) => order.id === toBeShip.id
                 );
                 if (order) {
-                  await updateOrderStatus({
+                  const res: any = await updateOrderStatus({
                     serialNumber: order.serialNumber,
                     status: 'shipped',
-                    rider: toBeShip.rider,
+                    email: toBeShip.email,
                   });
-                  setToBeShip(null);
-                  setSelectedStatus('shipped');
+
+                  if (!res?.error) {
+                    setToBeShip(null);
+                    setSelectedStatus('shipped');
+                  }
                 }
               }}
             >
               <h3 className="text-1xl font-bold">Enter a rider fullname.</h3>
               <Input
-                type="text"
+                type="email"
                 required={true}
                 onChange={(e) =>
                   setToBeShip({
                     ...toBeShip,
-                    rider: e.target.value,
+                    email: e.target.value,
                   })
                 }
                 icon={<GiFullMotorcycleHelmet size={20} color="grey" />}
@@ -185,7 +203,7 @@ export default function Orders() {
                               onClick={() => {
                                 setToBeShip({
                                   id: id,
-                                  rider: '',
+                                  email: '',
                                 });
                               }}
                             />

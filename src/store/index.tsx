@@ -9,14 +9,16 @@ import {
   REHYDRATE,
   persistReducer,
 } from 'redux-persist';
-import { productsApi } from './api/productsApi';
-import productReducer from './reducers/productsReducers';
-import { customersApi } from './api/customerApi';
+import storageSession from 'redux-persist/lib/storage/session';
 import { adminApi } from './api/adminApi';
 import { cartsApi } from './api/cartApi';
-import cartSlice from './reducers/cartsReducers';
-import storageSession from 'redux-persist/lib/storage/session';
+import { customersApi } from './api/customerApi';
 import { ordersApi } from './api/ordersApi';
+import { productsApi } from './api/productsApi';
+import cartSlice from './reducers/cartsReducers';
+import componentsReducers from './reducers/componentsReducers';
+import productReducer from './reducers/productsReducers';
+import userReducer from './reducers/userReducers';
 
 const persistedCartReducer = persistReducer(
   { key: 'cart', storage: storageSession },
@@ -34,6 +36,8 @@ const store: any = () =>
       // Persists,
       [cartSlice.name]: persistedCartReducer,
       productReducer,
+      userReducer,
+      componentsReducers
     },
     middleware: (getDefault) =>
       getDefault({
@@ -45,7 +49,8 @@ const store: any = () =>
         customersApi.middleware,
         adminApi.middleware,
         cartsApi.middleware,
-        ordersApi.middleware
+        ordersApi.middleware,
+
         // productsApi.middleware
       ),
   });

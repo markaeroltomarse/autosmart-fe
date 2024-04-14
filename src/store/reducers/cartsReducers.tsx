@@ -9,7 +9,7 @@ const initialState: IInitialState = {
 };
 
 const cartSlice = createSlice({
-  name: 'productSlice',
+  name: 'cartSlice',
   initialState,
   reducers: {
     tempSetCart(state, { payload }) {
@@ -21,7 +21,7 @@ const cartSlice = createSlice({
       }
     },
   },
-  extraReducers(builder) {},
+  extraReducers(builder) { },
 });
 
 export const { tempAddToCart, tempSetCart } = cartSlice.actions;

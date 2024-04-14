@@ -18,11 +18,9 @@ export default function Button({
   return (
     <button
       type={buttonType}
-      className={`btn bg-gradient-to-r font-bold text-base leading-6 rounded-lg transition duration-150 ease-in-out px-3 ${
-        disabled && 'opacity-50'
-      } ${buttonClass || 'h-12 px-6 py-2.5'} ${
-        icon && 'flex items-center gap-2'
-      } `}
+      className={`btn bg-gradient-to-r font-bold text-base leading-6 rounded-lg transition duration-150 ease-in-out px-3 ${disabled && 'opacity-50'
+        } ${buttonClass || 'h-12 px-6 py-2.5'} ${icon && 'flex items-center gap-2'
+        } `}
       onClick={onClick}
       disabled={disabled}
     >
