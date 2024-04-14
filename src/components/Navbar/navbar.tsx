@@ -9,6 +9,7 @@ import { MdExpandMore } from 'react-icons/md';
 import { delete_cookie, read_cookie } from 'sfcookies';
 import Logo from '../Logo';
 import Searchbar from '../Searchbar/searchbar';
+
 type Props = {
   onSelectedCategory?: (e: string) => void;
 };
