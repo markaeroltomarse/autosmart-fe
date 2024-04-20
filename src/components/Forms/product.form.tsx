@@ -1,17 +1,16 @@
 import { COLORS } from '@/constants/colors.contant';
-import Input from '../Input';
-import Select from '../Select';
-import Button from '../Button';
-import { IProductType } from '@/types/product.type';
-import { useEffect, useMemo, useState } from 'react';
+import { TCategory } from '@/pages/admin/category';
 import {
   useCreateProductMutation,
   useLazyGetCategoriesQuery,
-  useUpdateProductMutation,
+  useUpdateProductMutation
 } from '@/store/api/productsApi';
-import { useRouter } from 'next/router';
+import { IProductType } from '@/types/product.type';
+import { useEffect, useMemo, useState } from 'react';
+import Button from '../Button';
+import Input from '../Input';
 import LoadingScreen from '../Loader/LoadingScreen';
-import { TCategory } from '@/pages/admin/category';
+import Select from '../Select';
 
 interface IProductTypeProps {
   product?: IProductType;
@@ -40,10 +39,10 @@ export default function ProductForm({
     name: product?.name || '',
     brandName: product?.brandName || '',
     category: product?.category || '',
-    price: product?.price || 0,
-    quantity: product?.quantity || 0,
+    price: product?.price,
+    quantity: product?.quantity,
     status: product?.status || '',
-    discount: product?.discount || 0,
+    discount: product?.discount,
     color: product?.color || '',
     contactOptions: product?.contactOptions || '',
     images: product?.images || ['', '', ''],
@@ -67,7 +66,7 @@ export default function ProductForm({
   const handleSubmitProductForm = async (e: any) => {
     setLoading(true);
     if (type === 'create') {
-      const data: any = await createProduct(formData);
+      const data: any = await createProduct(formData as any);
       if (data?.error) {
         if (onError) onError('Cannot create product, Please try again.');
       } else {

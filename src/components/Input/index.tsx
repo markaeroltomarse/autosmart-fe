@@ -58,7 +58,6 @@ export default function Input({
             className={`outline-none bg-transparent  ${width ? `w-[${width}px]` : 'w-full'
               } `}
             value={value}
-            min={0}
             pattern={pattern}
             title={title}
             required={required}

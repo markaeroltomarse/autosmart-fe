@@ -5,19 +5,13 @@ import Button from '@/components/Button';
 import ProductForm from '@/components/Forms/product.form';
 import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
-import Select from '@/components/Select';
 import Table from '@/components/Table';
-import { COLORS } from '@/constants/colors.contant';
-import { wrapper } from '@/store';
 import {
-  getProducts,
   useDeleteProductMutation,
-  useLazyGetCategoriesQuery,
   useLazyGetProductsQuery,
-  useUpdateProductMutation,
+  useUpdateProductMutation
 } from '@/store/api/productsApi';
 import { IProductType } from '@/types/product.type';
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { AiFillCheckSquare, AiOutlineSearch } from 'react-icons/ai';
@@ -84,8 +78,6 @@ export default function Dashboard() {
     }
   }, [router.query, selectedProduct]);
 
-  useEffect(() => {}, []);
-
   return (
     <>
       <main className="">
@@ -119,7 +111,7 @@ export default function Dashboard() {
                 />
               )}
               {router.query?.action === 'create' ||
-              router.query?.action === 'edit' ? (
+                router.query?.action === 'edit' ? (
                 <ProductForm
                   type={router.query?.action}
                   product={selectedProduct!}
@@ -212,7 +204,7 @@ export default function Dashboard() {
                                       )?.quantity || 0;
                                     if (
                                       Number(e.currentTarget.value) !==
-                                        originalQuantity &&
+                                      originalQuantity &&
                                       !changeQuantities.includes(id)
                                     ) {
                                       setChangeQuantity([

@@ -12,7 +12,7 @@ export interface DeliveryItemsProps {
 
 const DeliveryItems: React.FC<DeliveryItemsProps> = (props) => {
     const { deliveries, onUpdateDelivery, loading } = props;
-
+    
 
     return <div>
         <div className="flex flex-col gap-3">

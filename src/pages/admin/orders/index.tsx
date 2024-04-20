@@ -137,7 +137,7 @@ export default function Orders() {
                 }
               }}
             >
-              <h3 className="text-1xl font-bold">Enter a rider fullname.</h3>
+              <h3 className="text-1xl font-bold">Enter a rider email.</h3>
               <Input
                 type="email"
                 required={true}

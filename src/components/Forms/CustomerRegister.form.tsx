@@ -45,7 +45,7 @@ const CustomerRegisterForm: React.FC<CustomerRegisterFormProps> = (props) => {
                 <FaUserCheck size={100} />
 
                 <p className="font-Jost tracking-wide">
-                    Registration success. you may now proceed to login your account <Link href={'/account/authentication'} className="underline">here.</Link>
+                    Registration success. We sent you an email for your account verification link to <b>{formData?.email}</b> and after that, you may now proceed to login your account <Link href={'/account/authentication'} className="underline">here.</Link>
                 </p>
             </div>
         }
