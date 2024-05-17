@@ -52,9 +52,10 @@ export default function Dashboard() {
     null
   );
 
-  const getProductsHanlders = () => {
-    getProducts(undefined).then(({ data }) => {
+  const getProductsHandlers = async () => {
+    return getProducts(undefined).then(({ data }) => {
       setProducts(data?.data);
+      return data?.data
     });
   };
 
@@ -115,12 +116,12 @@ export default function Dashboard() {
                 <ProductForm
                   type={router.query?.action}
                   product={selectedProduct!}
-                  onCreated={() => {
-                    getProductsHanlders();
+                  onCreated={async () => {
+                    await getProductsHandlers();
                     router.replace('/admin/inventory');
                   }}
-                  onEdited={() => {
-                    getProductsHanlders();
+                  onEdited={async () => {
+                    await getProductsHandlers();
                     router.replace('/admin/inventory');
                   }}
                 />
@@ -196,6 +197,7 @@ export default function Dashboard() {
                                 <Input
                                   type="number"
                                   value={data}
+                                  min={0}
                                   width={100}
                                   onChange={(e) => {
                                     const originalQuantity =
@@ -229,24 +231,26 @@ export default function Dashboard() {
                                       quantity: Number(e.currentTarget.value),
                                     });
                                   }}
+                                  className={`${data <= 5 && (data === 0 ? 'text-red-500' : 'text-yellow-500')}`}
+
                                 />
                                 {changeQuantities.includes(id) && (
                                   <AiFillCheckSquare
                                     size={40}
                                     color="green"
                                     className="cursor-pointer"
-                                    onClick={async (e) => {
-                                      await updateProduct({
+                                    onClick={async () => {
+                                      updateProduct({
                                         id: currentQuantityTxt?.id,
                                         quantity: currentQuantityTxt?.quantity,
-                                      });
-
-                                      getProductsHanlders()
-                                      setChangeQuantity(
-                                        changeQuantities.filter(
-                                          (selected) => selected !== id
-                                        )
-                                      );
+                                      }).then(async () => {
+                                        await getProductsHandlers()
+                                        setChangeQuantity(
+                                          changeQuantities.filter(
+                                            (selected) => selected !== id
+                                          )
+                                        );
+                                      })
                                     }}
                                   />
                                 )}

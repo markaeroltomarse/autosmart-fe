@@ -3,6 +3,7 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
 import Navbar from '@/components/Navbar/navbar';
+import useAlert from '@/hooks/useAlert';
 
 import {
   useCheckOutMutation,
@@ -48,6 +49,8 @@ export default function Cart() {
     useUpdateCartItemQuantityMutation();
 
   const [focusedOn, setFocusedOn] = useState<string>('');
+
+  const { execute } = useAlert()
 
   const handleGetProducts = () => {
     getCart(undefined).then(({ data, isError }: any) => {
@@ -125,11 +128,21 @@ export default function Cart() {
         externalId: serialNumber,
         amount,
         phoneNumber: '+639097801235',
-      }).catch(() => {
+      }).catch((error: any) => {
+
         sessionStorage.setItem('toBeCheckOut', '');
       });
 
+      console.log(error)
+
+
+
       if (error) {
+        execute({
+          message: error.data.message,
+          title: 'Order error',
+          type: 'error'
+        })
         sessionStorage.setItem('toBeCheckOut', '');
       }
 
@@ -153,8 +166,9 @@ export default function Cart() {
         products: prevCheckOut.toBeCheckOut,
       }).then((response: any) => {
         if (response.error) {
-        return alert('Please select an address for your order, Please try again')
+          return alert(response.error.data.message)
         }
+
         if (response.data.message === 'success') {
           getCart(undefined).then(({ data, isError }: any) => {
             if (!isError) {
@@ -177,10 +191,10 @@ export default function Cart() {
           checkOutState.isLoading ||
           getCartState.isLoading ||
           updateCartItemState.isLoading) && (
-          <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
-            <BasicLoader />
-          </div>
-        )}
+            <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
+              <BasicLoader />
+            </div>
+          )}
         <Navbar />
         {handleAddToCartResponseAlert()}
         <div className="p-5 md:px-[10%] md:py-5">
@@ -326,11 +340,10 @@ export default function Cart() {
                             ]);
                           }
                         }}
-                        className={`CHECKBOX border p-3 rounded flex items-center justify-center ${
-                          selectedProducts.includes(product.product.id)
-                            ? 'bg-blue-400'
-                            : 'bg-slate-100'
-                        }`}
+                        className={`CHECKBOX border p-3 rounded flex items-center justify-center ${selectedProducts.includes(product.product.id)
+                          ? 'bg-blue-400'
+                          : 'bg-slate-100'
+                          }`}
                       >
                         {selectedProducts.includes(product.product.id) && (
                           <BsCheckLg color="white" className="absolute " />

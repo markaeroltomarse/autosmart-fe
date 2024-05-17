@@ -18,8 +18,8 @@ const DeliveryPage: NextPageWithLayout<DeliveryPageProps> = (_, ref: IndexPageRe
     const [getOrders, { data, isLoading }] = useLazyGetOrdersQuery();
     const [getCustomer, { isSuccess, data: userProfile }] = useLazyGetCustomerProfileQuery();
 
-    const loadOrders = () => {
-        getCustomer(undefined).then(customerRes => {
+    const loadOrders = async () => {
+        return getCustomer(undefined).then(customerRes => {
             getOrders({ riderId: customerRes?.data?.data.id }, undefined)
         })
     }
@@ -34,6 +34,10 @@ const DeliveryPage: NextPageWithLayout<DeliveryPageProps> = (_, ref: IndexPageRe
         useUpdateOrderStatusMutation();
 
     const handleCompleteDelivery = async (order: ITransactionType, toStatus: "pending" | "shipped" | "completed" | "cancelled") => {
+        if (!confirm(`Are you sure want to ${toStatus} this order?`)) {
+            return
+        }
+
         const res: any = await updateOrderStatus({
             serialNumber: order.serialNumber,
             status: toStatus,
@@ -41,19 +45,29 @@ const DeliveryPage: NextPageWithLayout<DeliveryPageProps> = (_, ref: IndexPageRe
         })
 
         if (res?.error) {
-            execute({
+            return execute({
                 title: 'Delivery Failed',
                 message: `Order ${order.serialNumber} failed. Please contact the admin.`,
                 type: 'error'
             })
-        } else {
+        }
+
+        await loadOrders()
+
+        if (toStatus === 'completed') {
             execute({
                 title: 'Delivery Completed',
                 message: `Order ${order.serialNumber} delivered.`,
                 type: 'success'
             })
+        }
 
-            loadOrders()
+        if (toStatus === 'cancelled') {
+            execute({
+                title: 'Delivery Cancelled',
+                message: `Order ${order.serialNumber} cancelled.`,
+                type: 'success'
+            })
         }
     }
 

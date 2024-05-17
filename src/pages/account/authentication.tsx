@@ -2,8 +2,10 @@ import HeroBg from '@/assets/images/base_img_white_bg_red_bar.png';
 import Button from '@/components/Button';
 import Divider from '@/components/Divider';
 import Input from '@/components/Input';
+import OTPInput from '@/components/Input/OTPInput';
 import LoadingScreen from '@/components/Loader/LoadingScreen';
 import Logo from '@/components/Logo';
+import useAlert from '@/hooks/useAlert';
 import {
   useCreateCustomerMutation,
   useLoginCustomerMutation,
@@ -20,11 +22,16 @@ export default function Authentication() {
   const [isLoading, setIsLoading] = useState(false);
   const [createCustomer, createCustomerState] = useCreateCustomerMutation();
   const [loginCustomer, loginCustomerStatus] = useLoginCustomerMutation();
+  const [isOTP, setIsOTP] = useState('')
+  const [inputOTP, setInputOTP] = useState('')
+  const [loginToken, setLoginToken] = useState('')
 
   const [loginPayload, setLoginPayload] = useState({
     email: '',
     password: ''
   })
+
+  const { execute } = useAlert()
 
   const query = useMemo(() => {
     const queryString = router.asPath.split('#')[1] || '';
@@ -107,8 +114,7 @@ export default function Authentication() {
       } else {
         auth0UserInfo(query?.access_token).then((data: any) => {
           loginCustomer({ email: data.email }).then(
-            ({ data, isSuccess, error }: any) => {
-              console.log(data);
+            ({ data, error }: any) => {
               if (data?.message === 'success') {
                 bake_cookie('token', data.data.token);
                 router.replace('/customer');
@@ -135,10 +141,12 @@ export default function Authentication() {
     e.preventDefault()
 
     loginCustomer({ email: loginPayload.email, password: loginPayload?.password }).then(
-      ({ data, isSuccess, error }: any) => {
+      ({ data, error }: any) => {
         if (data?.message === 'success') {
-          bake_cookie('token', data.data.token);
-          router.replace('/customer');
+          setIsOTP(data.data.otp)
+          setLoginToken(data.data.token)
+          // bake_cookie('token', data.data.token);
+          // router.replace('/customer');
         } else {
           setIsLoading(false);
           alert(error?.data.message);
@@ -172,11 +180,29 @@ export default function Authentication() {
               <Logo className="w-full h-[100px]" />
             </div>
             <div className="flex gap-2 flex-col">
-              <form className='flex flex-col gap-4' onSubmit={handleLoginSubmit}>
-                <Input onChange={handleInputChange} name="email" type="email" className="font-Jost text-blue-900" label="Email" required />
-                <Input onChange={handleInputChange} name="password" type="password" className="font-Jost text-blue-900" label="Password" required />
-                <Button title="Submit" buttonType="submit" buttonClass="bg-blue-900 text-white p-3 w-[100%]" />
-              </form>
+              {
+                isOTP ? <>
+                  <OTPInput length={6} onChange={(otp) => {
+                    setInputOTP(otp)
+                  }} />
+                  <Button title="Submit" onClick={() => {
+                    if (String(isOTP) === inputOTP) {
+                      bake_cookie('token', loginToken);
+                      router.replace('/customer');
+                    } else {
+                      execute({
+                        message: 'Invalid code, please try again.',
+                        title: 'Invalid OTP',
+                        type: 'error'
+                      })
+                    }
+                  }} buttonClass="bg-blue-900 text-white p-3 w-[100%]" />
+                </> : <form className='flex flex-col gap-4' onSubmit={handleLoginSubmit}>
+                  <Input onChange={handleInputChange} name="email" type="email" className="font-Jost text-blue-900" label="Email" required />
+                  <Input onChange={handleInputChange} name="password" type="password" className="font-Jost text-blue-900" label="Password" required />
+                  <Button title="Submit" buttonType="submit" buttonClass="bg-blue-900 text-white p-3 w-[100%]" />
+                </form>
+              }
               <hr />
 
               <Button

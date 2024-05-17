@@ -34,7 +34,7 @@ export const adminApi = createApi({
     }
   },
   reducerPath: 'adminApi',
-  tagTypes: ['GetAdmin'],
+  tagTypes: ['GetAdmin', 'GetSalesPrediction', 'GetInventoryPrediction'],
   endpoints: (build) => ({
     getAdmiProfile: build.query({
       query: (token?: string) => {
@@ -66,6 +66,30 @@ export const adminApi = createApi({
         };
       },
     }),
+    getSalesPrediction: build.query({
+      query: (token?: string) => {
+        return {
+          url: `/sales-prediction`,
+          method: 'GET',
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+      providesTags: ['GetSalesPrediction'],
+    }),
+    getInventoryPrediction: build.query({
+      query: (token?: string) => {
+        return {
+          url: `/inventory-prediction`,
+          method: 'GET',
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+      providesTags: ['GetInventoryPrediction'],
+    }),
   }),
 });
 
@@ -73,6 +97,8 @@ export const {
   useCreateAdminMutation,
   useLoginAdminMutation,
   useLazyGetAdmiProfileQuery,
+  useLazyGetSalesPredictionQuery,
+  useLazyGetInventoryPredictionQuery,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = adminApi;
-export const { getAdmiProfile, createAdmin, loginAdmin } = adminApi.endpoints;
+export const { getAdmiProfile, createAdmin, loginAdmin, getSalesPrediction, getInventoryPrediction } = adminApi.endpoints;

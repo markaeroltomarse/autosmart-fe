@@ -1,5 +1,7 @@
 import AdminMenu from '@/components/AdminMenu';
 import AdminNav from '@/components/AdminNav';
+import InventoryPredictionChart from '@/components/Charts/InventoryPredictionChart';
+import SalesPredictionChart from '@/components/Charts/SalesPredictionData';
 
 export default function Dashboard() {
   return (
@@ -11,6 +13,11 @@ export default function Dashboard() {
           <div className="flex min-h-[80vh] w-full  ">
             <div className="flex-none">
               <AdminMenu defaultValue="Dashboard" />
+            </div>
+            <div className='w-[100%] px-5'>
+              <SalesPredictionChart />
+              <br />
+              <InventoryPredictionChart />
             </div>
           </div>
         </div>

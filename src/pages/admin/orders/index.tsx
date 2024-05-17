@@ -1,11 +1,11 @@
 import AdminMenu from '@/components/AdminMenu';
 import AdminNav from '@/components/AdminNav';
-import Alert from '@/components/Alert';
 import Button from '@/components/Button';
 import ButtonGroup from '@/components/ButtonGroup';
 import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
 import Table from '@/components/Table';
+import useAlert from '@/hooks/useAlert';
 import {
   useLazyGetOrdersQuery,
   useUpdateOrderStatusMutation,
@@ -25,12 +25,15 @@ export default function Orders() {
   const [updateOrderStatus, updateOrderStatusState] =
     useUpdateOrderStatusMutation();
 
+  const { execute } = useAlert()
+
   const [orders, setOrders] = useState({
     shipped: [],
     pending: [],
     completed: [],
     cancelled: [],
   });
+
   const [selectedStatus, setSelectedStatus] = useState<
     'shipped' | 'pending' | 'completed' | 'cancelled'
   >('pending');
@@ -43,7 +46,6 @@ export default function Orders() {
   useEffect(() => {
     getOrders(undefined).then(({ data }) => {
       setOrders(data?.data);
-      console.log(data?.data);
     });
   }, []);
 
@@ -86,11 +88,27 @@ export default function Orders() {
 
   useEffect(() => {
     if (updateOrderStatusState.isSuccess) {
+      execute({
+        type: 'success',
+        title: 'Order update successfully.',
+        message: ''
+      })
       getOrders(undefined, undefined).then(({ data }) => {
         setOrders(data?.data);
       });
     }
+
+    if (updateOrderStatusState.isError) {
+      const error: any = updateOrderStatusState.error
+      execute({
+        type: 'error',
+        title: 'Cannot update order',
+        message: error?.data?.message || error?.data?.message?.[0]
+      })
+    }
   }, [updateOrderStatusState]);
+
+  console.log('updateOrderStatusState', updateOrderStatusState)
 
   return (
     <>
@@ -100,20 +118,7 @@ export default function Orders() {
             <BasicLoader />
           </div>
         )}
-        {
-          updateOrderStatusState.isError && <Alert
-            type={"error"}
-            title={"Email not found"}
-            message={"This email is not register as customer."}
-          />
-        }
-        {
-          updateOrderStatusState.isSuccess && <Alert
-            type={"success"}
-            title={"Delivery staff assigned."}
-            message={""}
-          />
-        }
+
         {toBeShip && selectedStatus === 'pending' && (
           <div className="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-slate-600 bg-opacity-50">
             <form
@@ -232,6 +237,7 @@ export default function Orders() {
                     toShip: order.serialNumber,
                     toComplete: order.serialNumber,
                     createdAt: moment(order?.createdAt).format('ll'),
+                    rider: order?.rider && order.rider.email
                   }))}
                   title={'Orders'}
                 />
