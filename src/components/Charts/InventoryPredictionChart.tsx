@@ -1,6 +1,7 @@
 // InventoryPredictionChart.tsx
 
 import { useLazyGetInventoryPredictionQuery } from '@/store/api/adminApi';
+import moment from 'moment';
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 
@@ -38,7 +39,7 @@ const InventoryPredictionChart: React.FC = () => {
             const { data } = await getInventoryPrediction(undefined)
             console.log('InventoryPredictionChart', data.data)
             const predictionData: any[] = data.data
-            const categories = predictionData.map(item => item.date);
+            const categories = predictionData.map(item => moment(item.date, 'YYYY-MM-DD').format('ll'));
 
             setOptions((prevOptions: any) => ({
                 ...prevOptions,
@@ -48,7 +49,7 @@ const InventoryPredictionChart: React.FC = () => {
                 },
             }));
             setData(predictionData.map(item => ({
-                x: item.date,
+                x: moment(item.date, 'YYYY-MM-DD').format('ll'),
                 y: item.quantity
             })));
         } catch (error) {
