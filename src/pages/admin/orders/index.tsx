@@ -13,12 +13,6 @@ import {
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { GiFullMotorcycleHelmet } from 'react-icons/gi';
-interface IOrders {
-  shipped: any[];
-  pending: any[];
-  completed: any[];
-  cancelled: any[];
-}
 
 export default function Orders() {
   const [getOrders, getOrdersState] = useLazyGetOrdersQuery();
@@ -108,7 +102,24 @@ export default function Orders() {
     }
   }, [updateOrderStatusState]);
 
-  console.log('updateOrderStatusState', updateOrderStatusState)
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const order: any = orders.pending.find(
+      (order: any) => order.id === toBeShip?.id
+    );
+    if (order) {
+      const res: any = await updateOrderStatus({
+        serialNumber: order.serialNumber,
+        status: 'shipped',
+        email: toBeShip?.email,
+      });
+
+      if (!res?.error) {
+        setToBeShip(null);
+        setSelectedStatus('shipped');
+      }
+    }
+  }
 
   return (
     <>
@@ -123,24 +134,7 @@ export default function Orders() {
           <div className="fixed w-full h-full top-0 left-0 flex items-center justify-center bg-slate-600 bg-opacity-50">
             <form
               className="bg-white rounded-md shadow-md p-5 flex flex-col gap-3"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const order: any = orders.pending.find(
-                  (order: any) => order.id === toBeShip.id
-                );
-                if (order) {
-                  const res: any = await updateOrderStatus({
-                    serialNumber: order.serialNumber,
-                    status: 'shipped',
-                    email: toBeShip.email,
-                  });
-
-                  if (!res?.error) {
-                    setToBeShip(null);
-                    setSelectedStatus('shipped');
-                  }
-                }
-              }}
+              onSubmit={handleSubmit}
             >
               <h3 className="text-1xl font-bold">Enter a rider email.</h3>
               <Input

@@ -10,6 +10,7 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), {
 
 const InventoryPredictionChart: React.FC = () => {
     const [getInventoryPrediction] = useLazyGetInventoryPredictionQuery()
+    const [data, setData] = useState<{ x: string; y: number }[]>([]);
     const [options, setOptions] = useState<any>({
         chart: {
             id: 'inventory-prediction',
@@ -36,9 +37,9 @@ const InventoryPredictionChart: React.FC = () => {
         try {
             const { data } = await getInventoryPrediction(undefined)
             console.log('InventoryPredictionChart', data.data)
-            const categories = Array.from({ length: data.data.length }, (_, i) => `Day ${i + 1}`);
+            const predictionData: any[] = data.data
+            const categories = predictionData.map(item => item.date);
 
-            console.log('categories', categories)
             setOptions((prevOptions: any) => ({
                 ...prevOptions,
                 xaxis: {
@@ -46,7 +47,10 @@ const InventoryPredictionChart: React.FC = () => {
                     categories,
                 },
             }));
-            setSeries([{ name: 'Inventory Prediction', data: data.data }]);
+            setData(predictionData.map(item => ({
+                x: item.date,
+                y: item.quantity
+            })));
         } catch (error) {
             console.error('Error fetching inventory prediction data:', error);
         }
@@ -54,7 +58,7 @@ const InventoryPredictionChart: React.FC = () => {
 
     return <div className='border rounded-md p-5 bg-blue-100'>
         <b>Inventory Prediction</b>
-        <ReactApexChart options={options} series={series} type="line" height={400} />
+        <ReactApexChart options={options} series={[{ name: 'Inventory Prediction', data }]} type="line" height={400} />
         <div className='text-xs text-slate-500'>
             <p>
                 The Inventory Prediction Chart displays forecasted inventory levels over time. It helps visualize expected changes in stock availability, assisting in inventory management decisions.
