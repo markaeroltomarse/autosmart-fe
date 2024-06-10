@@ -35,7 +35,6 @@ const SalesPredictionChart: React.FC = () => {
         },
     });
 
-
     useEffect(() => {
         const fetchData = async () => {
             try {

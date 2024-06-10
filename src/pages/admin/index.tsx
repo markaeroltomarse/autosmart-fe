@@ -2,6 +2,7 @@ import AdminMenu from '@/components/AdminMenu';
 import AdminNav from '@/components/AdminNav';
 import InventoryPredictionChart from '@/components/Charts/InventoryPredictionChart';
 import SalesPredictionChart from '@/components/Charts/SalesPredictionData';
+import SummaryDashboard from '@/components/SummaryDashboard';
 
 export default function Dashboard() {
   return (
@@ -15,6 +16,8 @@ export default function Dashboard() {
               <AdminMenu defaultValue="Dashboard" />
             </div>
             <div className='w-[100%] px-5'>
+              <SummaryDashboard />
+              <br />
               <SalesPredictionChart />
               <br />
               <InventoryPredictionChart />

@@ -34,7 +34,7 @@ export const adminApi = createApi({
     }
   },
   reducerPath: 'adminApi',
-  tagTypes: ['GetAdmin', 'GetSalesPrediction', 'GetInventoryPrediction'],
+  tagTypes: ['GetAdmin', 'GetSalesPrediction', 'GetInventoryPrediction', 'GetSummary'],
   endpoints: (build) => ({
     getAdmiProfile: build.query({
       query: (token?: string) => {
@@ -90,6 +90,18 @@ export const adminApi = createApi({
       },
       providesTags: ['GetInventoryPrediction'],
     }),
+    getSummaryDashboard: build.query({
+      query: (token?: string) => {
+        return {
+          url: `/summary`,
+          method: 'GET',
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+      providesTags: ['GetSummary'],
+    }),
   }),
 });
 
@@ -99,6 +111,14 @@ export const {
   useLazyGetAdmiProfileQuery,
   useLazyGetSalesPredictionQuery,
   useLazyGetInventoryPredictionQuery,
-  util: { getRunningQueriesThunk, getRunningMutationsThunk },
+  useLazyGetSummaryDashboardQuery,
+  util: { getRunningQueriesThunk, getRunningMutationsThunk, },
 } = adminApi;
-export const { getAdmiProfile, createAdmin, loginAdmin, getSalesPrediction, getInventoryPrediction } = adminApi.endpoints;
+export const {
+  getAdmiProfile,
+  createAdmin,
+  loginAdmin,
+  getSalesPrediction,
+  getInventoryPrediction,
+  getSummaryDashboard
+} = adminApi.endpoints;

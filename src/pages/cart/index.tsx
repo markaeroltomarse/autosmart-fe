@@ -98,7 +98,11 @@ export default function Cart() {
   const handleCheckOut = async () => {
     if (updateCartItemState.isLoading) return;
     if (selectedProducts.length === 0) {
-      alert('Please select the products.');
+      execute({
+        message: 'Please select the products.',
+        title: 'Required products.',
+        type: 'warning'
+      })
     } else {
       const toBeCheckOut: any[] = selectedProducts.map((id) => ({
         productId: id,

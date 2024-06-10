@@ -4,7 +4,7 @@ import Button from '../Button';
 interface IButtonGroupProps {
   values: string[];
   onClick: (e: any) => any;
-  isCol?: boolean;
+  isVertical?: boolean;
   className?: string;
   defaultValue?: string;
 }
@@ -12,7 +12,7 @@ interface IButtonGroupProps {
 export default function ButtonGroup({
   values,
   onClick,
-  isCol,
+  isVertical,
   className,
   defaultValue,
 }: IButtonGroupProps) {
@@ -27,21 +27,20 @@ export default function ButtonGroup({
       });
     }
   }, [values]);
+
   return (
     <>
       <div
-        className={`flex ${
-          isCol ? 'flex-col' : 'flex-row'
-        }  w-fit bg-transparent ${className}`}
+        className={`flex ${isVertical ? 'flex-col' : 'flex-row'
+          }  w-fit bg-transparent ${className}`}
       >
         {buttons.map((button) => (
           <Button
             key={button.id}
-            buttonClass={`p-3 rounded  ${
-              button.id === selected
-                ? 'bg-green-500 text-green-100'
-                : 'hover:bg-green-300'
-            } `}
+            buttonClass={`p-3 rounded  ${button.id === selected
+              ? 'bg-green-500 text-green-100'
+              : 'hover:bg-green-300'
+              } `}
             title={button.value}
             onClick={() => {
               onClick({

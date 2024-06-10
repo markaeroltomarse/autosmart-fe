@@ -81,6 +81,19 @@ export default function Authentication() {
     });
   }, []);
 
+  const handleSubmitOTP = () => {
+    if (String(isOTP) === inputOTP) {
+      bake_cookie('token', loginToken);
+      router.replace('/customer');
+    } else {
+      execute({
+        message: 'Invalid code, please try again.',
+        title: 'Invalid OTP',
+        type: 'error'
+      })
+    }
+  }
+
   useEffect(() => {
     if (query?.access_token) {
       setIsLoading(true);
@@ -120,7 +133,11 @@ export default function Authentication() {
                 router.replace('/customer');
               } else {
                 setIsLoading(false);
-                alert(error?.data.message);
+                execute({
+                  type: 'error',
+                  message: error?.data.message,
+                  title: 'Invalid login'
+                })
                 router.replace('/account/authentication');
               }
             }
@@ -149,7 +166,11 @@ export default function Authentication() {
           // router.replace('/customer');
         } else {
           setIsLoading(false);
-          alert(error?.data.message);
+          execute({
+            message: error?.data.message,
+            title: 'Invalid Login, Please try again.',
+            type: 'error'
+          })
           router.replace('/account/authentication');
         }
       }
@@ -182,25 +203,25 @@ export default function Authentication() {
             <div className="flex gap-2 flex-col">
               {
                 isOTP ? <>
-                  <OTPInput length={6} onChange={(otp) => {
-                    setInputOTP(otp)
-                  }} />
-                  <Button title="Submit" onClick={() => {
-                    if (String(isOTP) === inputOTP) {
-                      bake_cookie('token', loginToken);
-                      router.replace('/customer');
-                    } else {
-                      execute({
-                        message: 'Invalid code, please try again.',
-                        title: 'Invalid OTP',
-                        type: 'error'
-                      })
-                    }
-                  }} buttonClass="bg-blue-900 text-white p-3 w-[100%]" />
+                  <OTPInput
+                    length={6}
+                    onChange={(otp) => {
+                      setInputOTP(otp)
+                    }} />
+                  <Button
+                    title="Submit"
+                    onClick={handleSubmitOTP}
+                    buttonClass="bg-blue-900 text-white p-3 w-[100%]"
+                  />
                 </> : <form className='flex flex-col gap-4' onSubmit={handleLoginSubmit}>
                   <Input onChange={handleInputChange} name="email" type="email" className="font-Jost text-blue-900" label="Email" required />
                   <Input onChange={handleInputChange} name="password" type="password" className="font-Jost text-blue-900" label="Password" required />
-                  <Button title="Submit" buttonType="submit" buttonClass="bg-blue-900 text-white p-3 w-[100%]" />
+                  <Button
+                    title="Submit"
+                    buttonType="submit"
+                    buttonClass="bg-blue-900 text-white p-3 w-[100%]"
+                    loading={loginCustomerStatus?.isLoading}
+                  />
                 </form>
               }
               <hr />

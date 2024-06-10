@@ -1,5 +1,4 @@
 // InventoryPredictionChart.tsx
-
 import { useLazyGetInventoryPredictionQuery } from '@/store/api/adminApi';
 import moment from 'moment';
 import dynamic from 'next/dynamic';
@@ -22,13 +21,6 @@ const InventoryPredictionChart: React.FC = () => {
             categories: [],
         },
     });
-
-    const [series, setSeries] = useState<any>([
-        {
-            name: 'Inventory Prediction',
-            data: [],
-        },
-    ]);
 
     useEffect(() => {
         fetchData();

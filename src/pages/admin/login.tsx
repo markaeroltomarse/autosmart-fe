@@ -19,6 +19,7 @@ export default function LoginAdmin() {
             className="flex flex-col gap-2"
           >
             <Input
+              label='Email'
               type="email"
               placeholder="Enter email.."
               className="bg-slate-100"
@@ -26,6 +27,7 @@ export default function LoginAdmin() {
             />
 
             <Input
+              label='Password'
               type="password"
               placeholder="Enter password.."
               className="bg-slate-100"
@@ -35,7 +37,7 @@ export default function LoginAdmin() {
             <Button
               buttonType="submit"
               title="Login"
-              buttonClass="bg-green-500 text-green-100"
+              buttonClass="bg-green-500 text-green-100 p-2"
             />
           </form>
         </div>

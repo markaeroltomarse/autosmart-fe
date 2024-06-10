@@ -83,8 +83,6 @@ export default function Home() {
                       height={200}
                     />
                   </div>
-
-
                   <div className="flex justify-between flex-col relative">
                     <div className="font-bold truncate w-[150px]">
                       {product.name}
@@ -102,19 +100,12 @@ export default function Home() {
                         buttonClass="border py-2 px-3 text-xs justify-center bg-blue-950"
                         onClick={() => {
                           router.replace('/products/' + product.id);
-
-
                         }}
                       />
-
-
-
                     </div>
-
                   </div>
 
                 </div>
-
               ))}
           </div>
 
