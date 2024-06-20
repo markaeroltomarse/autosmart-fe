@@ -95,57 +95,117 @@ export default function Authentication() {
   }
 
   useEffect(() => {
-    if (query?.access_token) {
-      setIsLoading(true);
-      const authType = localStorage.getItem('authType');
-      if (authType === 'signup') {
-        auth0UserInfo(query?.access_token).then((data: any) => {
-          createCustomer({
-            email: data.email,
-            fname: data.given_name,
-            lname: data.family_name,
-            profileImage: data.picture,
-          }).then(({ isSuccess, error }: any) => {
-            if (isSuccess) {
-              loginCustomer({ email: data.email }).then(
-                ({ data, isSuccess, error }: any) => {
-                  if (isSuccess) {
-                    bake_cookie('token', data.data.token);
-                    router.replace('/customer');
-                  } else {
-                    setIsLoading(false);
-                    router.replace('/account/authentication');
-                  }
-                }
-              );
-            } else {
-              setIsLoading(false);
-              router.replace('/account/authentication');
-            }
-          });
-        });
-      } else {
-        auth0UserInfo(query?.access_token).then((data: any) => {
-          loginCustomer({ email: data.email }).then(
-            ({ data, error }: any) => {
-              if (data?.message === 'success') {
+    const handleAuthentication = async () => {
+      if (query?.access_token) {
+        setIsLoading(true);
+        try {
+          const authType = localStorage.getItem('authType');
+          const userInfo: any = await auth0UserInfo(query.access_token);
+
+          if (authType === 'signup') {
+            const { isSuccess: customerCreated, error }: any = await createCustomer({
+              email: userInfo.email,
+              fname: userInfo.given_name,
+              lname: userInfo.family_name,
+              profileImage: userInfo.picture,
+            });
+
+            if (customerCreated) {
+              const { data, isSuccess: loginSuccess }: any = await loginCustomer({ email: userInfo.email });
+              if (loginSuccess) {
                 bake_cookie('token', data.data.token);
                 router.replace('/customer');
               } else {
                 setIsLoading(false);
-                execute({
-                  type: 'error',
-                  message: error?.data.message,
-                  title: 'Invalid login'
-                })
+
                 router.replace('/account/authentication');
               }
+            } else {
+              setIsLoading(false);
+              execute({
+                type: 'error',
+                message: error?.data.message,
+                title: 'Invalid login',
+              });
+              router.replace('/account/authentication');
             }
-          );
-        });
+          } else {
+            const { data, error }: any = await loginCustomer({ email: userInfo.email });
+            if (data.message === 'success') {
+              bake_cookie('token', data.data.token);
+              router.replace('/customer');
+            } else {
+              setIsLoading(false);
+              execute({
+                type: 'error',
+                message: error?.data.message,
+                title: 'Invalid login',
+              });
+              router.replace('/account/authentication');
+            }
+          }
+        } catch (error) {
+          setIsLoading(false);
+          router.replace('/account/authentication');
+        }
       }
-    }
-  }, [query]);
+    };
+
+    handleAuthentication();
+  }, [query?.access_token]);
+
+  // useEffect(() => {
+  //   if (query?.access_token) {
+  //     setIsLoading(true);
+  //     const authType = localStorage.getItem('authType');
+  //     if (authType === 'signup') {
+  //       auth0UserInfo(query?.access_token).then((data: any) => {
+  //         createCustomer({
+  //           email: data.email,
+  //           fname: data.given_name,
+  //           lname: data.family_name,
+  //           profileImage: data.picture,
+  //         }).then(({ isSuccess, error }: any) => {
+  //           if (isSuccess) {
+  //             loginCustomer({ email: data.email }).then(
+  //               ({ data, isSuccess, error }: any) => {
+  //                 if (isSuccess) {
+  //                   bake_cookie('token', data.data.token);
+  //                   router.replace('/customer');
+  //                 } else {
+  //                   setIsLoading(false);
+  //                   router.replace('/account/authentication');
+  //                 }
+  //               }
+  //             );
+  //           } else {
+  //             setIsLoading(false);
+  //             router.replace('/account/authentication');
+  //           }
+  //         });
+  //       });
+  //     } else {
+  //       auth0UserInfo(query?.access_token).then((data: any) => {
+  //         loginCustomer({ email: data.email }).then(
+  //           ({ data, error }: any) => {
+  //             if (data?.message === 'success') {
+  //               bake_cookie('token', data.data.token);
+  //               router.replace('/customer');
+  //             } else {
+  //               setIsLoading(false);
+  //               execute({
+  //                 type: 'error',
+  //                 message: error?.data.message,
+  //                 title: 'Invalid login'
+  //               })
+  //               router.replace('/account/authentication');
+  //             }
+  //           }
+  //         );
+  //       });
+  //     }
+  //   }
+  // }, [query?.access_token]);
 
   // Function to handle input changes
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

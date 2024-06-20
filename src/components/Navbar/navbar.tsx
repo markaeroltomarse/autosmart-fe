@@ -42,6 +42,7 @@ function Navbar(props: Props) {
   useEffect(() => {
     getCategories('all');
   }, []);
+
   return (
     <div className="pt-12 bg-blue-950 relative flex flex-col">
       <Image
@@ -54,9 +55,7 @@ function Navbar(props: Props) {
       />
       <div className="flex justify-between md:px-[5%] items-center">
         <Logo className="z-[1] w-[100px] h-[65px] border-2 border-blue-900 rounded-md flex" />
-
         <Searchbar />
-
         <div className="z-[2] flex gap-5 p-3 items-center ">
           <div className="z-[3] text-center font-bold ">
             {read_cookie('token').length === 0 ||
