@@ -12,6 +12,7 @@ import {
   useUpdateProductMutation
 } from '@/store/api/productsApi';
 import { IProductType } from '@/types/product.type';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { AiFillCheckSquare, AiOutlineSearch } from 'react-icons/ai';
@@ -61,9 +62,15 @@ export default function Dashboard() {
 
   const productsTemp = useMemo(() => {
     const temp: IProductType[] = JSON.parse(JSON.stringify(products));
+
+    console.log('temp', temp)
     temp.forEach((item) => {
       if (currentQuantityTxt?.id === item.id) {
         item.quantity = currentQuantityTxt.quantity;
+      }
+
+      if (item.images?.length > 0) {
+        item.thumbnail = item.images[0]
       }
     });
     return temp.filter((product) => product.name.includes(searchTxt));
@@ -160,6 +167,10 @@ export default function Dashboard() {
                       title="Products"
                       headers={[
                         {
+                          key: 'thumbnail',
+                          value: 'Image',
+                        },
+                        {
                           key: 'brandName',
                           value: 'Brand name',
                         },
@@ -186,6 +197,12 @@ export default function Dashboard() {
                       ]}
                       data={productsTemp}
                       rowClassName={[
+                        {
+                          key: 'thumbnail',
+                          customElement: (data, id) => {
+                            return <Image width={100} height={100} src={data} alt='' />
+                          }
+                        },
                         {
                           key: 'quantity',
                           customElement: (data, id) => {

@@ -19,6 +19,7 @@ export interface IProductType {
   createdAt: string;
   updatedAt?: string;
   images: string[];
+  thumbnail?: string;
 }
 
 export type ITransactionType = {

@@ -1,8 +1,6 @@
 interface ITableOptionsProps {
   id: string;
-  setActionSelected: React.Dispatch<
-    React.SetStateAction<{ id: string; type: 'edit' | 'delete' | '' } | null>
-  >;
+  setActionSelected: (data: { id: string; type: 'edit' | 'delete' | '' }) => void
 }
 
 export default function TableOptions({

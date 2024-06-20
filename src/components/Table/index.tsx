@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { MdMoreVert } from 'react-icons/md';
 import TableOptions from './action-options';
 
@@ -16,7 +16,7 @@ interface ITableProps {
     customElement?: (value: any, id: string) => JSX.Element;
   }[];
   title: string;
-  onSelectAction?: (data: { id: string; type: 'edit' | 'delete' | '' }) => void;
+  onSelectAction?: (data?: { id: string; type: 'edit' | 'delete' | '' }) => void;
   selectedItem?: any;
 }
 
@@ -33,11 +33,11 @@ export default function Table({
     type: 'edit' | 'delete' | '';
   } | null>(null);
 
-  useEffect(() => {
-    if (onSelectAction && actionSelected) {
-      onSelectAction(actionSelected);
-    }
-  }, [actionSelected, onSelectAction]);
+  // useEffect(() => {
+  //   if (actionSelected?.id && actionSelected?.type) {
+  //     onSelectAction?.(actionSelected);
+  //   }
+  // }, [actionSelected]);
 
   return (
     <div className="overflow-x-auto">
@@ -68,17 +68,23 @@ export default function Table({
                       <div className="flex flex-col justify-center items-center w-full h-full">
                         <MdMoreVert
                           size={25}
-                          onClick={() =>
-                            actionSelected?.id !== item.id
-                              ? setActionSelected({ id: item.id, type: '' })
-                              : setActionSelected({ id: '', type: '' })
+                          onClick={() => {
+                            if (actionSelected?.id !== item.id) {
+                              setActionSelected({ id: item.id, type: '' })
+                            } else {
+                              setActionSelected(null)
+                            }
+                          }
                           }
                           className="cursor-pointer"
                         />
-                        {actionSelected?.id === item.id && selectedItem && (
+                        {actionSelected?.id === item.id && (
                           <TableOptions
                             id={item.id}
-                            setActionSelected={setActionSelected}
+                            setActionSelected={(data) => {
+                              setActionSelected(data)
+                              onSelectAction?.(data)
+                            }}
                           />
                         )}
                       </div>
