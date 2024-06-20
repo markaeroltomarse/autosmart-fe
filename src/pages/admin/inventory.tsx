@@ -276,7 +276,7 @@ export default function Dashboard() {
                           },
                         },
                       ]}
-                      onSelectAction={(e) => {
+                      onSelectAction={(e: any) => {
                         const selectedProduct = products.find(
                           (product) => product.id === e.id
                         );
