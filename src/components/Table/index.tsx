@@ -41,7 +41,7 @@ export default function Table({
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
+      <table className="min-w-full divide-y divide-gray-200 ">
         <thead className="bg-gray-50">
           <tr>
             {headers.map((header) => (
@@ -57,29 +57,31 @@ export default function Table({
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {data.map((item) => (
-            <tr key={item.id}>
+            <tr key={item.id} className='hover:bg-slate-50 transition-all'>
               {headers.map((header) => {
                 if (header.key === 'action') {
                   return (
                     <td
                       key={header.key}
-                      className="py-4 whitespace-nowrap flex justify-center"
+                      className="px-6 py-4 max-w-[100px] break-words break-all border"
                     >
-                      <MdMoreVert
-                        size={25}
-                        onClick={() =>
-                          actionSelected?.id !== item.id
-                            ? setActionSelected({ id: item.id, type: '' })
-                            : setActionSelected({ id: '', type: '' })
-                        }
-                        className="cursor-pointer"
-                      />
-                      {actionSelected?.id === item.id && selectedItem && (
-                        <TableOptions
-                          id={item.id}
-                          setActionSelected={setActionSelected}
+                      <div className="flex flex-col justify-center items-center w-full h-full">
+                        <MdMoreVert
+                          size={25}
+                          onClick={() =>
+                            actionSelected?.id !== item.id
+                              ? setActionSelected({ id: item.id, type: '' })
+                              : setActionSelected({ id: '', type: '' })
+                          }
+                          className="cursor-pointer"
                         />
-                      )}
+                        {actionSelected?.id === item.id && selectedItem && (
+                          <TableOptions
+                            id={item.id}
+                            setActionSelected={setActionSelected}
+                          />
+                        )}
+                      </div>
                     </td>
                   );
                 }
@@ -88,7 +90,8 @@ export default function Table({
                 return (
                   <td
                     key={header.key}
-                    className={`px-6 py-4 whitespace-nowrap ${config?.className}`}
+                    className={`px-6 py-4 max-w-[100px] break-words break-all ${config?.className}`}
+                    style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
                   >
                     {config?.customElement
                       ? config.customElement(item[header.key], item.id)

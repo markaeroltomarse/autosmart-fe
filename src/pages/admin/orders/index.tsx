@@ -164,13 +164,13 @@ export default function Orders() {
           </div>
         )}
         <AdminNav />
-        <div className="px-5 md:px-[10%] w-full">
+        <div className="px-5 md:px-[10%] w-full ">
           <h1 className="font-bold text-2xl text-slate-500 my-5">Orders</h1>
-          <div className="flex min-h-[80vh] w-full  ">
+          <div className="flex min-h-[80vh] w-full ">
             <div className="flex-none">
               <AdminMenu defaultValue="Orders" />
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-5 w-full ">
               <div>
                 <ButtonGroup
                   values={['pending', 'shipped', 'completed', 'cancelled']}

@@ -268,6 +268,7 @@ export default function Dashboard() {
                       }}
                       selectedItem={selectedProduct}
                     />
+                    <br /><br />
                   </div>
                 </div>
               )}

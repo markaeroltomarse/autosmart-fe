@@ -21,6 +21,8 @@ export default function Dashboard() {
               <SalesPredictionChart />
               <br />
               <InventoryPredictionChart />
+              <br />
+              <br />
             </div>
           </div>
         </div>
