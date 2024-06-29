@@ -7,6 +7,8 @@ interface ButtonProps {
   disabled?: boolean;
   icon?: JSX.Element;
   loading?: boolean;
+  variant?: 'primary' | 'secondary' | 'danger' | 'success';
+  size?: 'small' | 'medium' | 'large';
 }
 
 const Spinner = () => (
@@ -32,6 +34,34 @@ const Spinner = () => (
   </svg>
 );
 
+const getVariantClasses = (variant: 'primary' | 'secondary' | 'danger' | 'success' | undefined) => {
+  switch (variant) {
+    case 'primary':
+      return 'bg-blue-600 hover:bg-blue-700 text-white';
+    case 'secondary':
+      return 'bg-gray-600 hover:bg-gray-700 text-white';
+    case 'danger':
+      return 'bg-red-600 hover:bg-red-700 text-white';
+    case 'success':
+      return 'bg-green-600 hover:bg-green-700 text-white';
+    default:
+      return 'bg-blue-600 hover:bg-blue-700 text-white';
+  }
+};
+
+const getSizeClasses = (size: 'small' | 'medium' | 'large' | undefined) => {
+  switch (size) {
+    case 'small':
+      return 'h-8 px-3 text-sm';
+    case 'medium':
+      return 'h-10 px-5 text-base';
+    case 'large':
+      return 'h-12 px-6 text-lg';
+    default:
+      return 'h-10 px-5 text-base';
+  }
+};
+
 export default function Button({
   buttonType = 'button',
   buttonClass,
@@ -40,12 +70,17 @@ export default function Button({
   disabled,
   icon,
   loading,
+  variant = 'primary',
+  size = 'medium',
 }: ButtonProps): JSX.Element {
+  const variantClasses = getVariantClasses(variant);
+  const sizeClasses = getSizeClasses(size);
+
   return (
     <button
       type={buttonType}
-      className={`btn bg-gradient-to-r font-bold text-base leading-6 rounded-lg transition duration-150 ease-in-out px-3 ${disabled || loading ? 'opacity-50 cursor-not-allowed' : ''
-        } ${buttonClass || 'h-12 px-6 py-2.5'} ${icon && !loading ? 'flex items-center gap-2' : 'flex justify-center items-center'
+      className={`btn font-bold leading-6 rounded-lg transition duration-150 ease-in-out ${disabled || loading ? 'opacity-50 cursor-not-allowed' : ''
+        } ${variantClasses} ${sizeClasses} ${buttonClass} ${icon && !loading ? 'flex items-center gap-2' : 'flex justify-center items-center'
         }`}
       onClick={onClick}
       disabled={disabled || loading}

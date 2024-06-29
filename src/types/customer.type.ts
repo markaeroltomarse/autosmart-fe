@@ -10,4 +10,5 @@ export interface ICustomerType {
   profileImage: string | null;
   contactNumber: string | null;
   isRider: boolean;
+  isVerified: boolean;
 }

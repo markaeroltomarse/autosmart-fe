@@ -249,27 +249,28 @@ export default function Dashboard() {
                                     });
                                   }}
                                   className={`${data <= 5 && (data === 0 ? 'text-red-500' : 'text-yellow-500')}`}
-
                                 />
                                 {changeQuantities.includes(id) && (
-                                  <AiFillCheckSquare
-                                    size={40}
-                                    color="green"
-                                    className="cursor-pointer"
-                                    onClick={async () => {
-                                      updateProduct({
-                                        id: currentQuantityTxt?.id,
-                                        quantity: currentQuantityTxt?.quantity,
-                                      }).then(async () => {
-                                        await getProductsHandlers()
-                                        setChangeQuantity(
-                                          changeQuantities.filter(
-                                            (selected) => selected !== id
-                                          )
-                                        );
-                                      })
-                                    }}
-                                  />
+                                  <div>
+                                    <AiFillCheckSquare
+                                      size={40}
+                                      color="green"
+                                      className="cursor-pointer"
+                                      onClick={async () => {
+                                        updateProduct({
+                                          id: currentQuantityTxt?.id,
+                                          quantity: currentQuantityTxt?.quantity,
+                                        }).then(async () => {
+                                          await getProductsHandlers()
+                                          setChangeQuantity(
+                                            changeQuantities.filter(
+                                              (selected) => selected !== id
+                                            )
+                                          );
+                                        })
+                                      }}
+                                    />
+                                  </div>
                                 )}
                               </div>
                             );

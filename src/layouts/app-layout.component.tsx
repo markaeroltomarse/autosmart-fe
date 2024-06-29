@@ -114,13 +114,14 @@ export interface AppLayoutProps {
 const AppLayout: React.FC<AppLayoutProps> = (props) => {
   const { children, getLayout } = props;
 
+  const alert = useAppSelector(store => store.componentsReducers?.alert)
+
   useEffect(() => {
     AOS.init({
       easing: 'ease-in-cubic'
     });
   }, []);
 
-  const alert = useAppSelector(store => store.componentsReducers?.alert)
 
   return (
     <>

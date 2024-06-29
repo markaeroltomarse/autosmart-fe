@@ -2,7 +2,8 @@ import Button from '@/components/Button';
 import CustomerNavbar from '@/components/CustomerNavbar';
 import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
-import { useLazyGetCustomerProfileQuery, useUpdateCustomerMutation } from '@/store/api/customerApi';
+import useAlert from '@/hooks/useAlert';
+import { useLazyGetCustomerProfileQuery, useResendVerifyAccountEmailMutation, useUpdateCustomerMutation } from '@/store/api/customerApi';
 import { ICustomerType } from '@/types/customer.type';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -17,16 +18,17 @@ export default function MyAccount() {
   const [updateCustomer, updateCustomerState] = useUpdateCustomerMutation();
   const [newAddress, setNewAddress] = useState<string>('');
 
+  const [resendVerifyAccountEmail, { isLoading: resendVerifyAccountEmailIsLoading }] = useResendVerifyAccountEmailMutation()
+
+  // const user: ICustomerType | null = useAppSelector(store => store.userReducer.user)
+  // console.log(user)
+
+  const { execute } = useAlert()
+
   const getCustomerProfileHandler = async () => {
     const token = read_cookie('token');
 
     if (token && token.length > 0) {
-      // getProfile(String(token)).then(({ data, isError }) => {
-      //   if (isError) {
-      //     router.push('/');
-      //   }
-      //   setCustomer(data?.data);
-      // });
       const { data, isError } = await getProfile(String(token))
       if (isError) {
         router.push('/');
@@ -46,17 +48,25 @@ export default function MyAccount() {
       const updatedAddresses = [...customer.address, newAddress];
       const { data, error }: any = await updateCustomer({
         address: updatedAddresses,
-        defaultAddress: updatedAddresses.find((address) => address === customer.defaultAddress),
+        defaultAddress: customer.defaultAddress || newAddress
       });
 
       if (error) {
-        return alert(error?.data?.message);
+        return execute({
+          message: error?.data?.message,
+          type: 'error',
+          title: 'Adding Failed.'
+        })
       }
 
       setNewAddress('');
       await getCustomerProfileHandler();
     }
   };
+
+  const handleVerifyAccount = async () => {
+    await resendVerifyAccountEmail(undefined)
+  }
 
   const handleSetDefaultAddress = async (address: string) => {
     if (customer) {
@@ -66,7 +76,11 @@ export default function MyAccount() {
       });
 
       if (error) {
-        return alert(error?.data?.message);
+        return execute({
+          message: error?.data?.message,
+          type: 'error',
+          title: 'Updating Failed.'
+        })
       }
 
       await getCustomerProfileHandler();
@@ -97,6 +111,12 @@ export default function MyAccount() {
               <h2 className="text-xl font-medium text-slate-600">
                 Manage and protect your account.
               </h2>
+              <Button
+                title={customer?.isVerified ? 'Account verified' : 'Verify Account'}
+                onClick={handleVerifyAccount}
+                disabled={resendVerifyAccountEmailIsLoading || customer?.isVerified}
+                variant={customer?.isVerified ? 'success' : 'primary'}
+              />
             </div>
 
             <div className="flex flex-col md:flex-row gap-5">
@@ -108,18 +128,22 @@ export default function MyAccount() {
                 <form onSubmit={handleAddNewAddress} className="flex flex-col gap-3">
                   <div className="flex items-center border border-blue-500 text-blue-600 rounded p-3 bg-blue-50 hover:bg-blue-100 transition">
                     <MdAddLocationAlt size={24} />
-                    <Input
-                      type="text"
-                      className="bg-transparent border-none flex-grow ml-3"
-                      placeholder="Enter new address"
-                      value={newAddress}
-                      required
-                      onChange={(e) => setNewAddress(e.target.value)}
-                    />
+                    <div className='flex-auto'>
+                      <Input
+                        type="text"
+                        className="bg-transparent border-none flex-grow ml-3 border flex"
+                        placeholder="Enter new address"
+                        value={newAddress}
+                        required
+                        label='Address'
+                        onChange={(e) => setNewAddress(e.target.value)}
+                      />
+                    </div>
                     <Button
                       buttonType="submit"
                       title="Add"
                       buttonClass="ml-3 bg-blue-600 text-white hover:bg-blue-700"
+                      size='medium'
                     />
                   </div>
                 </form>

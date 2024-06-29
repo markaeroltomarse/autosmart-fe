@@ -149,10 +149,18 @@ export default function Authentication() {
           router.replace('/account/authentication');
         }
       }
+
+      if (router.query?.token) {
+        bake_cookie('token', String(router.query?.token));
+        router.replace('/customer');
+      }
+
     };
 
-    handleAuthentication();
-  }, [query?.access_token]);
+    if (router.isReady) {
+      handleAuthentication();
+    }
+  }, [query?.access_token, router]);
 
   // useEffect(() => {
   //   if (query?.access_token) {

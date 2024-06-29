@@ -10,11 +10,12 @@ import {
 import { IProductType } from '@/types/product.type';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Alert from '@/components/Alert';
 import Navbar from '@/components/Navbar/navbar';
-import { TCategory } from '@/pages/admin/category';
+import { useAppSelector } from '@/hooks/useAppSelector';
+import useCart from '@/hooks/useCart';
 import { useAddToCartMutation } from '@/store/api/cartApi';
 
 // export const getServerSideProps: GetServerSideProps =
@@ -42,6 +43,9 @@ export default function ProductPage() {
     ''
   );
   const [selectedColor, setSelectedColor] = useState(COLORS[0].name);
+  const cart = useAppSelector(store => store.cartReducer.cart)
+
+  const { handleAddToCart: handleAddToCartStore, handleSetCart } = useCart()
 
   useEffect(() => {
     const container = document.getElementById('container');
@@ -73,11 +77,6 @@ export default function ProductPage() {
     await getCategories(data?.data.productType);
   };
 
-  const categories: TCategory[] = useMemo(() => {
-    if (getCategoriesState.error) return [];
-
-    return getCategoriesState.data?.data;
-  }, [getCategoriesState]);
 
   useEffect(() => {
     if (router.query?.productId) {
@@ -90,14 +89,16 @@ export default function ProductPage() {
     setSelectedColor(COLORS[0].name);
   }, [APPLICATIONS]);
 
-  const handleAddToCart = () => {
-    if (selectedColor && selectedApplication) {
-      addToCart({
+  const handleAddToCart = async () => {
+    if (selectedColor && selectedApplication && product) {
+      await addToCart({
         productId: product!.id,
         quantity: 1,
         application: String(selectedApplication),
         color: selectedColor,
-      });
+      }).then(async ({ data }: any) => {
+        handleSetCart(data.data)
+      })
     }
   };
 
@@ -226,7 +227,7 @@ export default function ProductPage() {
                   />
                 </div>
 
-                <div className="w-1/2 px-5">
+                <div className="w-1/2 px-5 break-words">
                   <h2 className="text-2xl font-bold">{product?.name}</h2>
                   <h2 className="text-2xl font-bold">{product?.brandName}</h2>
 
@@ -262,25 +263,18 @@ export default function ProductPage() {
                     />
 
                     <div className="flex flex-row gap-5 justify-center mt-[20%] ">
-                      {product.quantity <= 0 ? (
-                        <Button
-                          title="Out of Stock"
-                          buttonClass="bg-red-700 rounded text-white flex-initial w-102 py-3"
-                          onClick={handleAddToCart}
-                          disabled={true}
-                        />
-                      ) : (
-                        <Button
-                          title="Add to cart"
-                          buttonClass="bg-red-700 rounded text-white flex-initial w-full py-3"
-                          onClick={handleAddToCart}
-                        />
-                      )}
-
                       <Button
+                        title={product.quantity <= 0 ? "Out of Stock" : "Add to cart"}
+                        buttonClass={`bg-red-700 w-full rounded text-white flex-initial py-3 ${product.quantity <= 0 ? 'w-102' : 'w-full'}`}
+                        onClick={handleAddToCart}
+                        disabled={product.quantity <= 0}
+                      />
+
+                      {/* <Button
+                        disabled
                         title="Buy now"
                         buttonClass="bg-blue-950 rounded text-white flex-initial w-full py-3"
-                      />
+                      /> */}
                     </div>
                   </div>
                 </div>

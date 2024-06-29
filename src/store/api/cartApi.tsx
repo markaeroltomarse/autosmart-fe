@@ -15,6 +15,7 @@ interface IAddToCartInput {
   quantity: number;
   color?: string;
   application?: string;
+  id?: string
 }
 
 interface IGCashPayment {
@@ -69,6 +70,19 @@ export const cartsApi = createApi({
       },
     }),
 
+    removeCartItems: build.mutation({
+      query: ({ cartId, productCartRecordIds }: { cartId: string, productCartRecordIds: string[] }, token?: string) => {
+        return {
+          url: `/${cartId}/delete-multiple`,
+          method: 'DELETE',
+          body: { productCartRecordIds },
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+    }),
+
     gcashPayment: build.mutation({
       query: (gCashPaymentInput: IGCashPayment, token?: string) => {
         return {
@@ -115,6 +129,7 @@ export const {
   useAddToCartMutation,
   useUpdateCartItemQuantityMutation,
   useGcashPaymentMutation,
+  useRemoveCartItemsMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = cartsApi;
 export const {
@@ -123,4 +138,5 @@ export const {
   addToCart,
   updateCartItemQuantity,
   gcashPayment,
+  removeCartItems
 } = cartsApi.endpoints;

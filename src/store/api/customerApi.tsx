@@ -93,6 +93,17 @@ export const customersApi = createApi({
         };
       },
     }),
+    resendVerifyAccountEmail: build.mutation({
+      query: (token?: string) => {
+        return {
+          url: `/verify`,
+          method: 'PATCH',
+          headers: {
+            authorization: `Bearer ${token || getAccessToken()}`,
+          },
+        };
+      },
+    }),
   }),
 });
 
@@ -102,6 +113,8 @@ export const {
   useLazyGetCustomerProfileQuery,
   useUpdateCustomerMutation,
   useLazyGetRidersQuery,
+  useGetCustomerProfileQuery,
+  useResendVerifyAccountEmailMutation,
   util: { getRunningQueriesThunk, getRunningMutationsThunk },
 } = customersApi;
 export const {
@@ -109,5 +122,6 @@ export const {
   createCustomer,
   loginCustomer,
   updateCustomer,
-  getRiders
+  getRiders,
+  resendVerifyAccountEmail
 } = customersApi.endpoints;

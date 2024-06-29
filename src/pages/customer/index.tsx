@@ -1,42 +1,20 @@
 import ButtonGroup from '@/components/ButtonGroup';
 import CustomerNavbar from '@/components/CustomerNavbar';
 import BasicLoader from '@/components/Loader/basic-loader';
-import {
-  useLazyGetCustomerProfileQuery
-} from '@/store/api/customerApi';
+import { ICartItem } from '@/hooks/useCart';
+import { useLazyGetCustomerProfileQuery } from '@/store/api/customerApi';
 import { useLazyGetCustomerOrdersQuery } from '@/store/api/ordersApi';
 import { ICustomerType } from '@/types/customer.type';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { read_cookie } from 'sfcookies';
-// export const getServerSideProps: GetServerSideProps =
-//   wrapper.getServerSideProps((store) => async (ctx) => {
-//     const customer = await store.dispatch(
-//       getCustomerProfile.initiate(ctx.req.cookies?.token)
-//     );
-
-//     if (customer.error) {
-//       return {
-//         redirect: {
-//           destination: '/',
-//           permanent: false,
-//         },
-//       };
-//     }
-//     return {
-//       props: {
-//         customer: customer?.data?.data || null,
-//       },
-//     };
-//   });
 
 export default function Customer() {
   const router = useRouter();
   const [customer, setCustomer] = useState<ICustomerType | null>(null);
-  const [selectedTab, setSelectedTab] = useState<
-    'Completed' | 'Cancelled' | 'Shipped' | 'Pending'
-  >('Pending');
+  const [selectedTab, setSelectedTab] = useState<'Completed' | 'Cancelled' | 'Shipped' | 'Pending'>('Pending');
   const [orders, setOrders] = useState({
     shipped: [],
     pending: [],
@@ -68,14 +46,7 @@ export default function Customer() {
   const tempOrders = useMemo(() => {
     if (!getOrdersState.isSuccess && !orders) return [];
 
-    const data =
-      orders[
-      selectedTab.toLowerCase() as
-      | 'pending'
-      | 'completed'
-      | 'shipped'
-      | 'cancelled'
-      ];
+    const data = orders[selectedTab.toLowerCase() as 'pending' | 'completed' | 'shipped' | 'cancelled'];
 
     const ords = data.map((order: any) => ({ ...order, total: 0 }));
 
@@ -100,7 +71,7 @@ export default function Customer() {
 
   return (
     <>
-      <main className="px-5 md:px-[10%]">
+      <main className="px-5 md:px-[10%] py-10 bg-gray-100">
         {getOrdersState.isLoading && (
           <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
             <BasicLoader />
@@ -111,7 +82,7 @@ export default function Customer() {
         <div className="flex flex-col gap-5">
           <h1 className="text-2xl font-bold text-slate-600">Dashboard</h1>
 
-          <div className=" rounded-md bg-white p-5">
+          <div className="rounded-md bg-white p-5 shadow-md">
             <ButtonGroup
               values={['Pending', 'Shipped', 'Completed', 'Cancelled']}
               onClick={(data) => {
@@ -121,17 +92,16 @@ export default function Customer() {
 
             <div className="my-5 flex flex-col gap-3">
               {tempOrders.map((order: any) => (
-                <div key={order.serialNumber} className="p-3 border rounded  flex flex-col gap-2 bg-slate-100">
-                  <div className="flex justify-between">
-                    <h3 className="font-bold">#{order.serialNumber}</h3>
-                    <h3 className="font-bold">
+                <div key={order.serialNumber} className="p-5 border rounded-lg flex flex-col gap-3 bg-white shadow-sm">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-bold text-lg">#{order.serialNumber}</h3>
+                    <h3 className="font-bold text-lg text-green-600">
                       PHP {order.total.toLocaleString()}
                     </h3>
                   </div>
-                  <div className="flex gap-2 flex-wrap">
-                    {/* ITEM */}
-                    {order.products.map((product: any) => (
-                      <div key={product.product.name} className="flex border-b gap-3 w-[300px] border rounded p-3 bg-white">
+                  <div className="flex flex-wrap gap-4">
+                    {order.products.map((product: ICartItem) => (
+                      <div key={product.product.name} className="flex border-b gap-3 w-full sm:w-[300px] border rounded-lg p-3 bg-gray-50 shadow-sm">
                         <Image
                           src={
                             product.product.images.length > 0
@@ -141,14 +111,18 @@ export default function Customer() {
                           width={50}
                           height={50}
                           alt="item 1"
+                          className="rounded-md object-contain"
                         />
 
-                        <div>
-                          <p className="font-bold text-sm text-blue-900">
+                        <div className="flex flex-col justify-between break-words overflow-hidden">
+                          <Link href={`/products/${product.product.id}`} className="font-bold text-sm text-blue-900">
                             {product.product.name} ({product.quantity})
-                          </p>
+                          </Link>
                           <small>
-                            P {product.product.price.toLocaleString()}
+                            {product.application} - {product.color}
+                          </small>
+                          <small className="text-gray-600">
+                            P {(product.product.price * product.quantity).toLocaleString()}
                           </small>
                         </div>
                       </div>

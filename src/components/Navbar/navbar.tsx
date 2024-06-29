@@ -1,5 +1,7 @@
 import TopBarBg from '@/assets/images/top_bar.png';
 import Searchbar from '@/components/Searchbar';
+import { useAppSelector } from '@/hooks/useAppSelector';
+import { ICartType } from '@/hooks/useCart';
 import { TCategory } from '@/pages/admin/category';
 import { useLazyGetCategoriesQuery } from '@/store/api/productsApi';
 import Image from 'next/image';
@@ -8,6 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { BsFillCartCheckFill } from 'react-icons/bs';
 import { MdExpandMore } from 'react-icons/md';
 import { delete_cookie, read_cookie } from 'sfcookies';
+import Badge from '../Badge';
 import Logo from '../Logo';
 
 type Props = {
@@ -17,6 +20,9 @@ type Props = {
 function Navbar(props: Props) {
   const [getCategories, getCategoriesState] = useLazyGetCategoriesQuery();
   const [selectedProductType, setSelectedProductType] = useState(null);
+
+  const cart: ICartType = useAppSelector(store => store.cartReducer.cart)
+
   const categories: any[] = useMemo(() => {
     if (getCategoriesState.error) return [];
 
@@ -81,7 +87,9 @@ function Navbar(props: Props) {
             )}
           </div>
           <Link href="/cart ">
-            <BsFillCartCheckFill size={30} color="black" />
+            <Badge text={cart?.products?.length > 0 ? String(cart?.products?.length) : undefined} color='bg-red-500' >
+              <BsFillCartCheckFill size={30} color="black" />
+            </Badge>
           </Link>
         </div>
       </div>

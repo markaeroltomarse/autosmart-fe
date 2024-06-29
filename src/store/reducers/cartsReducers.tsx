@@ -1,28 +1,40 @@
+import { ICartItem, ICartType } from '@/hooks/useCart';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface IInitialState {
-  cart: { productId: string; quantity: number }[];
+  cart: ICartType | null;
 }
 
 const initialState: IInitialState = {
-  cart: [],
+  cart: null,
 };
 
 const cartSlice = createSlice({
-  name: 'cartSlice',
+  name: 'cartReducer',
   initialState,
   reducers: {
-    tempSetCart(state, { payload }) {
+    setCart(state, { payload }) {
       state.cart = payload;
     },
-    tempAddToCart(state, { payload }) {
-      if (!state.cart.some((item) => item.productId === payload.productId)) {
-        state.cart = [...state.cart, payload];
+    addToCart(state, { payload }: { payload: ICartItem }) {
+      if (!state.cart) return
+
+      const isExist = state.cart?.products.findIndex((item) =>
+        item.product.id === payload.product.id &&
+
+        // Check the product property
+        item.product.application === payload.product.application &&
+        item.product.color === payload.product.color
+      )
+      if (isExist && isExist >= 0) {
+        state.cart.products[isExist].quantity += 1
+      } else {
+        state.cart.products = [...state.cart.products, payload]
       }
     },
   },
   extraReducers(builder) { },
 });
 
-export const { tempAddToCart, tempSetCart } = cartSlice.actions;
+export const { addToCart, setCart } = cartSlice.actions;
 export default cartSlice;

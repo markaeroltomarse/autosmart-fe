@@ -55,6 +55,7 @@ export default function Home() {
 
         <div className="p-5 md:px-[10%] md:py-5 flex gap-2 flex-col">
           <h1 className="text-2xl font-bold">ORDER NOW!</h1>
+          <br />
           <div className="flex gap-2 flex-row flex-wrap ">
             {productsState.isLoading && (
               <div className="flex items-center justify-center h-[30vh] w-full font-bold text-red-500">
@@ -87,11 +88,15 @@ export default function Home() {
                     <div className="font-bold truncate w-[150px]">
                       {product.name}
                     </div>
-                    <div className="flex justify-between ">
+                    <div className="flex justify-between items-center">
                       <div>
-                        <span className="text-slate-500 line-through">
-                          ₱{product.price}
-                        </span>{' '}
+                        {
+                          product.discount > 0 && <>
+                            <span className="text-slate-500 line-through">
+                              ₱{product.price}
+                            </span>{' '}
+                          </>
+                        }
                         ₱{product.price - product.discount}
                       </div>
 
@@ -99,8 +104,9 @@ export default function Home() {
                         icon={<BsFillCartPlusFill color="white" />}
                         buttonClass="border py-2 px-3 text-xs justify-center bg-blue-950"
                         onClick={() => {
-                          router.replace('/products/' + product.id);
+                          router.push('/products/' + product.id);
                         }}
+                        size='small'
                       />
                     </div>
                   </div>
@@ -108,7 +114,6 @@ export default function Home() {
                 </div>
               ))}
           </div>
-
         </div>
         <Footer />
       </main>
