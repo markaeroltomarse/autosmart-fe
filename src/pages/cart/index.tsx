@@ -164,7 +164,8 @@ export default function Cart() {
       }
 
       if (data) {
-        window.location.href = data.desktop_web_checkout_url;
+        router.replace(data.desktop_web_checkout_url)
+        // window.location.href = data.desktop_web_checkout_url;
       }
     }
   };

@@ -13,7 +13,7 @@ const DeliveryNav: React.FC<DeliveryNavProps> = (props) => {
 
     return <nav className="p-5 md:px-0 flex justify-between">
         <div>
-            <Logo className="h-[100]" />
+            <Logo className="z-[1] w-[100px] h-[65px] border-2 border-blue-900 rounded-md flex" />
         </div>
         <div className="flex flex-row gap-5 items-center">
             <div>

@@ -10,13 +10,12 @@ const initialState: IInitialState = {
 };
 
 const userSlice = createSlice({
-    name: 'userSlice',
+    name: 'userReducer',
     initialState,
     reducers: {
         setUser(state, { payload }) {
             state.user = payload;
         },
-
     },
     extraReducers(builder) { },
 });

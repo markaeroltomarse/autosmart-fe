@@ -9,6 +9,7 @@ interface ButtonProps {
   loading?: boolean;
   variant?: 'primary' | 'secondary' | 'danger' | 'success';
   size?: 'small' | 'medium' | 'large';
+  isNotRounded?: boolean
 }
 
 const Spinner = () => (
@@ -72,6 +73,7 @@ export default function Button({
   loading,
   variant = 'primary',
   size = 'medium',
+  isNotRounded
 }: ButtonProps): JSX.Element {
   const variantClasses = getVariantClasses(variant);
   const sizeClasses = getSizeClasses(size);
@@ -79,7 +81,7 @@ export default function Button({
   return (
     <button
       type={buttonType}
-      className={`btn font-bold leading-6 rounded-lg transition duration-150 ease-in-out ${disabled || loading ? 'opacity-50 cursor-not-allowed' : ''
+      className={`btn font-bold leading-6 ${!isNotRounded && 'rounded-lg'} transition duration-150 ease-in-out ${disabled || loading ? 'opacity-50 cursor-not-allowed' : ''
         } ${variantClasses} ${sizeClasses} ${buttonClass} ${icon && !loading ? 'flex items-center gap-2' : 'flex justify-center items-center'
         }`}
       onClick={onClick}

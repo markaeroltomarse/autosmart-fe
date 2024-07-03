@@ -97,7 +97,9 @@ export default function ProductPage() {
         application: String(selectedApplication),
         color: selectedColor,
       }).then(async ({ data }: any) => {
-        handleSetCart(data.data)
+        if (data?.data) {
+          handleSetCart(data.data)
+        }
       })
     }
   };
