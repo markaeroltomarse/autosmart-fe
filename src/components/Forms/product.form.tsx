@@ -29,8 +29,8 @@ export default function ProductForm({
 }: IProductTypeProps) {
   const [getCategories, getCategoriesState] = useLazyGetCategoriesQuery();
   const [isLoading, setLoading] = useState(false);
-  const [createProduct, createProductState] = useCreateProductMutation();
-  const [updateProduct, updateProductState] = useUpdateProductMutation();
+  const [createProduct,] = useCreateProductMutation();
+  const [updateProduct,] = useUpdateProductMutation();
   const [formData, setFormData] = useState({
     id: product?.id || undefined,
     name: product?.name || '',
@@ -39,10 +39,10 @@ export default function ProductForm({
     price: product?.price,
     quantity: product?.quantity,
     status: product?.status || '',
-    discount: product?.discount,
+    discount: product?.discount || undefined, // Optional discount field
     color: product?.color || '',
     contactOptions: product?.contactOptions || '',
-    images: product?.images || ['', '', ''],
+    images: product?.images || ['', '', ''], // Only Image 1 is required
   });
 
   const categories = useMemo(() => {
@@ -99,6 +99,7 @@ export default function ProductForm({
         <hr />
         <div className="space-y-2">
           <Input
+            label='Name'
             type="text"
             placeholder="Enter name"
             className="bg-slate-100"
@@ -110,6 +111,7 @@ export default function ProductForm({
             }
           />
           <Input
+            label='Brand Name'
             type="text"
             placeholder="Enter brand name"
             className="bg-slate-100"
@@ -121,9 +123,10 @@ export default function ProductForm({
             }
           />
           <Select
+            label='Category'
             placeholder="Select Category"
             options={categories}
-            className="bg-slate-100"
+            className="bg-slate-100 p-2"
             required
             value={formData.category}
             name="category"
@@ -133,11 +136,8 @@ export default function ProductForm({
           />
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <small className="flex gap-2">
-                <span className="text-red-500">*</span>
-                Price
-              </small>
               <Input
+                label='Price'
                 type="number"
                 placeholder="Enter price"
                 className="bg-slate-100"
@@ -153,11 +153,8 @@ export default function ProductForm({
               />
             </div>
             <div>
-              <small className="flex gap-2">
-                <span className="text-red-500">*</span>
-                Quantity
-              </small>
               <Input
+                label='Quantity'
                 type="number"
                 placeholder="Enter quantity"
                 className="bg-slate-100"
@@ -173,18 +170,14 @@ export default function ProductForm({
               />
             </div>
             <div>
-              <small className="flex gap-2">
-                <span className="text-red-500">*</span>
-                Discount
-              </small>
               <Input
+                label='Discount'
                 type="number"
                 placeholder="Enter discount"
                 className="bg-slate-100"
                 pattern="[0-9]*"
                 title="Please enter an integer value"
-                required
-                value={formData.discount}
+                value={formData.discount} // Optional discount field
                 name="discount"
                 onChange={(e) =>
                   setFormData({
@@ -196,9 +189,10 @@ export default function ProductForm({
             </div>
           </div>
           <Select
+            label='Status'
             placeholder="Select Status"
             options={['Brand New', 'Surplus']}
-            className="bg-slate-100"
+            className="bg-slate-100 p-2"
             required
             value={formData.status}
             name="status"
@@ -207,9 +201,10 @@ export default function ProductForm({
             }
           />
           <Select
+            label='Color'
             placeholder="Select Color"
             options={COLORS.map(color => color.name)}
-            className="bg-slate-100"
+            className="bg-slate-100 p-2"
             required
             value={formData.color}
             name="color"
@@ -221,19 +216,33 @@ export default function ProductForm({
             {formData.images.map((image, index) => (
               <Input
                 key={index}
+                label={`Image ${index + 1}`}
                 type="text"
                 placeholder={`Enter Image ${index + 1}`}
                 className="bg-slate-100"
-                required
-                value={image}
+                value={image} // Images are now optional
                 onChange={(e) => {
                   const images = [...formData.images];
                   images[index] = e.target.value;
                   setFormData({ ...formData, images });
                 }}
+                required={index === 0}
               />
             ))}
           </div>
+          <Input
+            type="tel"
+            placeholder="Enter Mobile Number"
+            className="bg-slate-100"
+            value={formData.contactOptions}
+            name="contactOptions"
+            pattern="^\+?[1-9]\d{1,14}$" // E.164 international phone number format
+            title="Please enter a valid mobile number"
+            onChange={(e) =>
+              setFormData({ ...formData, [e.currentTarget.name]: e.currentTarget.value })
+            }
+            label='Contact Option'
+          />
         </div>
         <div className="flex justify-end mt-4">
           <Button

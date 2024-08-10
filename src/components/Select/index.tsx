@@ -19,10 +19,10 @@ export default function Select({
   required,
   value,
   name,
-  label
+  label,
 }: ISelectProps) {
   return (
-    <div className="flex flex-col">
+    <div className={`flex flex-col`}>
       <div className="flex items-center gap-3">
         {required && <span className="text-red-500">*</span>}
         {label && <small>{label}</small>}
