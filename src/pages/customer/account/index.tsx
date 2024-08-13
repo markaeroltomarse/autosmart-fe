@@ -99,7 +99,7 @@ export default function MyAccount() {
         )}
         <div className="bg-white p-5 rounded-md shadow-md">
           <div className="border-b pb-3 mb-5">
-            <h1 className="text-3xl font-bold text-slate-800">My Account</h1>
+            <h1 className="text-3xl font-bold text-blue-800">My Account</h1>
             <h2 className="text-xl font-medium text-slate-600">
               Manage and protect your account.
             </h2>

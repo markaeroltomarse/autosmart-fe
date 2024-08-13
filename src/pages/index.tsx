@@ -1,4 +1,6 @@
-import HeroBg from '@/assets/images/base_img_white_bg_red_bar.png';
+import AAPBanner from "@/assets/images/BASE.png";
+import AAPBannercomp from "@/assets/images/TOYOTA SUPRA W BG.png";
+import AAPMainBackground from "@/assets/images/WHEEL BG FULL.png";
 import Button from '@/components/Button';
 import Footer from '@/components/Footer/Footer';
 import Navbar from '@/components/Navbar/navbar';
@@ -31,7 +33,7 @@ export default function Home() {
   return (
     <>
       <main className=" ">
-        <p className="flex items-center  absolute top-0 left-1/2 transform -translate-x-1/2 z-10 p-2 text-white text-bold hover:text-gray-300 cursor-pointer">
+        <p className="flex items-center  absolute top-0 left-1/2 transform -translate-x-1/2 z-10 p-2 text-blue-950 text-bolder hover:text-gray-300 cursor-pointer">
           Need Help? Contact Us!
         </p>
 
@@ -41,20 +43,44 @@ export default function Home() {
           }
         />
 
-        <div className=" relative w-[100vw] h-[50vh] ">
+        <div className="relative w-[100vw] h-[50vh] z-10">
           <Image
-            className="bg-black  object-cover w-full h-full"
+            className="bg-blue-950  object-fit w-full h-full"
             src={
-              HeroBg
+              AAPBanner
             }
             fill
-            alt={'https://media.discordapp.net/attachments/1087951220313956486/1100320518256730142/Discount.png?width=1440&height=338'}
+            alt={'aapBanner'}
           />
+        </div>
+        <div className="absolute top-[32%] right-[5%] z-10">
+          <div className="relative w-[35vw] h-[35vh] ">
+            <Image
+              className="bg-none  object-fit w-full h-full"
+              src={
+                AAPBannercomp
+              }
+              fill
+              alt={'aapbannercomp'}
+            />
+          </div>
+        </div>
+        <div className="fixed bottom-[-10%] right-[-10%] animate-bounce z-0">
+          <div className="relative w-[25vw] h-[50vh] ">
+            <Image
+              className="bg-none  object-fit w-full h-full"
+              src={
+                AAPMainBackground
+              }
+              fill
+              alt={'aapmainbackground'}
+            />
+          </div>
         </div>
         {/* <BannerSlider/> */}
 
         <div className="p-5 md:px-[10%] md:py-5 flex gap-2 flex-col">
-          <h1 className="text-2xl font-bold">ORDER NOW!</h1>
+          <h1 className="text-2xl font-bold text-blue-950">ORDER NOW!</h1>
           <br />
           <div className="flex gap-2 flex-row flex-wrap ">
             {productsState.isLoading && (
@@ -115,7 +141,10 @@ export default function Home() {
               ))}
           </div>
         </div>
-        <Footer />
+        <div className="z-10">
+          <Footer />
+
+        </div>
       </main>
     </>
   );

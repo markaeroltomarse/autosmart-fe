@@ -1,4 +1,4 @@
-import TopBarBg from '@/assets/images/top_bar.png';
+import AAPHeader from '@/assets/images/HEADER.png';
 import Searchbar from '@/components/Searchbar';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { ICartType } from '@/hooks/useCart';
@@ -54,13 +54,15 @@ function Navbar(props: Props) {
       <Image
         className="z-[0]"
         src={
-          TopBarBg
+          AAPHeader
         }
         fill
         alt="asmartheader2"
       />
       <div className="flex justify-between md:px-[5%] items-center">
-        <Logo className="z-[1] w-[100px] h-[65px] border-2 border-blue-900 rounded-md flex" />
+        <Logo className="z-[1] w-[100px] h-[65px] border-2 border-blue-900 rounded-md flex"
+        />
+
         <Searchbar />
         <div className="z-[2] flex gap-5 p-3 items-center ">
           <div className="z-[3] text-center font-bold ">
@@ -70,6 +72,7 @@ function Navbar(props: Props) {
                 <Link href={'/account/authentication'}>LOGIN / SIGN UP</Link>
                 <br />
               </div>
+
             ) : (
               <>
                 <div className="hover:text-gray-300">
@@ -95,7 +98,7 @@ function Navbar(props: Props) {
       </div>
 
       <div className=" z-[1] flex justify-between md:px-[5%] items-center ">
-        <div className="p-2 text-white font-bold flex gap-3">
+        <div className="p-2 text-blue-950 font-bold flex gap-3">
           {categories &&
             categories.map((category, i) => (
               <div key={JSON.stringify(category.children) + '-' + i}>

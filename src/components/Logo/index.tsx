@@ -1,3 +1,4 @@
+import AAPLogo from '@/assets/images/AAP LOGO.webp';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
@@ -9,14 +10,14 @@ export default function Logo({ className }: ILogoProps) {
   const router = useRouter();
   return (
     <div
-      className={`w-[200px] relative border ${className} cursor-pointer`}
+      className={`absolute top-[28%] left-[1%] w-[250px] h-[120px] relative border ${className} cursor-pointer`}
       onClick={() =>
         router.replace({
           pathname: '/',
         })
       }
     >
-      <Image className='rounded-md' fill src={'/logo.png'} alt="autosmart" />
+      <Image className='rounded-md object-contain' fill src={AAPLogo} alt="autosmart" />
       <div className=" rounded-md bg-white p-5"></div>
     </div>
   );

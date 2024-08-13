@@ -3,7 +3,7 @@ import { AiFillFacebook } from 'react-icons/ai';
 
 function Footer() {
   return (
-    <footer className="bg-autosmartBlue text-white bg-slate-800 py-10">
+    <footer className="bg-autosmartBlue text-white bg-slate-800 py-10 !z-10">
       <div className="container mx-auto">
         <div className="flex flex-wrap">
           <div className="w-full md:w-1/3">
@@ -18,7 +18,7 @@ function Footer() {
           <div className="w-full md:w-1/3">
             <h4 className="text-lg font-bold mb-4">Follow Us</h4>
 
-            <Link target='_blank' href="https://www.facebook.com/AutoSmartPH">
+            <Link target='_blank' href="https://www.facebook.com/aceautomotiveparts">
               <AiFillFacebook size={30} color="orange" />
             </Link>
 

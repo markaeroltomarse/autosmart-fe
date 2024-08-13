@@ -10,7 +10,7 @@ export default function Dashboard() {
       <main className="">
         <AdminNav />
         <div className="px-5 md:px-[10%] w-full">
-          <h1 className="font-bold text-2xl text-slate-500 my-5">Dashboard</h1>
+          <h1 className="font-bold text-2xl text-blue-950 my-5">Dashboard</h1>
           <div className="flex min-h-[80vh] w-full  ">
             <div className="flex-none">
               <AdminMenu defaultValue="Dashboard" />
