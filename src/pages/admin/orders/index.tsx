@@ -230,7 +230,7 @@ export default function Orders() {
                     ...order,
                     toShip: order.serialNumber,
                     toComplete: order.serialNumber,
-                    createdAt: moment(order?.createdAt).format('ll'),
+                    createdAt: moment(selectedStatus === 'pending' ? order?.createdAt : order?.updatedAt).format('ll'),
                     rider: order?.rider && order.rider.email
                   }))}
                   title={'Orders'}

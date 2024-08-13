@@ -76,7 +76,7 @@ export default function Category() {
                       type="text"
                       placeholder="Category name"
                       required
-                      label="Name"
+                      label="Product Type"
                       name="name"
                       value={formCategory.name}
                       onChange={(e) =>
@@ -91,7 +91,7 @@ export default function Category() {
                       name="productType"
                       placeholder="Product Type"
                       required
-                      label="Product Type"
+                      label="Brand"
                       value={formCategory.productType}
                       onChange={(e) =>
                         setFormCategory({
