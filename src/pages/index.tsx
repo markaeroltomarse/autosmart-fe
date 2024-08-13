@@ -31,9 +31,21 @@ export default function Home() {
     if (!formData?.category && !formData?.search) return productsState?.data.data;
 
     console.log('formData', formData)
-    return productsState?.data.data.filter(
-      (product: IProductType) => product.category === formData?.category || product.name.toLowerCase().includes(formData?.search.toLowerCase())
-    );
+
+    let result = []
+    if (formData?.category) {
+      result = productsState?.data.data.filter(
+        (product: IProductType) => product.category === formData?.category
+      )
+    }
+
+    if (formData?.search) {
+      result = productsState?.data.data.filter(
+        (product: IProductType) => product.name.toLowerCase().includes(formData?.search.toLowerCase())
+      )
+    }
+
+    return result
   }, [productsState, formData]);
 
   return (

@@ -17,6 +17,24 @@ type Props = {
   onChangeFormData?: (formData: ISearchBarFormData) => void;
 };
 
+function extractProductNamesAndTypes(items: any[]) {
+  let result: any[] = [];
+
+  items.forEach(item => {
+    // Add the product type or name to the result array
+    if (item.productType) {
+      result.push(item.name);
+    }
+
+    // Recursively process children if they exist
+    if (item.children && item.children.length > 0) {
+      result = result.concat(extractProductNamesAndTypes(item.children));
+    }
+  });
+
+  return [...new Set(result)]
+}
+
 function Navbar(props: Props) {
   const [formData, setFormData] = useState({
     search: '',
@@ -47,6 +65,31 @@ function Navbar(props: Props) {
       []
     );
   }, [getCategoriesState]);
+  // [
+  //   {
+  //     productType: "type 1",
+  //     children: [
+
+  //     ]
+  //   },
+  //   {
+  //     productType: "type 2",
+  //     children: [
+  //       {
+  //         name: "type 2 product 1",
+  //         productType: "name"
+  //       },
+  //       {
+  //         name: "type 2 product 2",
+  //         productType: "name"
+  //       }
+  //     ]
+  //   }
+  // ]
+
+  // expected result
+
+  // ["type 1", "type 2 product 1", "type 2 product 2"]
 
   useEffect(() => {
     getCategories('all');
@@ -72,7 +115,7 @@ function Navbar(props: Props) {
             setFormData(formData)
             props?.onChangeFormData?.(formData)
           }}
-          dropdownValues={categories?.length > 0 ? categories.map(category => category.productType) : []}
+          dropdownValues={categories?.length > 0 ? extractProductNamesAndTypes(categories) : []}
         />
         <div className="z-[2] flex gap-5 p-3 items-center ">
           <div className="z-[3] text-center font-bold ">
