@@ -143,6 +143,7 @@ export default function Cart() {
 
         if (cartItem) {
           amount += cartItem.quantity * cartItem.product.price;
+          amount = amount - cartItem.product.discount
         }
       }
 
@@ -316,7 +317,7 @@ export default function Cart() {
                         )}
                       </div>
                       <div className="w-full md:w-1/5 text-center text-red-500">
-                        <h4 className="font-bold text-xl">₱{product.quantity * product.product.price}</h4>
+                        <h4 className="font-bold text-xl">₱{(product.quantity * (product.product.price - product.product.discount)).toLocaleString()}</h4>
                       </div>
                       <div className="text-center text-red-500">
                         <button

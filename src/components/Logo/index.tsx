@@ -10,7 +10,7 @@ export default function Logo({ className }: ILogoProps) {
   const router = useRouter();
   return (
     <div
-      className={`absolute top-[28%] left-[1%] w-[250px] h-[120px] relative border ${className} cursor-pointer`}
+      className={`top-[28%] left-[1%] relative border ${className} cursor-pointer`}
       onClick={() =>
         router.replace({
           pathname: '/',

@@ -1,4 +1,4 @@
-import HeroBg from '@/assets/images/base_img_white_bg_red_bar.png';
+import HeroBg from '@/assets/images/BANNER.png';
 import Button from '@/components/Button';
 import Divider from '@/components/Divider';
 import Input from '@/components/Input';

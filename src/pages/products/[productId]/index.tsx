@@ -188,102 +188,96 @@ export default function ProductPage() {
   if (product) {
     return (
       <>
-        <main className="">
+        <main className="relative">
           {addToCartState.isLoading && (
-            <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
+            <div className="fixed inset-0 flex items-center justify-center bg-slate-800 bg-opacity-50 z-50">
               <BasicLoader />
             </div>
           )}
           <Navbar />
           {handleAddToCartResponseAlert()}
           {handleAddToCartValidation()}
-          <div className="p-5 md:px-[10%] md:py-5 flex flex-col gap-2">
-            <h1 className="text-2xl font-bold">Featured Product</h1>
-            <div className="p-5 bg-white flex gap-2">
-              <div className="w-[130px] flex flex-col gap-2">
-                {product.images.map(
-                  (src) =>
-                    src && (
-                      <Image
-                        key={src}
-                        src={src}
-                        alt="product"
-                        width={100}
-                        height={100}
-                        className={`border-2 cursor-pointer ${selectedImage === src
-                          ? 'border-red-500'
-                          : 'border-slate-500'
-                          }`}
-                        onClick={() => setSelectedImage(src)}
-                      />
-                    )
+
+          <div className="p-5 md:px-10 md:py-8 flex flex-col gap-6 max-w-screen-lg mx-auto">
+            <h1 className="text-3xl font-extrabold text-gray-800">Featured Product</h1>
+
+            <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden">
+              <div className="md:w-1/3 flex flex-col gap-4 p-4 border-r border-gray-200">
+                {product.images.map((src) =>
+                  src ? (
+                    <Image
+                      key={src}
+                      src={src}
+                      alt="product"
+                      width={100}
+                      height={100}
+                      className={`border-2 cursor-pointer rounded ${selectedImage === src
+                        ? 'border-red-500'
+                        : 'border-gray-300'
+                        }`}
+                      onClick={() => setSelectedImage(src)}
+                    />
+                  ) : null
                 )}
               </div>
-              <div className="flex w-full">
-                <div id="container">
+
+              <div className="md:w-2/3 flex flex-col p-6">
+                <div className="flex items-center mb-4">
                   <img
                     src={selectedImage}
-                    alt="Image Alt"
-                    className="IMG"
+                    alt={product?.name || "Selected product image"}
+                    className="w-full h-auto rounded-lg shadow-md IMG"
                     id="test-img"
                   />
                 </div>
 
-                <div className="w-1/2 px-5 break-words">
-                  <h2 className="text-2xl font-bold">{product?.name}</h2>
-                  <h2 className="text-2xl font-bold">{product?.brandName}</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{product?.name}</h2>
+                <h3 className="text-xl font-semibold text-gray-700 mb-4">{product?.brandName}</h3>
 
-                  <p className="text-md text-slate-400 font-bold py-3">
-                    {product?.description}
-                  </p>
+                <p className="text-md text-gray-600 mb-4">
+                  {product?.description}
+                </p>
 
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center  gap-2">
-                      <h3 className="font-bold">Variant: </h3>
-                      <Select
-                        options={COLORS.map((color) => color.name)}
-                        className="p-0"
-                        placeholder="Select Variant"
-                        onChange={(e) => setSelectedColor(e.target.value)}
-                        value={selectedColor}
-                      />
-                    </div>
-
-                    <div className="flex items-center  gap-2">
-                      <h3 className="font-bold">Application: </h3>
-                      <h3 className="font-bold text-slate-500">
-                        {selectedApplication}
-                      </h3>
-                    </div>
-
-                    <SelectChips
-                      options={APPLICATIONS}
-                      onSelectOne={(selected) => {
-                        setSelectApplication(selected);
-                      }}
-                      defaultValueOne={selectedApplication}
+                <div className="flex flex-col gap-4 mb-6">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-800">Variant:</h4>
+                    <Select
+                      options={COLORS.map((color) => color.name)}
+                      className="w-full"
+                      placeholder="Select Variant"
+                      onChange={(e) => setSelectedColor(e.target.value)}
+                      value={selectedColor}
                     />
-
-                    <div className="flex flex-row gap-5 justify-center mt-[20%] ">
-                      <Button
-                        title={product.quantity <= 0 ? "Out of Stock" : "Add to cart"}
-                        buttonClass={`bg-red-700 w-full rounded text-white flex-initial py-3 ${product.quantity <= 0 ? 'w-102' : 'w-full'}`}
-                        onClick={handleAddToCart}
-                        disabled={product.quantity <= 0}
-                      />
-
-                      {/* <Button
-                        disabled
-                        title="Buy now"
-                        buttonClass="bg-blue-950 rounded text-white flex-initial w-full py-3"
-                      /> */}
-                    </div>
                   </div>
+
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-800">Application:</h4>
+                    <h4 className="font-semibold text-gray-500">{selectedApplication}</h4>
+                  </div>
+
+                  <SelectChips
+                    options={APPLICATIONS}
+                    onSelectOne={(selected) => {
+                      setSelectApplication(selected);
+                    }}
+                    defaultValueOne={selectedApplication}
+                  />
+                </div>
+
+                <div className="flex gap-4 mt-auto">
+                  <Button
+                    title={product.quantity <= 0 ? "Out of Stock" : "Add to Cart"}
+                    buttonClass={`bg-red-700 w-full rounded-lg text-white py-3 ${product.quantity <= 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+                    onClick={handleAddToCart}
+                    disabled={product.quantity <= 0}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </main>
+
+
       </>
     );
   }

@@ -15,7 +15,10 @@ import { BsFillCartPlusFill } from 'react-icons/bs';
 
 export default function Home() {
   const [getProducts, productsState] = useLazyGetProductsQuery();
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [formData, setFormData] = useState({
+    search: '',
+    category: ''
+  })
   const router = useRouter();
   useEffect(() => {
     getProducts(undefined).then(({ data }) => {
@@ -25,11 +28,14 @@ export default function Home() {
 
   const tempProducts = useMemo(() => {
     if (!productsState.isSuccess) return [];
-    if (!selectedCategory) return productsState?.data.data;
+    if (!formData?.category && !formData?.search) return productsState?.data.data;
+
+    console.log('formData', formData)
     return productsState?.data.data.filter(
-      (product: IProductType) => product.category === selectedCategory
+      (product: IProductType) => product.category === formData?.category || product.name.toLowerCase().includes(formData?.search.toLowerCase())
     );
-  }, [productsState, selectedCategory]);
+  }, [productsState, formData]);
+
   return (
     <>
       <main className=" ">
@@ -38,12 +44,12 @@ export default function Home() {
         </p>
 
         <Navbar
-          onSelectedCategory={(category: string) =>
-            setSelectedCategory(category)
-          }
+          onChangeFormData={(formData) => {
+            setFormData(formData)
+          }}
         />
 
-        <div className="relative w-[100vw] h-[50vh] z-10">
+        <div className="relative w-[100vw] h-[50vh] z-10 flex justify-end items-center">
           <Image
             className="bg-blue-950  object-fit w-full h-full"
             src={
@@ -52,11 +58,10 @@ export default function Home() {
             fill
             alt={'aapBanner'}
           />
-        </div>
-        <div className="absolute top-[32%] right-[5%] z-10">
-          <div className="relative w-[35vw] h-[35vh] ">
+
+          <div className="relative w-[600px] h-[35vh] mr-[6.5%]">
             <Image
-              className="bg-none  object-fit w-full h-full"
+              className="bg-none object-fit w-full h-full"
               src={
                 AAPBannercomp
               }
@@ -65,6 +70,18 @@ export default function Home() {
             />
           </div>
         </div>
+        {/* <div className="absolute top-[32%] right-[5%] z-10">
+          <div className="relative w-[600px] h-[35vh] ">
+            <Image
+              className="bg-none object-fit w-full h-full"
+              src={
+                AAPBannercomp
+              }
+              fill
+              alt={'aapbannercomp'}
+            />
+          </div>
+        </div> */}
         <div className="fixed bottom-[-10%] right-[-10%] animate-bounce z-0">
           <div className="relative w-[25vw] h-[50vh] ">
             <Image
@@ -90,7 +107,7 @@ export default function Home() {
             )}
             {!productsState.isLoading && tempProducts.length === 0 && (
               <div className="flex items-center justify-center h-[30vh] w-full font-bold text-red-500">
-                Products not found for | {selectedCategory}
+                Products not found for | {formData?.category} | {formData?.search}
               </div>
             )}
             {productsState.isSuccess &&

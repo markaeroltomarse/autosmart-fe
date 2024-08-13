@@ -1,5 +1,5 @@
 import AAPHeader from '@/assets/images/HEADER.png';
-import Searchbar from '@/components/Searchbar';
+import Searchbar, { ISearchBarFormData } from '@/components/Searchbar';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { ICartType } from '@/hooks/useCart';
 import { TCategory } from '@/pages/admin/category';
@@ -14,15 +14,18 @@ import Badge from '../Badge';
 import Logo from '../Logo';
 
 type Props = {
-  onSelectedCategory?: (e: string) => void;
+  onChangeFormData?: (formData: ISearchBarFormData) => void;
 };
 
 function Navbar(props: Props) {
-  const [getCategories, getCategoriesState] = useLazyGetCategoriesQuery();
-  const [selectedProductType, setSelectedProductType] = useState(null);
+  const [formData, setFormData] = useState({
+    search: '',
+    category: ''
+  })
 
   const cart: ICartType = useAppSelector(store => store.cartReducer.cart)
 
+  const [getCategories, getCategoriesState] = useLazyGetCategoriesQuery();
   const categories: any[] = useMemo(() => {
     if (getCategoriesState.error) return [];
 
@@ -60,10 +63,17 @@ function Navbar(props: Props) {
         alt="asmartheader2"
       />
       <div className="flex justify-between md:px-[5%] items-center">
-        <Logo className="z-[1] w-[100px] h-[65px] border-2 border-blue-900 rounded-md flex"
+        <Logo className="z-[1] w-[180px] h-[80px] border-2 border-blue-900 rounded-md flex bg-white"
         />
-
-        <Searchbar />
+        <Searchbar
+          wrapperClassName='z-[10]'
+          placeholder='Enter product name, Category'
+          onChange={(formData) => {
+            setFormData(formData)
+            props?.onChangeFormData?.(formData)
+          }}
+          dropdownValues={categories?.length > 0 ? categories.map(category => category.productType) : []}
+        />
         <div className="z-[2] flex gap-5 p-3 items-center ">
           <div className="z-[3] text-center font-bold ">
             {read_cookie('token').length === 0 ||
@@ -97,24 +107,26 @@ function Navbar(props: Props) {
         </div>
       </div>
 
-      <div className=" z-[1] flex justify-between md:px-[5%] items-center ">
-        <div className="p-2 text-blue-950 font-bold flex gap-3">
+      <div className=" flex justify-between md:px-[5%] items-center ">
+        <div className="z-20 p-2 text-blue-950 font-bold flex gap-3">
           {categories &&
             categories.map((category, i) => (
               <div key={JSON.stringify(category.children) + '-' + i}>
                 <div
-
                   onClick={() => {
-                    setSelectedProductType(
-                      selectedProductType !== category.productType &&
-                      category.productType
-                    );
-
+                    setFormData({
+                      ...formData,
+                      category: formData?.category !== category.productType &&
+                        category.productType
+                    })
                     if (
-                      props?.onSelectedCategory &&
-                      selectedProductType === category.productType
+                      props?.onChangeFormData &&
+                      formData?.category === category.productType
                     ) {
-                      props.onSelectedCategory!('');
+                      props.onChangeFormData?.({
+                        ...formData,
+                        category: ''
+                      });
                     }
                   }}
                   className="flex justify-between items-center"
@@ -122,14 +134,16 @@ function Navbar(props: Props) {
                   {category.productType} <MdExpandMore size={25} />
                 </div>
 
-                {selectedProductType === category.productType && (
-                  <div className="absolute bg-white text-red-500 p-3 shadow-md rounded flex flex-col gap-3 cursor-pointer ">
+                {formData?.category === category.productType && (
+                  <div className="absolute bg-white text-blue-950 p-3 shadow-md rounded flex flex-col gap-3 cursor-pointer ">
                     {category.children.map((category: TCategory, i: number) => (
                       <div
                         key={category.name + '-' + i}
                         onClick={() => {
-                          if (props?.onSelectedCategory)
-                            props.onSelectedCategory!(category.name);
+                          props.onChangeFormData?.({
+                            ...formData,
+                            category: category.name
+                          });
                         }}
                         className="border-b hover:bg-red-100"
                       >
