@@ -73,8 +73,8 @@ export default function ProductPage() {
   const getProductHandler = async (id: string) => {
     const { data } = await getProduct(id);
     setProduct(data?.data);
-    setSelectedImage(data?.data.images[0]);
-    await getCategories(data?.data.productType);
+    setSelectedImage(data?.data?.images[0]);
+    await getCategories(data?.data?.productType);
   };
 
 

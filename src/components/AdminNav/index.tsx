@@ -7,7 +7,7 @@ export default function AdminNav() {
         <Logo className="w-[120px] h-[50px] rounded" />
 
         <div>
-          <h3>Admin name</h3>
+          <h3>Administrator</h3>
         </div>
       </div>
     </>
