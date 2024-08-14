@@ -10,6 +10,7 @@ const TestChangesPage: React.FC<TestChangesPageProps> = (props) => {
         set global config
         add access token
         git clone URL .
+        set global config correct email
     </div>;
 };
 
