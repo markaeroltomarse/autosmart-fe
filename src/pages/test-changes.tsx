@@ -7,6 +7,7 @@ const TestChangesPage: React.FC<TestChangesPageProps> = (props) => {
 
     return <div>
         with ammend
+        set global config
     </div>;
 };
 
