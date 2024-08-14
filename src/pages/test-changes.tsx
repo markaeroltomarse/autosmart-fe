@@ -8,6 +8,7 @@ const TestChangesPage: React.FC<TestChangesPageProps> = (props) => {
     return <div>
         with ammend
         set global config
+        add access token
     </div>;
 };
 
