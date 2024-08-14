@@ -6,6 +6,7 @@ import ProductForm from '@/components/Forms/product.form';
 import Input from '@/components/Input';
 import BasicLoader from '@/components/Loader/basic-loader';
 import Table from '@/components/Table';
+import useAlert from '@/hooks/useAlert';
 import {
   useDeleteProductMutation,
   useLazyGetProductsQuery,
@@ -48,6 +49,19 @@ export default function Dashboard() {
       setProducts(data?.data);
     });
   }, []);
+
+  useEffect(() => {
+    if (deleteProductState?.error) {
+      const err: any = deleteProductState?.error
+      alert.execute({
+        title: "Cannot delete product.",
+        message: err?.data?.message,
+        type: 'error'
+      })
+    }
+  }, [deleteProductState?.error])
+
+  const alert = useAlert()
 
   const [selectedProduct, setSelectedProduct] = useState<IProductType | null>(
     null
@@ -110,8 +124,7 @@ export default function Dashboard() {
                   onOk={() => {
                     deleteProduct(selectedProduct?.id!).then(() => {
                       setSelectedProduct(null);
-                      router.reload();
-                    });
+                    })
                   }}
                   onCancel={() => {
                     setSelectedProduct(null);
