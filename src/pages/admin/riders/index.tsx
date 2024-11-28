@@ -37,7 +37,8 @@ const Riders: React.FC<RidersProps> = (props) => {
 
     useEffect(() => {
         getRiders(undefined)
-    }, [getRiders])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return (
         <>

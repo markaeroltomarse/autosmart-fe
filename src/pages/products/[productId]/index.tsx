@@ -14,23 +14,9 @@ import { useEffect, useState } from 'react';
 
 import Alert from '@/components/Alert';
 import Navbar from '@/components/Navbar/navbar';
-import { useAppSelector } from '@/hooks/useAppSelector';
 import useCart from '@/hooks/useCart';
 import { useAddToCartMutation } from '@/store/api/cartApi';
 
-// export const getServerSideProps: GetServerSideProps =
-//   wrapper.getServerSideProps((store) => async (ctx) => {
-//     const product = await store.dispatch(
-//       getProduct.initiate(ctx.query.productId as string)
-//     );
-//     console.log(ctx.query.productId);
-//     return {
-//       props: {
-//         product: product?.data?.data || null,
-//       },
-//     };
-//   });
-//{ product }: { product: IProductType }
 export default function ProductPage() {
   const [addToCart, addToCartState] = useAddToCartMutation();
   const [getCategories, getCategoriesState] = useLazyGetCategoriesQuery();
@@ -43,7 +29,6 @@ export default function ProductPage() {
     ''
   );
   const [selectedColor, setSelectedColor] = useState(COLORS[0].name);
-  const cart = useAppSelector(store => store.cartReducer.cart)
 
   const { handleAddToCart: handleAddToCartStore, handleSetCart } = useCart()
 
@@ -82,6 +67,7 @@ export default function ProductPage() {
     if (router.query?.productId) {
       getProductHandler(router.query?.productId as string);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   useEffect(() => {

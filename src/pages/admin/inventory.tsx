@@ -48,7 +48,8 @@ export default function Dashboard() {
     getProducts(undefined).then(({ data }) => {
       setProducts(data?.data);
     });
-  }, [getProducts]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   useEffect(() => {

@@ -40,7 +40,8 @@ export default function Orders() {
     getOrders(undefined).then(({ data }) => {
       setOrders(data?.data);
     });
-  }, [getOrders]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const columns = useMemo(() => {
     const cols = [
@@ -99,7 +100,8 @@ export default function Orders() {
         message: error?.data?.message || error?.data?.message?.[0]
       })
     }
-  }, [execute, getOrders, updateOrderStatusState]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateOrderStatusState]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

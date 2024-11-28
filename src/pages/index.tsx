@@ -24,7 +24,8 @@ export default function Home() {
     getProducts(undefined).then(({ data }) => {
       console.log(data);
     });
-  }, [getProducts]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const tempProducts = useMemo(() => {
     if (!productsState.isSuccess) return [];

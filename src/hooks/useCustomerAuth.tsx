@@ -53,13 +53,15 @@ const useCustomerAuth = (props?: { role?: string }) => {
 
 
     useEffect(() => {
+        if (!role) return
+
         const isAtAuthPage = router.pathname.split("/")[1]?.toLowerCase()
 
         if ((!token || token.length === 0) && role && role.toLowerCase() === isAtAuthPage) {
             router.replace("/")
         }
 
-        if (user && isAtAuthPage && user?.role !== isAtAuthPage) {
+        if (token && user && isAtAuthPage && user?.role !== isAtAuthPage) {
             router.replace("/")
         }
     }, [role, user, token, router])

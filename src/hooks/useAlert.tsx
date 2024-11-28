@@ -20,6 +20,7 @@ const useAlert = () => {
                 dispatch(setAlert(null))
             }, alert?.interval || 5000)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [alert])
 
     return {

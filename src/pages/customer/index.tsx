@@ -7,11 +7,9 @@ import { useLazyGetCustomerOrdersQuery } from '@/store/api/ordersApi';
 import { ICustomerType } from '@/types/customer.type';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 
 export default function Customer() {
-  const router = useRouter();
   const [customer, setCustomer] = useState<ICustomerType | null>(null);
   const [selectedTab, setSelectedTab] = useState<'Completed' | 'Cancelled' | 'Shipped' | 'Pending'>('Pending');
   const [orders, setOrders] = useState({
@@ -60,17 +58,10 @@ export default function Customer() {
     return ords;
   }, [orders, selectedTab, getOrdersState]);
 
-  if (!customer || getOrdersState?.isLoading || getCustomerState?.isLoading)
-    return (
-      <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
-        <BasicLoader />
-      </div>
-    );
-
   return (
     <>
       <CustomerView>
-        {getOrdersState.isLoading && (
+        {!customer || getOrdersState?.isLoading || getCustomerState?.isLoading && (
           <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
             <BasicLoader />
           </div>

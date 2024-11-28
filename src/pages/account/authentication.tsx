@@ -102,37 +102,31 @@ export default function Authentication() {
         try {
           const authType = localStorage.getItem('authType');
           const userInfo: any = await auth0UserInfo(query.access_token);
-
+          localStorage.setItem("authType", "")
           if (authType === 'signup') {
-            const { isSuccess: customerCreated, error }: any = await createCustomer({
+            const res: any = await createCustomer({
               email: userInfo.email,
               fname: userInfo.given_name,
               lname: userInfo.family_name,
               profileImage: userInfo.picture,
             });
-
-            if (customerCreated) {
-              const { data, isSuccess: loginSuccess }: any = await loginCustomer({ email: userInfo.email });
-              if (loginSuccess) {
-                bake_cookie('token', data.data.token);
-                router.replace('/customer');
-              } else {
-                setIsLoading(false);
-
-                router.replace('/account/authentication');
-              }
+            const { data } = res
+            if (data.data.token) {
+              bake_cookie('token', data.data.token);
+              router.replace('/customer');
             } else {
               setIsLoading(false);
               execute({
                 type: 'error',
-                message: error?.data.message,
+                message: "Invalid Credentials",
                 title: 'Invalid login',
               });
               router.replace('/account/authentication');
             }
           } else {
-            const { data, error }: any = await loginCustomer({ email: userInfo.email });
-            if (data.message === 'success') {
+            const res: any = await loginCustomer({ email: userInfo.email });
+            const { data, error } = res
+            if (data?.message === 'success') {
               bake_cookie('token', data.data.token);
               router.replace('/customer');
             } else {
@@ -142,7 +136,6 @@ export default function Authentication() {
                 message: error?.data.message,
                 title: 'Invalid login',
               });
-              router.replace('/account/authentication');
             }
           }
         } catch (error) {
@@ -161,7 +154,8 @@ export default function Authentication() {
     if (router.isReady) {
       handleAuthentication();
     }
-  }, [auth0UserInfo, createCustomer, execute, loginCustomer, query.access_token, router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query.access_token, router]);
 
   // useEffect(() => {
   //   if (query?.access_token) {
