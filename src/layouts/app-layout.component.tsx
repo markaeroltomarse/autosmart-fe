@@ -125,7 +125,8 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       easing: 'ease-in-cubic'
     });
     getCustomerProfileHandler()
-  }, [getCustomerProfileHandler]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>

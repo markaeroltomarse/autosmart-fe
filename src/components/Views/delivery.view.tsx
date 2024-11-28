@@ -19,7 +19,8 @@ const DeliveryView: React.FC<DeliveryViewProps> = (props) => {
                 router.replace('/')
             }
         })
-    }, [getCustomerProfileHandler, router])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     return <div className="flex justify-center font-Jost text-[#3f3f3f]">
         <div className="md:w-[50%] w-[100%]">

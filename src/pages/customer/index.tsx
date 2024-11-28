@@ -38,7 +38,8 @@ export default function Customer() {
         setOrders(orderResponse?.data);
       }
     })
-  }, [getCustomerProfileHandler, getOrders]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const tempOrders = useMemo(() => {
     if (!getOrdersState.isSuccess && !orders) return [];
