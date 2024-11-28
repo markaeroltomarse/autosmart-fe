@@ -94,6 +94,7 @@ export default function Authentication() {
     }
   }
 
+  //Login via SSO
   useEffect(() => {
     const handleAuthentication = async () => {
       if (query?.access_token) {
@@ -228,10 +229,15 @@ export default function Authentication() {
     loginCustomer({ email: loginPayload.email, password: loginPayload?.password }).then(
       ({ data, error }: any) => {
         if (data?.message === 'success') {
-          setIsOTP(data.data.otp)
-          setLoginToken(data.data.token)
-          // bake_cookie('token', data.data.token);
-          // router.replace('/customer');
+          console.log(data.data.customer)
+          const user = data.data.customer
+          if (user?.role === "admin") {
+            bake_cookie('token', data.data.token);
+            router.replace('/admin');
+          } else {
+            setIsOTP(data.data.otp)
+            setLoginToken(data.data.token)
+          }
         } else {
           setIsLoading(false);
           execute({

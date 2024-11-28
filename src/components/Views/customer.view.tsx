@@ -1,6 +1,6 @@
 import { useAppSelector } from "@/hooks/useAppSelector";
 import useCustomerAuth from "@/hooks/useCustomerAuth";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import CustomerNavbar from "../CustomerNavbar";
 
 export interface CustomerViewProps {
@@ -10,11 +10,8 @@ export interface CustomerViewProps {
 const CustomerView: React.FC<CustomerViewProps> = (props) => {
     const { children } = props;
     const customer = useAppSelector(store => store.userReducer.user)
-    const { getCustomerProfileHandler, VerificationMessage } = useCustomerAuth()
+    const { VerificationMessage } = useCustomerAuth()
 
-    useEffect(() => {
-        getCustomerProfileHandler()
-    }, [])
 
     return <main className="px-5 md:px-[10%] py-10 bg-gray-100 min-h-screen">
         <CustomerNavbar customer={customer} />

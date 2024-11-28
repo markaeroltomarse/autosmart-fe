@@ -10,7 +10,7 @@ export default function AdminMenu({ defaultValue }: IAdminMenuProps) {
     <>
       <div className="flex justify-start items-center  border-r pr-10">
         <ButtonGroup
-          values={['Home', 'Inventory', 'Orders', 'Category', 'Riders']}
+          values={['Home', 'Inventory', 'Orders', 'Category', 'Riders', 'Employees']}
           isVertical={true}
           onClick={(data) => {
             router.replace(

@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { BsFillCartCheckFill } from 'react-icons/bs';
 import { MdExpandMore } from 'react-icons/md';
-import { delete_cookie, read_cookie } from 'sfcookies';
+import { delete_cookie } from 'sfcookies';
 import Badge from '../Badge';
 import Logo from '../Logo';
 
@@ -36,6 +36,7 @@ function extractProductNamesAndTypes(items: any[]) {
 }
 
 function Navbar(props: Props) {
+  const user = useAppSelector(state => state.userReducer.user)
   const [formData, setFormData] = useState({
     search: '',
     category: ''
@@ -119,28 +120,27 @@ function Navbar(props: Props) {
         />
         <div className="z-[2] flex gap-5 p-3 items-center ">
           <div className="z-[3] text-center font-bold ">
-            {read_cookie('token').length === 0 ||
-              read_cookie('token') === undefined ? (
-              <div className="hover:text-gray-300">
-                <Link href={'/account/authentication'}>LOGIN / SIGN UP</Link>
-                <br />
-              </div>
-
-            ) : (
-              <>
+            {!user
+              ? (
                 <div className="hover:text-gray-300">
-                  <Link
-                    href={'/api/auth/logout'}
-                    onClick={() => delete_cookie('token')}
-                  >
-                    Logout
-                  </Link>
+                  <Link href={'/account/authentication'}>LOGIN / SIGN UP</Link>
                   <br />
                 </div>
+              ) : (
+                <>
+                  <div className="hover:text-gray-300">
+                    <Link
+                      href={'/api/auth/logout'}
+                      onClick={() => delete_cookie('token')}
+                    >
+                      Logout
+                    </Link>
+                    <br />
+                  </div>
 
-                <Link href={'/customer'}>My Account</Link>
-              </>
-            )}
+                  <Link href={user?.role === "customer" ? '/customer' : "/admin"}>My Account</Link>
+                </>
+              )}
           </div>
           <Link href="/cart ">
             <Badge text={cart?.products?.length > 0 ? String(cart?.products?.length) : undefined} color='bg-red-500' >

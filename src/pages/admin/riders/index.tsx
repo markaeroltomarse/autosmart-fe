@@ -1,9 +1,8 @@
-import AdminMenu from "@/components/AdminMenu";
-import AdminNav from "@/components/AdminNav";
 import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import Table from "@/components/Table";
+import AdminView from "@/components/Views/admin.view";
 import { useLazyGetRidersQuery, useUpdateCustomerMutation } from "@/store/api/customerApi";
 import { useEffect, useState } from "react";
 import { GiFullMotorcycleHelmet } from "react-icons/gi";
@@ -37,15 +36,12 @@ const Riders: React.FC<RidersProps> = (props) => {
 
 
     useEffect(() => {
-        getRiders(undefined).then(res => {
-            console.log(res.data)
-        })
+        getRiders(undefined)
     }, [])
 
     return (
         <>
-            <main className="">
-                <AdminNav />
+            <AdminView page="Riders">
                 {
                     isErrorSetRider && <Alert
                         type={"error"}
@@ -94,38 +90,28 @@ const Riders: React.FC<RidersProps> = (props) => {
                         </form>
                     </div>
                 }
-                <div className="px-5 md:px-[10%] w-full">
-                    <h1 className="font-bold text-2xl text-slate-500 my-5">Riders</h1>
-                    <div className="flex min-h-[80vh] w-full  ">
-                        <div className="flex-none">
-                            <AdminMenu defaultValue="Riders" />
-                        </div>
-                        <div className="flex flex-col gap-3 flex-grow">
-                            <div className="flex justify-end gap-3">
-                                <Button title="Add new" buttonClass="bg-green-600 text-white py-3 px-5" onClick={() => setIsAddNewRiderModal(true)} />
-                            </div>
-                            <Table headers={[
-                                {
-                                    key: 'id',
-                                    value: '',
-                                },
-                                {
-                                    key: 'email',
-                                    value: 'Email',
-                                },
-                                {
-                                    key: 'deliveries',
-                                    value: 'Deliveries',
-                                },
-                                {
-                                    key: 'createdAt',
-                                    value: 'Date Joined',
-                                },
-                            ]} data={data?.data ? data?.data : []} title={"Riders"} />
-                        </div>
-                    </div>
+                <div className="flex justify-end gap-3 mb-5">
+                    <Button title="Add new" buttonClass="bg-green-600 text-white py-3 px-5" onClick={() => setIsAddNewRiderModal(true)} />
                 </div>
-            </main>
+                <Table headers={[
+                    {
+                        key: 'id',
+                        value: '',
+                    },
+                    {
+                        key: 'email',
+                        value: 'Email',
+                    },
+                    {
+                        key: 'deliveries',
+                        value: 'Deliveries',
+                    },
+                    {
+                        key: 'createdAt',
+                        value: 'Date Joined',
+                    },
+                ]} data={data?.data ? data?.data : []} title={"Riders"} />
+            </AdminView>
         </>
     )
 };

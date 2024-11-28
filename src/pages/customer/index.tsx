@@ -22,7 +22,7 @@ export default function Customer() {
   });
 
   const [getOrders, getOrdersState] = useLazyGetCustomerOrdersQuery();
-  const { getCustomerProfileHandler } = useCustomerAuth()
+  const { getCustomerProfileHandler, getCustomerState } = useCustomerAuth()
 
   useEffect(() => {
     getCustomerProfileHandler(async (customer) => {
@@ -31,6 +31,10 @@ export default function Customer() {
         setCustomer(customer);
 
         const { data: orderResponse } = await getOrders(undefined);
+
+        console.log({
+          orderResponse
+        })
         setOrders(orderResponse?.data);
       }
     })
@@ -46,7 +50,7 @@ export default function Customer() {
     ords.forEach((order: any) => {
       let total = 0;
       for (const orderProduct of order.products) {
-        total += orderProduct.quantity * orderProduct.product.price;
+        total += orderProduct?.quantity * orderProduct?.product?.price;
       }
 
       order['total'] = total;
@@ -55,7 +59,7 @@ export default function Customer() {
     return ords;
   }, [orders, selectedTab, getOrdersState]);
 
-  if (!customer)
+  if (!customer || getOrdersState?.isLoading || getCustomerState?.isLoading)
     return (
       <div className="fixed top-0 left-0 flex items-center justify-center bg-slate-800 bg-opacity-50 w-full h-full z-[10]">
         <BasicLoader />

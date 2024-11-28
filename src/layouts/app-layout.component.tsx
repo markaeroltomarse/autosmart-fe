@@ -1,5 +1,6 @@
 import Alert from "@/components/Alert";
 import { useAppSelector } from "@/hooks/useAppSelector";
+import useCustomerAuth from "@/hooks/useCustomerAuth";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import localFont from 'next/font/local';
@@ -113,15 +114,18 @@ export interface AppLayoutProps {
 
 const AppLayout: React.FC<AppLayoutProps> = (props) => {
   const { children, getLayout } = props;
-
+  const { getCustomerProfileHandler } = useCustomerAuth()
   const alert = useAppSelector(store => store.componentsReducers?.alert)
+  const store = useAppSelector(store => store.customersApi)
+
+  console.log({ store })
 
   useEffect(() => {
     AOS.init({
       easing: 'ease-in-cubic'
     });
+    getCustomerProfileHandler()
   }, []);
-
 
   return (
     <>
