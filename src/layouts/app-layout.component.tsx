@@ -125,7 +125,7 @@ const AppLayout: React.FC<AppLayoutProps> = (props) => {
       easing: 'ease-in-cubic'
     });
     getCustomerProfileHandler()
-  }, []);
+  }, [getCustomerProfileHandler]);
 
   return (
     <>

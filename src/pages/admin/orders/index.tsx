@@ -40,7 +40,7 @@ export default function Orders() {
     getOrders(undefined).then(({ data }) => {
       setOrders(data?.data);
     });
-  }, []);
+  }, [getOrders]);
 
   const columns = useMemo(() => {
     const cols = [
@@ -99,7 +99,7 @@ export default function Orders() {
         message: error?.data?.message || error?.data?.message?.[0]
       })
     }
-  }, [updateOrderStatusState]);
+  }, [execute, getOrders, updateOrderStatusState]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

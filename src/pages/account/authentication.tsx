@@ -161,7 +161,7 @@ export default function Authentication() {
     if (router.isReady) {
       handleAuthentication();
     }
-  }, [query?.access_token, router]);
+  }, [auth0UserInfo, createCustomer, execute, loginCustomer, query.access_token, router]);
 
   // useEffect(() => {
   //   if (query?.access_token) {
@@ -228,8 +228,10 @@ export default function Authentication() {
 
     loginCustomer({ email: loginPayload.email, password: loginPayload?.password }).then(
       ({ data, error }: any) => {
+        console.log({
+          login: data
+        })
         if (data?.message === 'success') {
-          console.log(data.data.customer)
           const user = data.data.customer
           if (user?.role === "admin") {
             bake_cookie('token', data.data.token);

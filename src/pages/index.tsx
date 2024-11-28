@@ -24,7 +24,7 @@ export default function Home() {
     getProducts(undefined).then(({ data }) => {
       console.log(data);
     });
-  }, []);
+  }, [getProducts]);
 
   const tempProducts = useMemo(() => {
     if (!productsState.isSuccess) return [];

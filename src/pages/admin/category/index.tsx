@@ -7,7 +7,7 @@ import {
   useDeleteCategoryMutation,
   useLazyGetCategoriesQuery,
 } from '@/store/api/productsApi';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AiTwotoneDelete } from 'react-icons/ai';
 
 export type TCategory = {
@@ -36,9 +36,9 @@ export default function Category() {
     });
   };
 
-  const getCategoriesHandler = async () => {
+  const getCategoriesHandler = useCallback(async () => {
     await getCategories('all');
-  };
+  }, [getCategories]);
 
   const categories: TCategory[] = useMemo(() => {
     if (getCategoriesState.error) return [];
@@ -47,7 +47,7 @@ export default function Category() {
 
   useEffect(() => {
     getCategoriesHandler();
-  }, []);
+  }, [getCategoriesHandler]);
 
   return (
     <>

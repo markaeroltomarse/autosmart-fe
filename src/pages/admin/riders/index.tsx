@@ -37,7 +37,7 @@ const Riders: React.FC<RidersProps> = (props) => {
 
     useEffect(() => {
         getRiders(undefined)
-    }, [])
+    }, [getRiders])
 
     return (
         <>

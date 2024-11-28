@@ -25,7 +25,7 @@ const SummaryDashboard: React.FC<SummaryDashboardProps> = (props) => {
         };
 
         fetchSummary();
-    }, []);
+    }, [getSummary]);
 
     if (isLoading) return <div className="flex justify-center items-center h-screen"><div className="text-xl">Loading...</div></div>;
     if (error) return <div className="flex justify-center items-center h-screen"><div className="text-red-500">{errorTemp?.data?.message}</div></div>;

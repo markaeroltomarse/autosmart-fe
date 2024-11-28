@@ -31,6 +31,7 @@ import { AiFillCheckSquare, AiOutlineSearch } from 'react-icons/ai';
 
 export default function Dashboard() {
   const router = useRouter();
+  const alert = useAlert()
 
   const [updateProduct, updateProductState] = useUpdateProductMutation();
   const [deleteProduct, deleteProductState] = useDeleteProductMutation();
@@ -47,7 +48,8 @@ export default function Dashboard() {
     getProducts(undefined).then(({ data }) => {
       setProducts(data?.data);
     });
-  }, []);
+  }, [getProducts]);
+
 
   useEffect(() => {
     if (deleteProductState?.error) {
@@ -58,9 +60,8 @@ export default function Dashboard() {
         type: 'error'
       })
     }
-  }, [deleteProductState?.error])
+  }, [alert, deleteProductState?.error])
 
-  const alert = useAlert()
 
   const [selectedProduct, setSelectedProduct] = useState<IProductType | null>(
     null
@@ -97,7 +98,7 @@ export default function Dashboard() {
     if (router.query?.action === 'delete' && !selectedProduct) {
       router.replace('/admin/inventory');
     }
-  }, [router.query, selectedProduct]);
+  }, [router, router.query, selectedProduct]);
 
   return (
     <>

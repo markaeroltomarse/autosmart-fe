@@ -38,7 +38,7 @@ export default function Customer() {
         setOrders(orderResponse?.data);
       }
     })
-  }, []);
+  }, [getCustomerProfileHandler, getOrders]);
 
   const tempOrders = useMemo(() => {
     if (!getOrdersState.isSuccess && !orders) return [];
