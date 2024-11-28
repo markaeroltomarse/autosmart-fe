@@ -94,6 +94,7 @@ function Navbar(props: Props) {
 
   useEffect(() => {
     getCategories('all');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

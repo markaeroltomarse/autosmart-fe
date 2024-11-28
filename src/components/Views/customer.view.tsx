@@ -10,8 +10,7 @@ export interface CustomerViewProps {
 const CustomerView: React.FC<CustomerViewProps> = (props) => {
     const { children } = props;
     const customer = useAppSelector(store => store.userReducer.user)
-    const { VerificationMessage } = useCustomerAuth()
-
+    const { VerificationMessage } = useCustomerAuth({ role: "customer" })
 
     return <main className="px-5 md:px-[10%] py-10 bg-gray-100 min-h-screen">
         <CustomerNavbar customer={customer} />

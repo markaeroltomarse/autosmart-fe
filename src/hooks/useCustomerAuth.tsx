@@ -53,15 +53,15 @@ const useCustomerAuth = (props?: { role?: string }) => {
 
 
     useEffect(() => {
-        // const isAtAuthPage = router.pathname.split("/")[1]?.toLowerCase()
+        const isAtAuthPage = router.pathname.split("/")[1]?.toLowerCase()
 
-        // if ((!token || token.length === 0) && role && role.toLowerCase() === isAtAuthPage) {
-        //     router.replace("/")
-        // }
+        if ((!token || token.length === 0) && role && role.toLowerCase() === isAtAuthPage) {
+            router.replace("/")
+        }
 
-        // if (user && isAtAuthPage && user?.role !== isAtAuthPage) {
-        //     router.replace("/")
-        // }
+        if (user && isAtAuthPage && user?.role !== isAtAuthPage) {
+            router.replace("/")
+        }
     }, [role, user, token, router])
 
 

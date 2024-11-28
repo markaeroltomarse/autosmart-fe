@@ -1,4 +1,6 @@
 import { useAppSelector } from '@/hooks/useAppSelector';
+import Link from 'next/link';
+import { delete_cookie } from 'sfcookies';
 import Logo from '../Logo';
 
 export default function AdminNav() {
@@ -9,7 +11,14 @@ export default function AdminNav() {
         <Logo className="w-[120px] h-[50px] rounded" />
 
         <div>
-          <h3>{user?.fname}, {user?.lname}</h3>
+          <h3>{user?.fname || "Loading..."}, {user?.lname}</h3>
+          <Link
+            href={'/api/auth/logout'}
+            onClick={() => delete_cookie('token')}
+            className='text-sm text-slate-300'
+          >
+            Logout
+          </Link>
         </div>
       </div>
     </>
